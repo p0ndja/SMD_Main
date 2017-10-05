@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.3.1
+version: 1.0.3.2
 description: Main plugin of Server
 author: p0N67a
 softdepend: [BarAPI]
@@ -80,9 +80,9 @@ commands:
   h:
        description: Shortcut for /home.
        usage: /h, will warp you to home location
-  qwertyuiop:
+  qwerty:
        description: qwertyuiop!
-       usage: /qwertyuiop
+       usage: /qwerty
   removehome:
        description: Remove home location.
        usage: /removehome, will remove your home location. (Personal Location)

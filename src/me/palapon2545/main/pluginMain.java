@@ -2078,6 +2078,21 @@ public class pluginMain extends JavaPlugin implements Listener {
 								player.sendMessage(sv + ChatColor.YELLOW + args[2] + non);
 								no(player);
 							}
+						} else if (args[1].equalsIgnoreCase("home")) {
+							if (isInt(args[2])) {
+								int lcqn = lcq + Integer.parseInt(args[2]);
+								try {
+									playerData1.set("Quota.Home", lcqn);
+									playerData1.save(f1);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								player.sendMessage(sv + "You gave " + ChatColor.LIGHT_PURPLE + args[2]
+										+ "x Home Quota to " + ChatColor.YELLOW + targetPlayerName);
+							} else {
+								player.sendMessage(sv + ChatColor.YELLOW + args[2] + non);
+								no(player);
+							}
 						} else
 
 						{
@@ -2738,6 +2753,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				no(player);
 			}
 		}
+		if (CommandLabel.equalsIgnoreCase("qwerty") || CommandLabel.equalsIgnoreCase("SMDMain:qwerty")) {
+
+		}
 		return true;
 	}
 
@@ -3075,7 +3093,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 		} else if (command.contains("/login") || command.contains("/l") || command.contains("/register")
-				|| command.contains("/reg") || command.contains("/changepassword") || command.contains("/force")) {
+				|| command.contains("/reg") || command.contains("/changepassword") || command.contains("/force")
+				|| command.contains("/r") || command.contains("/reply") || command.contains("/whisper")
+				|| command.contains("/w") || command.contains("/tell") || command.contains("/t")) {
 			// DO NOTHING
 		} else {
 			for (Player p : Bukkit.getOnlinePlayers()) {
@@ -3170,1424 +3190,21 @@ public class pluginMain extends JavaPlugin implements Listener {
 				String s0 = s.getLine(0).toLowerCase();
 				int s1 = Integer.parseInt(s.getLine(1));
 				String s2 = s.getLine(2).toLowerCase();
-				double s3 = Integer.parseInt(s.getLine(3));
+				String[] abc = s.getLine(2).split(":");
+				String s2i = abc[0];
+				short s2d = (short) Integer.parseInt(abc[1]);
+				long s3 = Integer.parseInt(s.getLine(3));
 				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s2.isEmpty() && !s.getLine(3).isEmpty()) {
-					if (s2.equalsIgnoreCase("diamond")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.DIAMOND, s1)) {
-								inv.removeItem(new ItemStack(Material.DIAMOND, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x "
-										+ s2.toUpperCase().toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.DIAMOND, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
+					if (s0.endsWith("[sell]")) {
+						player.sendMessage("player=" + player.getName());
+						player.sendMessage("s2i=" + s2i);
+						player.sendMessage("s1=" + s1);
+						player.sendMessage("s3=" + s3);
+						player.sendMessage("s2d=" + s2d);
+						sell(player, s2i, s1, s3, s2d);
 					}
-					if (s2.equalsIgnoreCase("blaze_rod")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.BLAZE_ROD, s1)) {
-								inv.removeItem(new ItemStack(Material.BLAZE_ROD, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.BLAZE_ROD, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("exp_bottle")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.EXP_BOTTLE, s1)) {
-								inv.removeItem(new ItemStack(Material.EXP_BOTTLE, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.EXP_BOTTLE, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("packed_ice")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.PACKED_ICE, s1)) {
-								inv.removeItem(new ItemStack(Material.PACKED_ICE, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.PACKED_ICE, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("slime_ball")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.SLIME_BALL, s1)) {
-								inv.removeItem(new ItemStack(Material.SLIME_BALL, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.SLIME_BALL, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("book")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.BOOK, s1)) {
-								inv.removeItem(new ItemStack(Material.BOOK, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.BOOK, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("spruce_log")) {
-						ItemStack item = new ItemStack(Material.LOG, s1, (short) 1);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("acacia_log")) {
-						ItemStack item = new ItemStack(Material.LOG_2, s1, (short) 0);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(item)) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("dark_oak_log")) {
-						ItemStack item = new ItemStack(Material.LOG_2, s1, (short) 1);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("jungle_log")) {
-						ItemStack item = new ItemStack(Material.LOG, s1, (short) 3);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("birch_log")) {
-						ItemStack item = new ItemStack(Material.LOG, s1, (short) 2);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("oak_log")) {
-						ItemStack item = new ItemStack(Material.LOG, s1, (short) 0);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("coal")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.COAL, s1)) {
-								inv.removeItem(new ItemStack(Material.COAL, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.COAL, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("iron_ingot")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.IRON_INGOT, s1)) {
-								inv.removeItem(new ItemStack(Material.IRON_INGOT, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.IRON_INGOT, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("gold_ingot")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.GOLD_INGOT, s1)) {
-								inv.removeItem(new ItemStack(Material.GOLD_INGOT, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.GOLD_INGOT, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("ghast_tear")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.GHAST_TEAR, s1)) {
-								inv.removeItem(new ItemStack(Material.GHAST_TEAR, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.GHAST_TEAR, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("redstone")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.REDSTONE, s1)) {
-								inv.removeItem(new ItemStack(Material.REDSTONE, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.REDSTONE, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("LAPIS_LAZURI")) {
-						ItemStack lapis = new ItemStack(Material.INK_SACK, s1, (short) 4);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(lapis))) {
-								inv.removeItem(new ItemStack(Material.INK_SACK, s1, (short) 4));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.INK_SACK, s1, (short) 4));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("magma_cream")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.MAGMA_CREAM, s1)) {
-								inv.removeItem(new ItemStack(Material.MAGMA_CREAM, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.MAGMA_CREAM, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("quartz")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.QUARTZ, s1)) {
-								inv.removeItem(new ItemStack(Material.QUARTZ, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.QUARTZ, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("emerald")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.EMERALD, s1)) {
-								inv.removeItem(new ItemStack(Material.EMERALD, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.EMERALD, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("wheat")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.WHEAT, s1)) {
-								inv.removeItem(new ItemStack(Material.WHEAT, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.WHEAT, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("carrot")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.CARROT_ITEM, s1)) {
-								inv.removeItem(new ItemStack(Material.CARROT_ITEM, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.CARROT_ITEM, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("potato")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.POTATO_ITEM, s1)) {
-								inv.removeItem(new ItemStack(Material.POTATO_ITEM, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.POTATO_ITEM, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("melon")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.MELON, s1)) {
-								inv.removeItem(new ItemStack(Material.MELON, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.MELON, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("pumpkin")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.PUMPKIN, s1)) {
-								inv.removeItem(new ItemStack(Material.PUMPKIN, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.PUMPKIN, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("reeds")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.SUGAR_CANE, s1)) {
-								inv.removeItem(new ItemStack(Material.SUGAR_CANE, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.SUGAR_CANE, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("egg")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.EGG, s1)) {
-								inv.removeItem(new ItemStack(Material.EGG, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.EGG, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("beetroot")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.BEETROOT, s1)) {
-								inv.removeItem(new ItemStack(Material.BEETROOT, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.BEETROOT, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("cactus")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.CACTUS, s1)) {
-								inv.removeItem(new ItemStack(Material.CACTUS, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.CACTUS, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("sea_lantern")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.SEA_LANTERN, s1)) {
-								inv.removeItem(new ItemStack(Material.SEA_LANTERN, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.SEA_LANTERN, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("glowstone")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.GLOWSTONE, s1)) {
-								inv.removeItem(new ItemStack(Material.GLOWSTONE, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.GLOWSTONE, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("saddle")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.SADDLE, s1)) {
-								inv.removeItem(new ItemStack(Material.SADDLE, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.SADDLE, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("lead")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.LEASH, s1)) {
-								inv.removeItem(new ItemStack(Material.LEASH, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.LEASH, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("ender_pearl")) {
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(Material.ENDER_PEARL, s1)) {
-								inv.removeItem(new ItemStack(Material.ENDER_PEARL, s1));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(Material.ENDER_PEARL, s1));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("normal_fish")) {
-						ItemStack item = new ItemStack(Material.RAW_FISH, s1, (short) 0);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("salmon_fish")) {
-						ItemStack item = new ItemStack(Material.RAW_FISH, s1, (short) 1);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("clown_fish")) {
-						ItemStack item = new ItemStack(Material.RAW_FISH, s1, (short) 2);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
-					}
-					if (s2.equalsIgnoreCase("puffer_fish")) {
-						ItemStack item = new ItemStack(Material.RAW_FISH, s1, (short) 3);
-						if (s0.endsWith("[sell]") == true) {
-							if (inv.contains(new ItemStack(item))) {
-								inv.removeItem(new ItemStack(item));
-								try {
-									playerData.set("money", money + s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You get " + ChatColor.GREEN + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from selling " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + noi);
-								no(player);
-							}
-						}
-						if (s0.endsWith("[buy]")) {
-							if (money > s3) {
-								inv.addItem(new ItemStack(item));
-								try {
-									playerData.set("money", money - s3);
-									playerData.save(f);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								player.sendMessage(sv + "You paid " + ChatColor.GOLD + s3 + " Coin(s) " + ChatColor.GRAY
-										+ "from buying " + ChatColor.AQUA + s1 + "x " + s2.toUpperCase());
-								yes(player);
-							} else {
-								player.sendMessage(sv + nom);
-								no(player);
-							}
-						}
+					if (s0.endsWith("[buy]")) {
+						buy(player, s2i, s1, s3, s2d);
 					}
 				} else {
 					return;
@@ -4867,8 +3484,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							no(player);
 						}
 					}
-				}
-				if (s.getLine(1).equalsIgnoreCase("tpr")) {
+				} else if (s.getLine(2).equalsIgnoreCase("tpr")) {
 					if (money > (Integer.parseInt(s.getLine(1)) * 300)) {
 						try {
 							playerData.set("Quota.TPR", tprq + Integer.parseInt(s.getLine(1)));
@@ -4886,7 +3502,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						no(player);
 					}
 				}
-				if (s.getLine(1).equalsIgnoreCase("luckyclick")) {
+				if (s.getLine(2).equalsIgnoreCase("luckyclick")) {
 					if (money > (Integer.parseInt(s.getLine(1)) * 500)) {
 						try {
 							playerData.set("Quota.LuckyClick", luckyq + Integer.parseInt(s.getLine(1)));
@@ -5105,12 +3721,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public void checkHour() {
-		int c = getConfig().getInt("count");
+		long c = getConfig().getLong("count");
 		if (c > 3599) {
-			int value = c;
-			int h = value / 3600;
-			int m = value % 3600;
-			int s = m % 60;
+			long h = c / 3600;
+			long m = c % 3600;
+			Bukkit.broadcastMessage(m + "");
+			long s = m % 60;
 			if (h == 1 && m == 1 && s == 1) {
 				ActionBarAPI.sendToAll(cd + h + " hour " + m + " minute " + s + " second");
 			} else if (h == 1 && m == 1 && s == 0) {
@@ -5136,8 +3752,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public void checkMin() {
-		long c = getConfig().getInt("count");
-		long a = getConfig().getInt("count_start_count");
+		long c = getConfig().getLong("count");
+		long a = getConfig().getLong("count_start_count");
 		long value = c;
 		long m = value / 60;
 		long s = value % 60;
@@ -5261,8 +3877,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public void Countdown() {
-		long c = getConfig().getInt("count");
-		long a = getConfig().getInt("count_start_count");
+		long c = getConfig().getLong("count");
+		long a = getConfig().getLong("count_start_count");
 		long cn = (long) c;
 		long an = (long) a;
 		long n = c - 1;
@@ -5628,4 +4244,67 @@ public class pluginMain extends JavaPlugin implements Listener {
 			BarAPI.removeBar(p);
 		}
 	}
+
+	public void buy(Player p, String s, int i, long o, short m) {
+		String playerName = p.getName();
+		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		Material l = Material.getMaterial(s.toUpperCase());
+		ItemStack c = new ItemStack(l, i, m);
+		Inventory inv = p.getInventory();
+		long money = playerData.getLong("money");
+		if (l != null) {
+			if (money > o) {
+				inv.addItem(c);
+				try {
+					playerData.set("money", money - o);
+					playerData.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				p.sendMessage(sv + "You paid " + ChatColor.GOLD + o + " Coin(s) " + ChatColor.GRAY + "from buying "
+						+ ChatColor.AQUA + i + "x " + l);
+			} else {
+				p.sendMessage(sv + nom);
+				no(p);
+			}
+		} else {
+			p.sendMessage(sv + "Item " + ChatColor.YELLOW + s + ChatColor.GRAY + " not found.");
+			no(p);
+		}
+	}
+
+	public void sell(Player p, String s, int i, long o, short m) {
+		String playerName = p.getName();
+		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		Material l = Material.getMaterial(s.toUpperCase());
+		ItemStack c = new ItemStack(l, i, m);
+		Inventory inv = p.getInventory();
+		long money = playerData.getLong("money");
+		if (l != null) {
+			if (inv.contains(new ItemStack(c))) {
+				inv.removeItem(c);
+				try {
+					playerData.set("money", money + o);
+					playerData.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				p.sendMessage(sv + "You get " + ChatColor.GOLD + o + " Coin(s) " + ChatColor.GRAY + "from selling "
+						+ ChatColor.AQUA + i + "x " + l);
+			} else {
+				p.sendMessage(sv + noi);
+				no(p);
+			}
+		} else {
+			p.sendMessage(sv + "Item " + ChatColor.YELLOW + s + ChatColor.GRAY + " not found.");
+			no(p);
+		}
+	}
+
 }
