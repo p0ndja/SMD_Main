@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.3.2
+version: 1.0.4
 description: Main plugin of Server
 author: p0N67a
 softdepend: [BarAPI]
@@ -125,11 +125,14 @@ commands:
        description: give quota
        usage: /<command> [player] [type] [amount]
        permission: main.givequota
-  gettps:
-       description: tps
-       usage: /<command>
   closechunk:
        description: closechunk
+       usage: /<command>
+  free:
+       description: free
+       usage: /<command>
+  resetfree:
+       description: free
        usage: /<command>
   freeze:
        description: Freeze
@@ -220,13 +223,14 @@ commands:
   data:
        description: status
        usage: /<command>
-  testgive:
-       description: debug
-       usage: /<command>
   mute:
        description: Mute
        usage: /<command> [player]
        permission: main.mute
+  clearchat:
+       description: clear chat
+       usage: /<command>
+       permission: main.clearchat
   adminchat:
        description: Admin chat
        usage: /<command>
@@ -301,10 +305,10 @@ permissions:
            main.world: true
            main.sign: true
            main.adminchat: true
+           main.clearchat: true
            main.countdown: true
            main.invisible: true
            main.money: true
-           main.seecmd: true
   main.setspawn:
        description: Allow to use /setspawn
        default: op
@@ -356,11 +360,11 @@ permissions:
   main.sign:
        description: Allow to create sign with first line is [cmd] [server] [tp] [world]
        default: op
-  main.seecmd:
-       description: Allow to see Command Watcher
-       default: op
   main.countdown:
        description: Allow to use /countdown
+       default: op
+  main.clearchat:
+       description: Allow to use /clearchat
        default: op
   main.invisible:
        description: Allow to use /invisible
