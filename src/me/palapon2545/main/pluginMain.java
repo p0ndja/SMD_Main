@@ -2646,7 +2646,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				File file = new File(report, File.separator + b + ".yml");
 				FileConfiguration reportData = YamlConfiguration.loadConfiguration(file);
 
-				if (args.length > 2) {
+				if (args.length > 1) {
 					if (Bukkit.getServer().getOfflinePlayer(args[0]) != null) {
 						Player target = (Player) Bukkit.getServer().getOfflinePlayer(args[0]);
 						String c = b + "";
