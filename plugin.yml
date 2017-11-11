@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.4
+version: 1.0.4-01
 description: Main plugin of Server
 author: p0N67a
 softdepend: [BarAPI]

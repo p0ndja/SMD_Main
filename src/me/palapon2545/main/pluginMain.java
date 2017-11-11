@@ -64,6 +64,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
@@ -142,10 +144,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		ActionBarAPI.run();
 		getConfig().options().copyDefaults(true);
 		getConfig().set("warp", null);
-		getConfig().set("count", -1);
-		getConfig().set("count_start_count", -1);
-		getConfig().set("countdown_msg", "Undefined");
-		getConfig().set("countdown_msg_toggle", "u");
 		getConfig().set("event.warpstatus", "false");
 		getConfig().set("event.name", "none");
 		getConfig().set("event.join", "false");
@@ -172,6 +170,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 		 * (getServer().getPluginManager().isPluginEnabled("BossBarAPI") == false) {
 		 * getConfig().set("bossbarapi", "false"); }
 		 */
+		if (getConfig().getString("count") == null || getConfig().getString("count_start_count") == null
+				|| getConfig().getString("countdown_msg") == null
+				|| getConfig().getString("countdown_msg_toggle") == null) {
+			getConfig().set("countdown_msg", "Undefined");
+			getConfig().set("count_start_count", -1);
+			getConfig().set("countdown_msg_toggle", "u");
+			getConfig().set("count", -1);
+			saveConfig();
+		}
 		saveConfig();
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -191,18 +198,16 @@ public class pluginMain extends JavaPlugin implements Listener {
 				int player = Bukkit.getServer().getOnlinePlayers().size();
 				if (player > 0) {
 					for (Player p : Bukkit.getOnlinePlayers()) {
-						p.sendMessage(
-								ChatColor.GREEN + "World> " + ChatColor.AQUA + "World and Player data has been saved.");
+						p.sendMessage(sv + ChatColor.AQUA + "World and Player data has been saved.");
 						p.saveData();
 					}
 					for (World w : Bukkit.getWorlds()) {
 						w.save();
 					}
 				} else {
-
+					//
 				}
 			}
-
 		}, 0L, 6000L);
 	}
 
@@ -533,7 +538,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					player.sendMessage(pp + "Remove home " + ChatColor.YELLOW + name + ChatColor.GRAY + " complete!");
 					yes(player);
 				} else {
-					player.sendMessage(pp + "Home " + ChatColor.RED + name + ChatColor.GRAY + "not found.");
+					player.sendMessage(pp + "Home " + ChatColor.RED + name + ChatColor.GRAY + " not found.");
 					no(player);
 				}
 			}
@@ -2548,20 +2553,25 @@ public class pluginMain extends JavaPlugin implements Listener {
 						player.sendMessage(sv + "You're already sign-in!");
 						no(player);
 					} else {
-						try {
-							playerData.set("Security.password", args[0]);
-							playerData.set("Security.email", args[1]);
-							getConfig().set("login_freeze." + playerName, "false");
-							playerData.save(f);
-							saveConfig();
-							player.setGameMode(GameMode.SURVIVAL);
-						} catch (IOException e1) {
-							e1.printStackTrace();
+						if (args.length == 2) {
+							try {
+								playerData.set("Security.password", args[0]);
+								playerData.set("Security.email", args[1]);
+								getConfig().set("login_freeze." + playerName, "false");
+								playerData.save(f);
+								saveConfig();
+								player.setGameMode(GameMode.SURVIVAL);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							player.sendMessage(sv + "Your password is " + ChatColor.YELLOW + args[0]);
+							player.sendMessage(
+									sv + "If you forgot password, Please " + ChatColor.YELLOW + "contact to fanpage.");
+							yes(player);
+						} else {
+							player.sendMessage(sv + type + "/register [password] [email]");
+							no(player);
 						}
-						player.sendMessage(sv + "Your password is " + ChatColor.YELLOW + args[0]);
-						player.sendMessage(
-								sv + "If you forgot password, Please " + ChatColor.YELLOW + "contact to fanpage.");
-						yes(player);
 					}
 				} else if (l.equalsIgnoreCase("false")) {
 					player.sendMessage(sv + "You're already sign-in!");
@@ -2681,12 +2691,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 						no(player);
 					}
 				} else {
-					player.sendMessage(
-							sv + type + "/report [player] [reason]");
+					player.sendMessage(sv + type + "/report [player] [reason]");
 					no(player);
 				}
 			}
-			
+
 			if (CommandLabel.equalsIgnoreCase("listreport")) {
 				if (player.hasPermission("main.*") || player.hasPermission("main.report") || player.isOp()) {
 					player.sendMessage(
@@ -3277,6 +3286,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				int s1 = Integer.parseInt(s.getLine(1));
 				String s2 = s.getLine(2).toLowerCase();
 				String[] abc = s.getLine(2).split(":");
+				
 				String s2i = abc[0];
 				short s2d = (short) Integer.parseInt(abc[1]);
 				long s3 = Integer.parseInt(s.getLine(3));
@@ -3313,7 +3323,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					int r = new Random().nextInt(20);
 					if (r == 0) {
 						int r1 = new Random().nextInt(6);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.DIAMOND, r1);
 							player.getInventory().addItem(item);
@@ -3329,7 +3339,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 1) {
 						int r1 = new Random().nextInt(16);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.IRON_INGOT, r1);
 							player.getInventory().addItem(item);
@@ -3345,7 +3355,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 2) {
 						int r1 = new Random().nextInt(501);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							player.sendMessage(lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE + "You got "
 									+ ChatColor.YELLOW + r1 + " Coin(s)");
@@ -3363,7 +3373,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 3) {
 						int r1 = new Random().nextInt(21);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.EXP_BOTTLE, r1);
 							player.getInventory().addItem(item);
@@ -3379,7 +3389,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 4) {
 						int r1 = new Random().nextInt(11);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.GOLD_INGOT, r1);
 							player.getInventory().addItem(item);
@@ -3395,7 +3405,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 5) {
 						int r1 = new Random().nextInt(201);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 						}
 						try {
@@ -3419,7 +3429,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 8) {
 						int r1 = new Random().nextInt(65);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.DIRT, r1);
 							player.getInventory().addItem(item);
@@ -3439,7 +3449,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 10) {
 						int r1 = new Random().nextInt(16);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.INK_SACK, r1, (short) 4);
 							player.getInventory().addItem(item);
@@ -3455,7 +3465,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 11) {
 						int r1 = new Random().nextInt(4);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.EMERALD, r1);
 							player.getInventory().addItem(item);
@@ -3492,7 +3502,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 16) {
 						int r1 = new Random().nextInt(21);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.REDSTONE, r1);
 							player.sendMessage(lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE + "You got "
@@ -3512,7 +3522,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 18) {
 						int r1 = new Random().nextInt(21);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.COAL, r1);
 							player.sendMessage(lc + ChatColor.GREEN + "Good Luck! (or not) " + ChatColor.WHITE
@@ -3528,7 +3538,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 					if (r == 19) {
 						int r1 = new Random().nextInt(31);
-						if (r1 < 0) {
+						if (r1 == 0) {
 							r1 = 1;
 							ItemStack item = new ItemStack(Material.COBBLESTONE, r1);
 							player.sendMessage(lc + ChatColor.GREEN + "Good Luck! (or not) " + ChatColor.WHITE
@@ -4527,6 +4537,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 			p.sendMessage(sv + "Item " + ChatColor.YELLOW + s + ChatColor.GRAY + " not found.");
 			no(p);
 		}
+	}
+	
+	@EventHandler
+    public void onPortalCreate(PortalCreateEvent event){
+		event.setCancelled(true);
 	}
 
 	public void sell(Player p, String s, int i, long o, short m) {
