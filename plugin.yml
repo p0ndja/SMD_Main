@@ -1,8 +1,8 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.4-01
+version: 1.0.5
 description: Main plugin of Server
-author: p0N67a
+authors: [PondJaTH, MineSkyDeveloperTeam]
 softdepend: [BarAPI]
 load: STARTUP
 website: https://github.com/palapon2545/SMD_Main

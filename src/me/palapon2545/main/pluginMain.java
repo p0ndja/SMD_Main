@@ -2841,8 +2841,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 				if (v.equalsIgnoreCase("false")) {
 					openFreeGUI(player);
-					getConfig().set("free_item." + playerName, "true");
-					saveConfig();
 				} else {
 					player.sendMessage(sv + "You're already redeem free item.");
 				}
@@ -3039,6 +3037,27 @@ public class pluginMain extends JavaPlugin implements Listener {
 		String version = Bukkit.getPluginManager().getPlugin("SMDMain").getDescription().getVersion();
 		player.sendMessage(ChatColor.BOLD + "SMDMain's Patch Version: " + version);
 		player.sendMessage("");
+
+		String spawn = getConfig().getString("spawn");
+		if (spawn != null) {
+			Double x = getConfig().getDouble("spawn" + "." + "spawn" + ".x");
+			Double y = getConfig().getDouble("spawn" + "." + "spawn" + ".y");
+			Double z = getConfig().getDouble("spawn" + "." + "spawn" + ".z");
+			float yaw = (float) getConfig().getDouble("spawn" + "." + "spawn" + ".yaw");
+			float pitch = (float) getConfig().getDouble("spawn" + "." + "spawn" + ".pitch");
+			String world = getConfig().getString("spawn" + "." + "spawn" + ".world");
+			World p = Bukkit.getWorld(world);
+			Location loc = new Location(p, x, y, z);
+			loc.setPitch(pitch);
+			loc.setYaw(yaw);
+			player.teleport(loc);
+			player.sendMessage(pp + "Teleported to " + ChatColor.YELLOW + "Spawn" + ChatColor.GRAY + ".");
+			player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 10, 0);
+		} else {
+			player.sendMessage(pp + "Spawn location not found!");
+			no(player);
+
+		}
 	}
 
 	@EventHandler
@@ -3058,14 +3077,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			event.setCancelled(true);
 			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 		}
-		long xb = event.getBlock().getLocation().getBlockX();
-		long yb = event.getBlock().getLocation().getBlockY();
-		long zb = event.getBlock().getLocation().getBlockZ();
-		Location a = new Location(player.getWorld(), xb, yb, zb);
-		long id = event.getBlock().getTypeId();
-		Material name = event.getBlock().getType();
-		ActionBarAPI.send(player,
-				"คุณได้วางบล็อก " + name + "(" + id + ")" + " ที่ตำแหน่ง " + xb + "," + yb + "," + zb);
 	}
 
 	@EventHandler
@@ -3081,36 +3092,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (freeze.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
 			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
-		} else if (l.equalsIgnoreCase("true")) {
+		}
+		if (l.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
-		} else {
-			long x1 = 100;
-			long y1 = 100;
-			long z1 = 100;
-			long x2 = 105;
-			long y2 = 105;
-			long z2 = 105;
-			long xb = event.getBlock().getLocation().getBlockX();
-			long yb = event.getBlock().getLocation().getBlockY();
-			long zb = event.getBlock().getLocation().getBlockZ();
-			Location a = new Location(player.getWorld(), xb, yb, zb);
-			long id = event.getBlock().getTypeId();
-			Material name = event.getBlock().getType();
-			ActionBarAPI.send(player,
-					"คุณได้ทุบบล็อก " + name + "(" + id + ")" + " ที่ตำแหน่ง " + xb + "," + yb + "," + zb);
-			for (long x = x1; x <= x2; x++) {
-				for (long y = y1; y <= y2; y++) {
-					for (long z = z1; z <= z2; z++) {
-						Location loc = new Location(player.getWorld(), x, y, z);
-						if (loc.equals(a)) { // Check that break block is in
-												// range of protect
-							event.setCancelled(true);
-							ActionBarAPI.send(player, "การทุบบล็อก " + name + "(" + id + ")" + " ที่ตำแหน่ง " + xb + ","
-									+ yb + "," + zb + " ถูกยกเลิก");
-						}
-					} // Loop at Z-Axis
-				} // Loop at Y-Axis
-			} // Loop at X-Axis
 		}
 	}
 
@@ -3201,6 +3185,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 			event.setCancelled(true);
 			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 		}
+		if (l.equalsIgnoreCase("true")) {
+			String cmd = event.getMessage();
+			if (cmd.equalsIgnoreCase("login") || cmd.equalsIgnoreCase("l") || cmd.equalsIgnoreCase("reg")
+					|| cmd.equalsIgnoreCase("register")) {
+				// NOTHING
+			} else {
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler
@@ -3285,21 +3278,31 @@ public class pluginMain extends JavaPlugin implements Listener {
 				String s0 = s.getLine(0).toLowerCase();
 				int s1 = Integer.parseInt(s.getLine(1));
 				String s2 = s.getLine(2).toLowerCase();
-				String[] abc = s.getLine(2).split(":");
-				
-				String s2i = abc[0];
-				short s2d = (short) Integer.parseInt(abc[1]);
+				String s2i = "";
+				short s2d = 0;
+				if (!s2.contains(":")) {
+					s2i = s.getLine(2);
+				} else {
+					String[] line2 = s.getLine(2).split(":");
+					s2i = line2[0];
+					s2d = (short) Integer.parseInt(line2[1]);
+				}
 				long s3 = Integer.parseInt(s.getLine(3));
 				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s2.isEmpty() && !s.getLine(3).isEmpty()) {
 					if (s0.endsWith("[sell]")) {
 						player.sendMessage("player=" + player.getName());
-						player.sendMessage("s2i=" + s2i);
-						player.sendMessage("s1=" + s1);
-						player.sendMessage("s3=" + s3);
-						player.sendMessage("s2d=" + s2d);
+						player.sendMessage("s2_item=" + s2i);
+						player.sendMessage("s2_data=" + s2d);
+						player.sendMessage("s1_amount=" + s1);
+						player.sendMessage("s3_price=" + s3);
 						sell(player, s2i, s1, s3, s2d);
 					}
 					if (s0.endsWith("[buy]")) {
+						player.sendMessage("player=" + player.getName());
+						player.sendMessage("s2_item=" + s2i);
+						player.sendMessage("s2_data=" + s2d);
+						player.sendMessage("s1_amount=" + s1);
+						player.sendMessage("s3_price=" + s3);
 						buy(player, s2i, s1, s3, s2d);
 					}
 				} else {
@@ -4311,11 +4314,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		ItemStack yes = new ItemStack(Material.EMERALD_BLOCK, 1);
 		ItemMeta yesm = black.getItemMeta();
 		yesm.setDisplayName(ChatColor.GREEN + "Get all of them");
-		List<String> a = new ArrayList<String>();
-		a.add(ChatColor.RED + "" + ChatColor.BOLD + "REMEMBER! " + ChatColor.WHITE + "You have only one chance");
-		a.add(ChatColor.WHITE + "to access this page!");
-		yesm.setLore(a);
-		yes.setItemMeta(yesm);
 		inv.setItem(37, yes);
 		inv.setItem(38, yes);
 		inv.setItem(46, yes);
@@ -4324,8 +4322,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		ItemStack no = new ItemStack(Material.REDSTONE_BLOCK, 1);
 		ItemMeta nom = black.getItemMeta();
 		nom.setDisplayName(ChatColor.GREEN + "I don't want them");
-		nom.setLore(a);
-		no.setItemMeta(nom);
 		inv.setItem(42, no);
 		inv.setItem(43, no);
 		inv.setItem(51, no);
@@ -4368,6 +4364,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					e1.printStackTrace();
 				}
 				p.closeInventory();
+				getConfig().set("free_item." + playerName, "true");
+				saveConfig();
 				p.sendMessage(sv + "You recived " + ChatColor.GREEN + "1x Starter Kit" + ChatColor.GRAY + ".");
 				p.sendMessage("+ 1x " + ChatColor.GOLD + "WOODEN_SWORD");
 				p.sendMessage("+ 1x " + ChatColor.GOLD + "WOODEN_AXE");
@@ -4380,7 +4378,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 				p.sendMessage("+ 10x " + ChatColor.AQUA + "TPR Quota");
 				e.setCancelled(true);
 			} else if (e.getCurrentItem().getType() == Material.REDSTONE_BLOCK) {
-				Bukkit.broadcastMessage("no");
 				p.closeInventory();
 				e.setCancelled(true);
 			} else {
@@ -4508,70 +4505,73 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void buy(Player p, String s, int i, long o, short m) {
-		String playerName = p.getName();
+	public void buy(Player player, String item, int amount, long price, short data) {
+		String playerName = player.getName();
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
 				File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-		Material l = Material.getMaterial(s.toUpperCase());
-		ItemStack c = new ItemStack(l, i, m);
-		Inventory inv = p.getInventory();
-		long money = playerData.getLong("money");
+		Material l = Material.getMaterial(item.toUpperCase());
 		if (l != null) {
-			if (money > o) {
-				inv.addItem(c);
+			Inventory inv = player.getInventory();
+			long money = playerData.getLong("money");
+			ItemStack c = new ItemStack(l);
+			c.getData().setData((byte) data);
+			if (money >= price) {
+				inv.addItem(new ItemStack(l, amount, data));
 				try {
-					playerData.set("money", money - o);
+					playerData.set("money", money - price);
 					playerData.save(f);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				p.sendMessage(sv + "You paid " + ChatColor.GOLD + o + " Coin(s) " + ChatColor.GRAY + "from buying "
-						+ ChatColor.AQUA + i + "x " + l);
+				player.sendMessage(sv + "You paid " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
+						+ "from buying " + ChatColor.AQUA + amount + "x " + item);
 			} else {
-				p.sendMessage(sv + nom);
-				no(p);
+				player.sendMessage(sv + nom);
+				no(player);
 			}
 		} else {
-			p.sendMessage(sv + "Item " + ChatColor.YELLOW + s + ChatColor.GRAY + " not found.");
-			no(p);
+			player.sendMessage(sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
+			no(player);
 		}
 	}
-	
+
 	@EventHandler
-    public void onPortalCreate(PortalCreateEvent event){
+	public void onPortalCreate(PortalCreateEvent event) {
 		event.setCancelled(true);
 	}
 
-	public void sell(Player p, String s, int i, long o, short m) {
-		String playerName = p.getName();
+	public void sell(Player player, String item, int amount, long price, short data) {
+		String playerName = player.getName();
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
 				File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-		Material l = Material.getMaterial(s.toUpperCase());
-		ItemStack c = new ItemStack(l, i, m);
-		Inventory inv = p.getInventory();
-		long money = playerData.getLong("money");
+		Material l = Material.getMaterial(item.toUpperCase());
 		if (l != null) {
-			if (inv.contains(new ItemStack(c))) {
-				inv.removeItem(c);
+			Inventory inv = player.getInventory();
+			long money = playerData.getLong("money");
+			ItemStack c = new ItemStack(l);
+			c.getData().setData((byte) data);
+			if (inv.contains(l, amount)) {
+				player.sendMessage("check=pass");
+				inv.removeItem(new ItemStack(l, amount, data));
 				try {
-					playerData.set("money", money + o);
+					playerData.set("money", money + price);
 					playerData.save(f);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				p.sendMessage(sv + "You get " + ChatColor.GOLD + o + " Coin(s) " + ChatColor.GRAY + "from selling "
-						+ ChatColor.AQUA + i + "x " + l);
+				player.sendMessage(sv + "You got " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
+						+ "from selling " + ChatColor.AQUA + amount + "x " + item);
 			} else {
-				p.sendMessage(sv + noi);
-				no(p);
+				player.sendMessage(sv + noi);
+				no(player);
 			}
 		} else {
-			p.sendMessage(sv + "Item " + ChatColor.YELLOW + s + ChatColor.GRAY + " not found.");
-			no(p);
+			player.sendMessage(sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
+			no(player);
 		}
 	}
 
