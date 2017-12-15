@@ -59,6 +59,9 @@ commands:
   r:
        description: quick reply
        usage: /<command>
+  changeplayerdatabase:
+       description: Change playername in database folder
+       usage: /changeplayerdatabase [oldName] [newName]
   blockset:
        description: debug for block setting command.
        usage: /<command>

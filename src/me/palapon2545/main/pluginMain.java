@@ -103,6 +103,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 		return 0;
 	}
+
 	public static boolean isInt(String s) {
 		try {
 			Integer.parseInt(s);
@@ -112,6 +113,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 		return true;
 	}
+
 	public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 	public final Logger logger = Logger.getLogger("Minecraft");
 
@@ -146,8 +148,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	public void buy(Player player, String item, int amount, long price, short data) {
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		Material l = Material.getMaterial(item.toUpperCase());
@@ -442,8 +443,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				p.getInventory().addItem(new ItemStack(Material.BREAD, 16));
 
 				String playerName = p.getName();
-				File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-						File.separator + "PlayerDatabase/" + playerName);
+				File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 				File f = new File(userdata, File.separator + "config.yml");
 				FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 				long money = playerData.getLong("money");
@@ -647,8 +647,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			String playerName = player.getName();
-			File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-					File.separator + "PlayerDatabase/" + playerName);
+			File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 			File f = new File(userdata, File.separator + "config.yml");
 			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 			String rank = playerData.getString("rank");
@@ -709,7 +708,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					name = args[0];
 				}
 				int homeq = playerData.getInt("Quota.Home");
-				File path = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File path = new File(getDataFolder(),
 						File.separator + "PlayerDatabase/" + playerName + "/HomeDatabase");
 				File[] files = path.listFiles();
 				if (files.length >= homeq) {
@@ -717,8 +716,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					player.sendMessage(pp + "Try to remove your home first.");
 					no(player);
 				} else {
-					File userdata2 = new File(
-							Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+					File userdata2 = new File(getDataFolder(),
 							File.separator + "PlayerDatabase/" + playerName + "/HomeDatabase");
 					File f2 = new File(userdata2, File.separator + name + ".yml");
 					FileConfiguration playerData2 = YamlConfiguration.loadConfiguration(f2);
@@ -766,7 +764,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (args.length == 1) {
 					name = args[0];
 				}
-				File userdata2 = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File userdata2 = new File(getDataFolder(),
 						File.separator + "PlayerDatabase/" + playerName + "/HomeDatabase");
 				File f2 = new File(userdata2, File.separator + name + ".yml");
 				FileConfiguration playerData2 = YamlConfiguration.loadConfiguration(f2);
@@ -792,7 +790,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("listhome") || CommandLabel.equalsIgnoreCase("lh")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:listhome")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:lh")) {
-				File path = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File path = new File(getDataFolder(),
 						File.separator + "PlayerDatabase/" + playerName + "/HomeDatabase");
 				File[] files = path.listFiles();
 				player.sendMessage(pp + "List of your home " + ChatColor.YELLOW + "(" + files.length + ")"
@@ -814,7 +812,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (args.length == 1) {
 					name = args[0];
 				}
-				File userdata2 = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File userdata2 = new File(getDataFolder(),
 						File.separator + "PlayerDatabase/" + playerName + "/HomeDatabase");
 				File f2 = new File(userdata2, File.separator + name + ".yml");
 				if (f2.exists()) {
@@ -827,14 +825,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("warp") || CommandLabel.equalsIgnoreCase("SMDMain:warp")) {
-				File path = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-						File.separator + "WarpDatabase/");
+				File path = new File(getDataFolder(), File.separator + "WarpDatabase/");
 				if (args.length == 0) {
 					player.sendMessage(sv + "List warp: " + ChatColor.GREEN + getConfig().getStringList("listwarp"));
 				}
 				if (args.length == 1) {
-					File warpdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-							File.separator + "WarpDatabase/");
+					File warpdata = new File(getDataFolder(), File.separator + "WarpDatabase/");
 					File f1 = new File(warpdata, File.separator + args[0] + ".yml");
 					FileConfiguration warpData = YamlConfiguration.loadConfiguration(f1);
 					if (f1.exists()) {
@@ -859,9 +855,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("setwarp")) {
 				if (player.isOp() || player.hasPermission("main.setwarp") || player.hasPermission("main.*")) {
 					if (args.length == 1) {
-						File warpdata = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-								File.separator + "WarpDatabase/");
+						File warpdata = new File(getDataFolder(), File.separator + "WarpDatabase/");
 						File f1 = new File(warpdata, File.separator + args[0] + ".yml");
 						FileConfiguration warpData = YamlConfiguration.loadConfiguration(f1);
 						if (!f1.exists()) {
@@ -904,9 +898,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("removewarp")) {
 				if (player.isOp() || player.hasPermission("main.warp") || player.hasPermission("main.*")) {
 					if (args.length == 1) {
-						File warpdata = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-								File.separator + "WarpDatabase/");
+						File warpdata = new File(getDataFolder(), File.separator + "WarpDatabase/");
 						File f1 = new File(warpdata, File.separator + args[0] + ".yml");
 						FileConfiguration warpData = YamlConfiguration.loadConfiguration(f1);
 						if (f1.exists()) {
@@ -1575,8 +1567,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (Bukkit.getServer().getPlayer(args[0]) != null) {
 						Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
 						String targetPlayerName = targetPlayer.getName();
-						File userdata1 = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+						File userdata1 = new File(getDataFolder(),
 								File.separator + "PlayerDatabase/" + targetPlayerName);
 						File f1 = new File(userdata1, File.separator + "config.yml");
 						FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -1945,8 +1936,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 							Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2009,8 +1999,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2059,8 +2048,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2169,8 +2157,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (Bukkit.getServer().getPlayer(args[1]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[1]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2412,8 +2399,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (args.length == 3) {
 						Player targetPlayer = player.getServer().getPlayer(args[0]);
 						String targetPlayerName = targetPlayer.getName();
-						File userdata1 = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+						File userdata1 = new File(getDataFolder(),
 								File.separator + "PlayerDatabase/" + targetPlayerName);
 						File f1 = new File(userdata1, File.separator + "config.yml");
 						FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2519,8 +2505,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2650,10 +2635,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 			 * Player targetPlayer = player.getServer().getPlayer(args[0]); String
 			 * targetPlayerName = targetPlayer.getName(); String targetPlayerUUID =
 			 * targetPlayer.getUniqueId().toString(); File userdata1 = new File(
-			 * Bukkit.getServer().getPluginManager().getPlugin("SMDMain"). getDataFolder(),
-			 * File.separator + "PlayerDatabase/" + targetPlayerName); File f1 = new
-			 * File(userdata1, File.separator + "config.yml"); FileConfiguration playerData1
-			 * = YamlConfiguration.loadConfiguration(f1); try {
+			 * getDataFolder(), File.separator + "PlayerDatabase/" + targetPlayerName); File
+			 * f1 = new File(userdata1, File.separator + "config.yml"); FileConfiguration
+			 * playerData1 = YamlConfiguration.loadConfiguration(f1); try {
 			 * playerData1.createSection("rank"); playerData1.set("rank", "default");
 			 * playerData1.createSection("warn"); playerData1.set("warn", 0);
 			 * playerData1.createSection("mute"); playerData1.set("mute.is", "false");
@@ -2691,8 +2675,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2735,8 +2718,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(
-									Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+							File userdata1 = new File(getDataFolder(),
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2779,8 +2761,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (Bukkit.getServer().getPlayer(args[0]) != null) {
 						Player targetPlayer = player.getServer().getPlayer(args[0]);
 						String targetPlayerName = targetPlayer.getName();
-						File userdata1 = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+						File userdata1 = new File(getDataFolder(),
 								File.separator + "PlayerDatabase/" + targetPlayerName);
 						File f1 = new File(userdata1, File.separator + "config.yml");
 						FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
@@ -2878,7 +2859,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						if (args[0].equalsIgnoreCase(p)) {
 							player.sendMessage(sv + ChatColor.GREEN + "Sign-in Complete!");
 							getConfig().set("login_freeze." + playerName, "false");
-							int g = playerData.getInt("gamemode");
+							int g = getConfig().getInt("gamemode." + playerName);
 							if (g == 0) {
 								player.setGameMode(GameMode.SURVIVAL);
 							} else if (g == 1) {
@@ -2935,8 +2916,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("report")) {
 				long a = getConfig().getLong("report_count");
 				long b = a + 1;
-				File report = new File(Bukkit.getServer().getPluginManager().getPlugin("ExcalBot").getDataFolder(),
-						File.separator + "ReportDatabase/");
+				File report = new File(getDataFolder(), File.separator + "ReportDatabase/");
 				File file = new File(report, File.separator + b + ".yml");
 				FileConfiguration reportData = YamlConfiguration.loadConfiguration(file);
 
@@ -2992,9 +2972,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("checkreport")) {
 				if (player.hasPermission("main.*") || player.hasPermission("main.report") || player.isOp()) {
 					if (args.length == 1) {
-						File report = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("ExcalBot").getDataFolder(),
-								File.separator + "ReportDatabase/");
+						File report = new File(getDataFolder(), File.separator + "ReportDatabase/");
 						File file = new File(report, File.separator + args[0] + ".yml");
 						FileConfiguration reportData = YamlConfiguration.loadConfiguration(file);
 						if (file.exists()) {
@@ -3033,9 +3011,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("closereport")) {
 				if (player.hasPermission("main.*") || player.hasPermission("main.report") || player.isOp()) {
 					if (args.length == 1) {
-						File report = new File(
-								Bukkit.getServer().getPluginManager().getPlugin("ExcalBot").getDataFolder(),
-								File.separator + "ReportDatabase/");
+						File report = new File(getDataFolder(), File.separator + "ReportDatabase/");
 						File file = new File(report, File.separator + args[0] + ".yml");
 						FileConfiguration reportData = YamlConfiguration.loadConfiguration(file);
 						if (file.exists()) {
@@ -3127,6 +3103,30 @@ public class pluginMain extends JavaPlugin implements Listener {
 					openFreeGUI(player);
 				} else {
 					player.sendMessage(sv + "You're already redeem free item.");
+				}
+			}
+			if (CommandLabel.equalsIgnoreCase("changeplayerdatabase")
+					|| CommandLabel.equalsIgnoreCase("SMDMain:changeplayerdatabase")) {
+				if (args.length == 2) {
+					File oldFolder = new File(getDataFolder(), File.separator + "PlayerDatabase/" + args[0]);
+					File newFolder = new File(getDataFolder(), File.separator + "PlayerDatabase/" + args[1]);
+					Player targetPlayer = Bukkit.getPlayer(args[1]);
+					if (!oldFolder.exists()) {
+						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[0] + "'s " + ChatColor.GRAY + "folder not found.");
+						no(player);
+					} else if (!newFolder.exists()) {
+						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[1] + "'s " + ChatColor.GRAY + "folder not found.");
+						no(player);
+					} else if (targetPlayer == null) {
+						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + " need to be online or login once time!");
+						no(player);
+					} else {
+						targetPlayer.kickPlayer("Your data in database has been updated\n" + args[0] + "->" + args[1] + "\nYou need to re-login to see change.");
+						newFolder.delete();
+						oldFolder.renameTo(newFolder);
+					}
+				} else {
+					player.sendMessage(sv + type + "/changeplayerdatabase [oldName] [newName]");
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("resetfree") || CommandLabel.equalsIgnoreCase("SMDMain:resetfree")) {
@@ -3287,8 +3287,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void onPlayerBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
@@ -3310,8 +3309,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		String message1 = ChatColor.WHITE + " " + messagem;
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String rank = playerData.getString("rank");
@@ -3369,8 +3367,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		Block block = e.getClickedBlock();
 		Inventory inv = player.getInventory();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		long money = playerData.getLong("money");
@@ -3731,8 +3728,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
@@ -3755,8 +3751,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		if (!f.exists()) {
@@ -3942,8 +3937,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void onPlayerLeft(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String rank = playerData.getString("rank");
@@ -3964,29 +3958,25 @@ public class pluginMain extends JavaPlugin implements Listener {
 		} else if (rank.equalsIgnoreCase("helper")) {
 			event.setQuitMessage(l + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Helper" + ChatColor.WHITE + playerName);
 		}
-		try {
-			int g = 0;
-			GameMode gm = player.getGameMode();
-			if (gm == GameMode.SURVIVAL) {
-				g = 0;
-			}
-			if (gm == GameMode.CREATIVE) {
-				g = 1;
-			}
-			if (gm == GameMode.ADVENTURE) {
-				g = 2;
-			}
-			if (gm == GameMode.SPECTATOR) {
-				g = 3;
-			}
-			playerData.set("gamemode", g);
-			playerData.save(f);
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		int g = 0;
+		GameMode gm = player.getGameMode();
+		if (gm == GameMode.SURVIVAL) {
+			g = 0;
+		}
+		if (gm == GameMode.CREATIVE) {
+			g = 1;
+		}
+		if (gm == GameMode.ADVENTURE) {
+			g = 2;
+		}
+		if (gm == GameMode.SPECTATOR) {
+			g = 3;
 		}
 		getConfig().set("Teleport." + playerName, "None");
 		getConfig().set("event.queuelist." + playerName, "false");
 		getConfig().set("chat_last_send." + playerName, "none");
+		getConfig().set("gamemode." + playerName, g);
 		saveConfig();
 		int n = Bukkit.getServer().getOnlinePlayers().size();
 		if (n == 0 || n < 0) {
@@ -4000,8 +3990,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
@@ -4020,8 +4009,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void onPlayerPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
@@ -4047,8 +4035,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		} else {
 			name = p.getName();
 		}
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + name);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + name);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		Inventory inv;
@@ -4364,8 +4351,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		String w = getConfig().getString("WarpState." + playerName);
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		Location loc = player.getLocation();
@@ -4509,54 +4495,49 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	public void sell(Player player, String item, int amount, long price, short data) {
 		String playerName = player.getName();
-		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
-				File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		Material l = Material.getMaterial(item.toUpperCase());
-		
+
 		if (l != null) {
-			
+
 			Inventory inv = player.getInventory();
 			long money = playerData.getLong("money");
-			ItemStack curItem = new ItemStack(l, amount,data);
-			
-			//MaterialData da = curItem.getData();
-			//da.setData((byte)0);
-			//curItem.setData(da);
-			
-			
+			ItemStack curItem = new ItemStack(l, amount, data);
+
+			// MaterialData da = curItem.getData();
+			// da.setData((byte)0);
+			// curItem.setData(da);
+
 			player.sendMessage("wtf " + curItem.getAmount() + ":" + curItem.getData() + ":" + curItem.getType().name());
-			
-		
-			//curItem.setData(MaterialData.);
-			for (int lSlot = 0 ; lSlot < inv.getSize() ; lSlot ++ ) {
+
+			// curItem.setData(MaterialData.);
+			for (int lSlot = 0; lSlot < inv.getSize(); lSlot++) {
 				ItemStack tmp = inv.getItem(lSlot);
 				if (tmp == null) {
 					continue;
 				}
-				
+
 				if (tmp.getType() == l) {
-					
+
 					player.sendMessage(lSlot + " slot " + lSlot);
 				}
-				
+
 				player.sendMessage(lSlot + " slot " + tmp.getType().name());
 			}
-			
-			
+
 			if (inv.contains(l, amount)) {
 				player.sendMessage("check=pass");
 				inv.removeItem(curItem);
-				
+
 				try {
 					playerData.set("money", money + price);
 					playerData.save(f);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				
+
 				player.sendMessage(sv + "You got " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
 						+ "from selling " + ChatColor.AQUA + amount + "x " + item);
 			} else {
