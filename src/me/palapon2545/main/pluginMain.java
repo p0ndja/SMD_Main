@@ -3375,34 +3375,35 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Sign s = (Sign) block.getState();
 			if (s.getLine(0).equalsIgnoreCase("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) {
 				String s0 = s.getLine(0).toLowerCase();
-				int s1 = Integer.parseInt(s.getLine(1));
+				int sLine_amount = Integer.parseInt(s.getLine(1));
 				String s2 = s.getLine(2).toLowerCase();
-				String s2i = "";
-				short s2d = 0;
+				String sLine_item = "";
+				short sLine_data = 0;
 				if (!s2.contains(":")) {
-					s2i = s.getLine(2);
+					sLine_item = s.getLine(2);
 				} else {
 					String[] line2 = s.getLine(2).split(":");
-					s2i = line2[0];
-					s2d = (short) Integer.parseInt(line2[1]);
+					sLine_item = line2[0];
+					sLine_data = (short) Integer.parseInt(line2[1]);
 				}
-				long s3 = Integer.parseInt(s.getLine(3));
+				long sLine_price = Integer.parseInt(s.getLine(3));
 				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s2.isEmpty() && !s.getLine(3).isEmpty()) {
 					if (s0.endsWith("[sell]")) {
 						player.sendMessage("player=" + player.getName());
-						player.sendMessage("s2_item=" + s2i);
-						player.sendMessage("s2_data=" + s2d);
-						player.sendMessage("s1_amount=" + s1);
-						player.sendMessage("s3_price=" + s3);
-						sell(player, s2i, s1, s3, s2d);
+						player.sendMessage("s2_item=" + sLine_item);
+						player.sendMessage("s2_data=" + sLine_data);
+						player.sendMessage("s1_amount=" + sLine_amount);
+						player.sendMessage("s3_price=" + sLine_price);
+						sell(player, sLine_item, sLine_amount, sLine_price, sLine_data);
+						//String item, int amount, long price, short data
 					}
 					if (s0.endsWith("[buy]")) {
 						player.sendMessage("player=" + player.getName());
-						player.sendMessage("s2_item=" + s2i);
-						player.sendMessage("s2_data=" + s2d);
-						player.sendMessage("s1_amount=" + s1);
-						player.sendMessage("s3_price=" + s3);
-						buy(player, s2i, s1, s3, s2d);
+						player.sendMessage("s2_item=" + sLine_item);
+						player.sendMessage("s2_data=" + sLine_data);
+						player.sendMessage("s1_amount=" + sLine_amount);
+						player.sendMessage("s3_price=" + sLine_price);
+						buy(player, sLine_item, sLine_amount, sLine_price, sLine_data);
 					}
 				} else {
 					return;
@@ -4493,63 +4494,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		saveConfig();
 	}
 
-	public void sell(Player player, String item, int amount, long price, short data) {
-		String playerName = player.getName();
-		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
-		File f = new File(userdata, File.separator + "config.yml");
-		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-		Material l = Material.getMaterial(item.toUpperCase());
-
-		if (l != null) {
-
-			Inventory inv = player.getInventory();
-			long money = playerData.getLong("money");
-			ItemStack curItem = new ItemStack(l, amount, data);
-
-			// MaterialData da = curItem.getData();
-			// da.setData((byte)0);
-			// curItem.setData(da);
-
-			player.sendMessage("wtf " + curItem.getAmount() + ":" + curItem.getData() + ":" + curItem.getType().name());
-
-			// curItem.setData(MaterialData.);
-			for (int lSlot = 0; lSlot < inv.getSize(); lSlot++) {
-				ItemStack tmp = inv.getItem(lSlot);
-				if (tmp == null) {
-					continue;
-				}
-
-				if (tmp.getType() == l) {
-
-					player.sendMessage(lSlot + " slot " + lSlot);
-				}
-
-				player.sendMessage(lSlot + " slot " + tmp.getType().name());
-			}
-
-			if (inv.contains(l, amount)) {
-				player.sendMessage("check=pass");
-				inv.removeItem(curItem);
-
-				try {
-					playerData.set("money", money + price);
-					playerData.save(f);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				player.sendMessage(sv + "You got " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
-						+ "from selling " + ChatColor.AQUA + amount + "x " + item);
-			} else {
-				player.sendMessage(sv + noi);
-				no(player);
-			}
-		} else {
-			player.sendMessage(sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
-			no(player);
-		}
-	}
-
 	public void sendBar(Player p, String s) {
 		BarAPI.setMessage(p, s);
 	}
@@ -4562,6 +4506,124 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	public void setBarHealth(Player p, float percent) {
 		BarAPI.setHealth(p, percent);
+	}
+	
+	public boolean decreseitem1(Player player, int itemid, int itemdata, boolean forcetruedata) {
+		ItemStack itm = null;
+		int lenl = 0;
+
+		if (itemid == 0) {
+			return false;
+		}
+
+		for (lenl = 0; lenl < player.getInventory().getContents().length; lenl++) {
+			if (player.getInventory().getItem(lenl) == null) {
+				continue;
+			}
+
+			itm = player.getInventory().getItem(lenl);
+
+		if(itm.getType().getId() != itemid) {
+			continue;
+		}
+
+			if (forcetruedata == true) {
+				if (itm.getData().getData() != itemdata) {
+					continue;
+				}
+			}
+			
+			
+
+			if (itm.getAmount() != 1) {
+				itm.setAmount(itm.getAmount() - 1);
+				return true;
+			} else {
+				ItemStack emy = player.getItemInHand();
+				emy.setTypeId(0);
+
+				player.getInventory().setItem(lenl, emy);
+
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+
+
+public void sell(Player player, String item, int amount, long price, short data) {
+		String playerName = player.getName();
+		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
+				File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		Material l = Material.getMaterial(item.toUpperCase());
+		
+		if (l != null) {
+			
+			Inventory inv = player.getInventory();
+			long money = playerData.getLong("money");
+			ItemStack curItem = new ItemStack(l, amount,data);
+			
+			//MaterialData da = curItem.getData();
+			//da.setData((byte)0);
+			//curItem.setData(da);
+			
+			
+			player.sendMessage("wtf " + curItem.getAmount() + ":" + curItem.getData() + ":" + curItem.getType().name());
+			
+			for (int lSlot = 0 ; lSlot < inv.getSize() ; lSlot ++ ) {
+				ItemStack tmp = inv.getItem(lSlot);
+				if (tmp == null) {
+					continue;
+				}
+				
+				if (tmp.getType() == l) {
+					
+					player.sendMessage(lSlot + " slot " + lSlot);
+				}
+				
+				player.sendMessage(lSlot + " slot " + tmp.getType().name() + " / " + tmp.getType().getId());
+			}
+			
+			player.sendMessage("decrese amount "+ amount);
+			
+			for (int lAmount = 0 ; lAmount < amount  ; lAmount ++ ) {
+				player.sendMessage("decrese loop " + lAmount);
+				
+				boolean cando = decreseitem1(player, curItem.getType().getId(), curItem.getData().getData(), true);
+				if (cando == true) {
+			
+						player.sendMessage("check=pass");
+						//inv.removeItem(curItem);
+						
+						try {
+							playerData.set("money", money + price);
+							playerData.save(f);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						
+						player.sendMessage(sv + "You got " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
+								+ "from selling " + ChatColor.AQUA + amount + "x " + item);
+					} else {
+						player.sendMessage(sv + noi);
+						no(player);
+					}
+					
+				
+			}
+		
+			
+			
+		
+		} else {
+			player.sendMessage(sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
+			no(player);
+		}
 	}
 
 	public void setBarHealthAll(float percent) {
