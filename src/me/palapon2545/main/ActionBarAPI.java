@@ -47,6 +47,31 @@ public class ActionBarAPI extends JavaPlugin implements Listener {
         }
     }
 
+    public static void sendActionBar(final Player player, final String message, int duration) {
+        send(player, message);
+
+        if (duration >= 0) {
+            // Sends empty message at the end of the duration. Allows messages shorter than 3 seconds, ensures precision.
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    send(player, "");
+                }
+            }.runTaskLater(plugin, duration + 1);
+        }
+
+        // Re-sends the messages every 3 seconds so it doesn't go away from the player's screen.
+        while (duration > 40) {
+            duration -= 40;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    send(player, message);
+                }
+            }.runTaskLater(plugin, (long) duration);
+        }
+    }
+
     private static void sendActionBarPost112(Player player, String message) {
         if (!player.isOnline()) {
             return; // Player may have logged out
@@ -114,31 +139,6 @@ public class ActionBarAPI extends JavaPlugin implements Listener {
         } catch (Exception ex) {
             ex.printStackTrace();
             works = false;
-        }
-    }
-
-    public static void sendActionBar(final Player player, final String message, int duration) {
-        send(player, message);
-
-        if (duration >= 0) {
-            // Sends empty message at the end of the duration. Allows messages shorter than 3 seconds, ensures precision.
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    send(player, "");
-                }
-            }.runTaskLater(plugin, duration + 1);
-        }
-
-        // Re-sends the messages every 3 seconds so it doesn't go away from the player's screen.
-        while (duration > 40) {
-            duration -= 40;
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    send(player, message);
-                }
-            }.runTaskLater(plugin, (long) duration);
         }
     }
 

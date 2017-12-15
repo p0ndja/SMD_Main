@@ -6,8 +6,12 @@ import org.bukkit.event.HandlerList;
 
 public class ActionBarMessageEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 	private final Player player;
 	private String message;
+
 	private boolean cancelled = false;
 
 	public ActionBarMessageEvent(Player player, String message) {
@@ -20,20 +24,12 @@ public class ActionBarMessageEvent extends Event {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public Player getPlayer() {
+		return player;
 	}
 
 	public boolean isCancelled() {
@@ -42,6 +38,10 @@ public class ActionBarMessageEvent extends Event {
 
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }
