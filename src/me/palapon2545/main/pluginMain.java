@@ -3112,16 +3112,20 @@ public class pluginMain extends JavaPlugin implements Listener {
 					File newFolder = new File(getDataFolder(), File.separator + "PlayerDatabase/" + args[1]);
 					Player targetPlayer = Bukkit.getPlayer(args[1]);
 					if (!oldFolder.exists()) {
-						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[0] + "'s " + ChatColor.GRAY + "folder not found.");
+						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[0] + "'s " + ChatColor.GRAY
+								+ "folder not found.");
 						no(player);
 					} else if (!newFolder.exists()) {
-						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[1] + "'s " + ChatColor.GRAY + "folder not found.");
+						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[1] + "'s " + ChatColor.GRAY
+								+ "folder not found.");
 						no(player);
 					} else if (targetPlayer == null) {
-						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + " need to be online or login once time!");
+						player.sendMessage(sv + "Player " + ChatColor.YELLOW + args[1] + ChatColor.GRAY
+								+ " need to be online or login once time!");
 						no(player);
 					} else {
-						targetPlayer.kickPlayer("Your data in database has been updated\n" + args[0] + "->" + args[1] + "\nYou need to re-login to see change.");
+						targetPlayer.kickPlayer("Your data in database has been updated\n" + args[0] + "->" + args[1]
+								+ "\nYou need to re-login to see change.");
 						newFolder.delete();
 						oldFolder.renameTo(newFolder);
 					}
@@ -3395,7 +3399,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						player.sendMessage("s1_amount=" + sLine_amount);
 						player.sendMessage("s3_price=" + sLine_price);
 						sell(player, sLine_item, sLine_amount, sLine_price, sLine_data);
-						//String item, int amount, long price, short data
+						// String item, int amount, long price, short data
 					}
 					if (s0.endsWith("[buy]")) {
 						player.sendMessage("player=" + player.getName());
@@ -4507,7 +4511,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void setBarHealth(Player p, float percent) {
 		BarAPI.setHealth(p, percent);
 	}
-	
+
 	public boolean decreseitem1(Player player, int itemid, int itemdata, boolean forcetruedata) {
 		ItemStack itm = null;
 		int lenl = 0;
@@ -4523,17 +4527,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 			itm = player.getInventory().getItem(lenl);
 
-		if(itm.getType().getId() != itemid) {
-			continue;
-		}
+			if (itm.getType().getId() != itemid) {
+				continue;
+			}
 
 			if (forcetruedata == true) {
 				if (itm.getData().getData() != itemdata) {
 					continue;
 				}
 			}
-			
-			
 
 			if (itm.getAmount() != 1) {
 				itm.setAmount(itm.getAmount() - 1);
@@ -4551,75 +4553,54 @@ public class pluginMain extends JavaPlugin implements Listener {
 		return false;
 	}
 
-
-
-public void sell(Player player, String item, int amount, long price, short data) {
+	public void sell(Player player, String item, int amount, long price, short data) {
 		String playerName = player.getName();
 		File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SMDMain").getDataFolder(),
 				File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		Material l = Material.getMaterial(item.toUpperCase());
-		
+
 		if (l != null) {
-			
+
 			Inventory inv = player.getInventory();
 			long money = playerData.getLong("money");
-			ItemStack curItem = new ItemStack(l, amount,data);
+			ItemStack curItem = new ItemStack(l, amount, data);
+
 			
-			//MaterialData da = curItem.getData();
-			//da.setData((byte)0);
-			//curItem.setData(da);
-			
-			
-			player.sendMessage("wtf " + curItem.getAmount() + ":" + curItem.getData() + ":" + curItem.getType().name());
-			
-			for (int lSlot = 0 ; lSlot < inv.getSize() ; lSlot ++ ) {
-				ItemStack tmp = inv.getItem(lSlot);
-				if (tmp == null) {
-					continue;
-				}
-				
-				if (tmp.getType() == l) {
-					
-					player.sendMessage(lSlot + " slot " + lSlot);
-				}
-				
-				player.sendMessage(lSlot + " slot " + tmp.getType().name() + " / " + tmp.getType().getId());
-			}
-			
-			player.sendMessage("decrese amount "+ amount);
-			
-			for (int lAmount = 0 ; lAmount < amount  ; lAmount ++ ) {
-				player.sendMessage("decrese loop " + lAmount);
-				
+
+
+			int sellCount = 0;
+
+			for (int lAmount = 0; lAmount < amount; lAmount++) {
+
 				boolean cando = decreseitem1(player, curItem.getType().getId(), curItem.getData().getData(), true);
 				if (cando == true) {
-			
-						player.sendMessage("check=pass");
-						//inv.removeItem(curItem);
-						
-						try {
-							playerData.set("money", money + price);
-							playerData.save(f);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						
-						
-						player.sendMessage(sv + "You got " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
-								+ "from selling " + ChatColor.AQUA + amount + "x " + item);
-					} else {
-						player.sendMessage(sv + noi);
-						no(player);
-					}
-					
-				
+					sellCount++;
+
+
+				}
+
 			}
-		
-			
-			
-		
+
+			// can sell
+			if (sellCount > 0) {
+				double gotPrice = ((double)price / (double)amount) * sellCount;
+
+				try {
+					playerData.set("money", money + gotPrice);
+					playerData.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				player.sendMessage(sv + "You got " + ChatColor.GOLD + gotPrice + " Coin(s) " + ChatColor.GRAY
+						+ "from selling " + ChatColor.AQUA + sellCount + "x " + item);
+			} else {
+				player.sendMessage(sv + noi);
+				no(player);
+			}
+
 		} else {
 			player.sendMessage(sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
 			no(player);
