@@ -3111,6 +3111,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("changeplayerdatabase")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:changeplayerdatabase")) {
+				if (!player.isOp()) {
+					player.sendMessage(sv + noi);
+					no(player);
+				} else {
 				if (args.length == 2) {
 					File oldFolder = new File(getDataFolder(), File.separator + "PlayerDatabase/" + args[0]);
 					File newFolder = new File(getDataFolder(), File.separator + "PlayerDatabase/" + args[1]);
@@ -3175,6 +3179,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 				} else {
 					player.sendMessage(sv + type + "/changeplayerdatabase [oldName] [newName]");
+				}
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("resetfree") || CommandLabel.equalsIgnoreCase("SMDMain:resetfree")) {

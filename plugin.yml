@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.5
+version: 1.0.5-01
 description: Main plugin of Server
 authors: [PondJaTH, MineSkyDeveloperTeam]
 softdepend: [BarAPI]
