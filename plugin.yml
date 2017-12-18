@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.5-01
+version: 1.0.5-02
 description: Main plugin of Server
 authors: [PondJaTH, MineSkyDeveloperTeam]
 softdepend: [BarAPI]
@@ -59,12 +59,15 @@ commands:
   r:
        description: quick reply
        usage: /<command>
+  blockset:
+       description: null
+       usage: /<command>
   changeplayerdatabase:
        description: Change playername in database folder
        usage: /changeplayerdatabase [oldName] [newName]
-  blockset:
-       description: debug for block setting command.
-       usage: /<command>
+  resetplayerdatabase:
+       description: Reset player SMDMain's data
+       usage: /resetplayerdatabase [playerName]
   spawn:
        description: Teleport to spawn location.
        usage: /spawn, will warp you to spawn location.
