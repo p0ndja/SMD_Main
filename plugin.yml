@@ -109,9 +109,6 @@ commands:
        description: shortcut for /gamemode
        usage: /gm to see more information
        permission: main.gamemode
-  platewarp:
-       description: root
-       usage: /<command>
   countdown:
        description: countdown start
        usage: /<command> [start/stop] [args]
