@@ -1,291 +1,250 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.0.5-02
-description: Main plugin of Server
-authors: [PondJaTH, MineSkyDeveloperTeam]
+version: 1.1.0
+description: Core of MineSky Server
+author: PondJaTH
 softdepend: [BarAPI]
-load: STARTUP
 website: https://github.com/palapon2545/SMD_Main
 commands:
   setspawn:
-       description: Set /spawn location.
-       usage: stand at wanted location, then /setspawn. (Public Location)
+       description: Set spawn location.
+       usage: /setspawn
        permission: main.setspawn
   report:
-       description: report
-       usage: /<command>
+       description: Report abuse player
+       usage: /report [player] [reason]
+       permission: main.report
   checkreport:
-       description: report
-       usage: /<command>
+       description: Check report id
+       usage: /checkreport [id]
   closereport:
-       description: report
-       usage: /<command>
+       description: Close report id
+       usage: /closereport [id]
   listreport:
-       description: report
-       usage: /<command>
+       description: List unread report
+       usage: /listreport
   register:
-       description: register
-       usage: /<command>
+       description: Register your account
+       usage: /register [password] [email]
+       aliases: [reg]
   changepassword:
-       description: changepassword
-       usage: /<command>
+       description: Change your accept password
+       usage: /changepassword [oldPass] [newPass]
   login:
-       description: login
-       usage: /<command>
-  l:
-       description: alias of login
-       usage: /<command>
-  reg:
-       description: alias of register
-       usage: /<command>
-  hat:
-       description: hat
-       usage: /<command>
+       description: Login to your account
+       usage: /login [password]
+       aliases: [l]
   tell:
-       description: tell
-       usage: /<command>
-  whisper:
-       description: whisper
-       usage: /<command>
-  w:
-       description: whisper
-       usage: /<command>
-  t:
-       description: tell
-       usage: /<command>
+       description: Private message to someone
+       usage: /tell [player] [message]
+       aliases: [whisper, t, w, pm, privatemessage]
   reply:
-       description: quick reply
-       usage: /<command>
-  r:
-       description: quick reply
-       usage: /<command>
-  blockset:
-       description: null
-       usage: /<command>
+       description: quick reply to your last private message
+       usage: /reply [message]
+       aliases: [r]
   changeplayerdatabase:
        description: Change playername in database folder
        usage: /changeplayerdatabase [oldName] [newName]
   resetplayerdatabase:
-       description: Reset player SMDMain's data
+       description: Reset player SMDMain data
        usage: /resetplayerdatabase [playerName]
   spawn:
        description: Teleport to spawn location.
-       usage: /spawn, will warp you to spawn location.
-  ts:
-       description: Shortcut for /ts.
-       usage: /ts, will warp you to spawn location
+       usage: /spawn
+       aliases: [ts]
   sethome:
        description: Set your home Location.
-       usage: stand at wanted location, then /sethome. (Personal Location)
-  sh:
-       description: Shortcut for /sethome.
-       usage: stand at wanted location, then /sethome. (Personal Location)
+       usage: /sethome [name]
+       aliases: [sh]
   home:
        description: Teleport to your home location.
-       usage: /home, will warp you to home location
-  h:
-       description: Shortcut for /home.
-       usage: /h, will warp you to home location
+       usage: /home [name]
+       aliases: [h]
   qwerty:
        description: qwertyuiop!
        usage: /qwerty
+  test:
+       description: test
+       usage: /test
   removehome:
-       description: Remove home location.
-       usage: /removehome, will remove your home location. (Personal Location)
-  rh:
-       description: Shortcut for /removehome.
-       usage: /removehome, will remove your home location. (Personal Location)
+       description: Remove home location
+       usage: /removehome [name]
+       aliases: [rh]
   listhome:
-       description: Show information of your sethome.
-       usage: /listhome, will display your home set location, world. (Personal Location)
-  lh:
-       description: Shortcut for /listhome
-       usage: /lh, will display your home location, world. (Personal Location)
+       description: Show information of your sethome
+       usage: /listhome
+       aliases: [lh]
   gamemode:
-       description: set your gamemode.
+       description: Change your gamemode
        usage: /gamemode to see more information
        permission: main.gamemode
-  repair:
-       description: repair holding item
-       usage: /<command>
-  gm:
-       description: shortcut for /gamemode
-       usage: /gm to see more information
-       permission: main.gamemode
+       aliases: [gm]
   countdown:
-       description: countdown start
-       usage: /<command> [start/stop] [args]
+       description: Countdown management
+       usage: /countdown [start/stop] [args]
+       aliases: [cd]
        permission: main.countdown
   heal:
-       description: heal yourself , clear effect.
-       usage: /<command> [player|all]
+       description: heal your heart and clear effect.
+       usage: /heal [player|all]
        permission: main.heal
   fly:
        description: toggle flying.
-       usage: /<command> [player]
+       usage: /fly [player]
        permission: main.fly
   givequota:
        description: give quota
-       usage: /<command> [player] [type] [amount]
+       usage: /givequota [player] [luckyclick|tpr|home] [amount]
        permission: main.givequota
-  closechunk:
-       description: closechunk
-       usage: /<command>
   free:
-       description: free
-       usage: /<command>
+       description: Get your free item
+       usage: /free
   resetfree:
-       description: free
-       usage: /<command>
+       description: Reset freeitem quota
+       usage: /resetfree
   freeze:
        description: Freeze
-       usage: /<command>
+       usage: /freeze [player]
        permission: main.freeze
   redeem:
        description: redeem code
-       usage: /<command>
+       usage: /redeem [code]
   resetredeem:
-       description: reset redeem code using
-       usage: /<command>
+       description: reset redeem quota
+       usage: /resetredeem
        permission: main.redeem
   setredeem:
-       description: set redeem code
-       usage: /<command>
+       description: Set redeem code
+       usage: /setredeem [code]
        permission: main.redeem
   stuck:
        description: helping from stucking
-       usage: /<command>
+       usage: /stuck
+  invisible:
+       description: invisible!
+       usage: /invisible
+       permission: main.invisible
   sun:
-       description: change climate to sun
-       usage: /<command>
+       description: change weather to sun
+       usage: /sun
        permission: main.climate
   storm:
-       description: change climate to storm
-       usage: /<command>
+       description: change weather to storm
+       usage: /storm
        permission: main.climate
   rain:
-       description: change climate to rain
-       usage: /<command>
+       description: change weather to rain
+       usage: /rain
        permission: main.climate
   day:
        description: change time to day (1000 tick)
-       usage: /<command>
+       usage: /day
        permission: main.time
-  invisible:
-       description: invisible!
-       usage: /<command>
-       permission: main.invisible
   midday:
        description: change time to midday (6000 tick)
-       usage: just /midday, time will change to midday (6000 tick)
+       usage: /midday
        permission: main.time
   night:
        description: change time to night (13000 tick)
-       usage: just /night, time will change to night (13000 tick)
+       usage: /night
        permission: main.time
   midnight:
        description: change time to midnight (18000 tick)
-       usage: just /midnight, time will change to midnight (18000 tick)
+       usage: /midnight
        permission: main.time
   broadcast:
        description: Broadcast message
-       usage: /<command> [text]
+       usage: /broadcast [text]
        permission: main.broadcast
-  bc:
-       description: Shortcut of /broadcast
-       usage: /<command> [text]
-       permission: main.broadcast
+       aliases: [bc]
   rank:
        description: Rank
-       usage: /<command> [member|vip|mvp|staff|admin|owner] [player]
+       usage: /rank [member|vip|helper|staff|builder|admin|owner] [player]
        permission: main.rank
   force:
        description: Force [player] to chat [message]
-       usage: /<command> [player|all] [message]
+       usage: /force [player|all] [message]
        permission: main.force
   tpr:
        description: Sent teleportion request to [player]
-       usage: /<command> [player]
+       usage: /tpr [player]
   tprequest:
        description: Sent teleportion request to [player]
-       usage: /<command> [player]
+       usage: /tprequest [player]
   tpaccept:
        description: Accept teleportion request from [player]
-       usage: /<command> [player]
+       usage: /tpaccept [player]
   tpdeny:
        description: Deny teleportion request from [player]
-       usage: /<command> [player]
+       usage: /tpdeny [player]
   warn:
-       description: Warn
-       usage: /<command> [player] [reason]
+       description: Warn player (Max 3 times)
+       usage: /warn [player] [reason]
        permission: main.warn
   resetwarn:
-       description: Warn
-       usage: /<command> [player]
+       description: Reset player warn
+       usage: /resetwarn [player]
        permission: main.warn
   data:
-       description: status
-       usage: /<command>
+       description: Check player data
+       usage: /data
   mute:
-       description: Mute
-       usage: /<command> [player]
+       description: Grant or Revoke player chatting ability 
+       usage: /mute [player] [reason]
        permission: main.mute
   clearchat:
-       description: clear chat
-       usage: /<command>
+       description: clear all online player chat
+       usage: /clearchat
        permission: main.clearchat
   adminchat:
        description: Admin chat
-       usage: /<command>
+       usage: /adminchat [message]
        permission: main.adminchat
-  ac:
-       description: Admin chat
-       usage: /<command>
-       permission: main.adminchat
+       aliases: [ac]
   ping:
-       description: Check your ping and other player ping
-       usage: /<command> [player]
+       description: Check player ping
+       usage: /ping [player]
   world:
        description: teleport to normal world - nether - the end
-       usage: /<command> [world|nether|end] [player]
+       usage: /world [world] [player]
        permission: main.world
   wiki:
        description: Wiki - The Information Center
-       usage: /<command> [topic]
+       usage: /wiki [topic]
   money:
-       description: money
-       usage: /<command>
+       description: Check your currently money
+       usage: /money
   paymoney:
-       description: paymoney
-       usage: /<command> [player] [amount]
+       description: pay money to other player
+       usage: /paymoney [player] [amount]
   givemoney:
-       description: givemoney
-       usage: /<command> [player] [amount]
+       description: give money to other player
+       usage: /givemoney [player] [amount]
        permission: main.money
   takemoney:
-       description: takemoney
-       usage: /<command> [player] [amount]
+       description: take money from other player
+       usage: /takemoney [player] [amount]
        permission: main.money
   event:
        description: Event command
-       usage: /<command>
+       usage: /event [arg]
   eventadmin:
        description: Event admin command
-       usage: /<command>
+       usage: /eventadmin [arg]
   warp:
        description: warp to server warp location.
-       usage: /<command> [warp]
+       usage: /warp [warpname]
   setwarp:
-       description: set warp [warp] location
-       usage: /<command> [warp]
+       description: create warp
+       usage: /setwarp [warpname]
        permission: main.warp
   removewarp:
-       description: remove warp [warp] location
-       usage: /<command> [warp]
+       description: remove warp
+       usage: /removewarp [warp]
        permission: main.warp
   buyquota:
        description: Buy Quota
-       usage: /<command>
+       usage: /buyquota [arg]
 
 permissions:
   main.*:
