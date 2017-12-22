@@ -181,22 +181,44 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void checkDay() {
+	public void calculateTime() {
 		File countdownFile = new File(getDataFolder() + File.separator + "countdown.yml");
 		FileConfiguration countdownData = YamlConfiguration.loadConfiguration(countdownFile);
 		long c = countdownData.getLong("count");
-		if (c > 86399) {
-			long d = c / 86400;
-			long hm = c % 86400;
-			long h = hm / 3600;
-			long bm = c % 3600;
-			long m = bm / 60;
-			long s = bm % 60;
+			long w = c / 604800;
+			long wm = c % 604800;
+			long d = wm / 86400;
+			long dm = wm % 86400;
+			long h = dm / 3600;
+			long hm = dm % 3600;
+			long m = hm / 60;
+			long s = hm % 60;
+			String week = "";
 			String day = "";
 			String hour = "";
 			String minute = "";
 			String second = "";
+			
+			if (w > 1) {
+				week = w + " weeks ";
+			}
+			if (w == 1) {
+				week = w + " week ";
+			}
+			if (w == 0) {
+				week = "";
+			}
 
+			if (w > 1) {
+				week = w + " weeks ";
+			}
+			if (w == 1) {
+				week = w + " week ";
+			}
+			if (w == 0) {
+				week = "";
+			}
+			
 			if (d > 1) {
 				day = d + " days ";
 			}
@@ -236,152 +258,42 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (s == 0) {
 				second = "";
 			}
-
-			if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
-				sendBarAll(cd + day + hour + minute + second);
-			} else {
-				ActionBarAPI.sendToAll(cd + day + hour + minute + second);
-			}
-
-		} else {
-			checkHour();
-		}
-	}
-
-	public void checkHour() {
-		File countdownFile = new File(getDataFolder() + File.separator + "countdown.yml");
-		FileConfiguration countdownData = YamlConfiguration.loadConfiguration(countdownFile);
-		long c = countdownData.getLong("count");
-		if (c > 3599) {
-			long h = c / 3600;
-			long bm = c % 3600;
-			long m = bm / 60;
-			long s = bm % 60;
-			String hour = "";
-			String minute = "";
-			String second = "";
-
-			if (h > 1) {
-				hour = h + " hours ";
-			}
-			if (h == 1) {
-				hour = h + " hour ";
-			}
-			if (h == 0) {
-				hour = "";
-			}
-
-			if (m > 1) {
-				minute = m + " minutes ";
-			}
-			if (m == 1) {
-				minute = m + " minute ";
-			}
-			if (m == 0) {
-				minute = "";
-			}
-
-			if (s > 1) {
+			
+			if (c > 5) {
 				second = s + " seconds";
 			}
-			if (s == 1) {
-				second = s + " second";
+			if (c == 5) {
+				second = ChatColor.AQUA + "" + s + " seconds";
 			}
-			if (s == 0) {
-				second = "";
+			if (c == 4) {
+				second = ChatColor.GREEN + "" + s + " seconds";
 			}
-
-			if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
-				sendBarAll(cd + hour + minute + second);
-			} else {
-				ActionBarAPI.sendToAll(cd + hour + minute + second);
+			if (c == 3) {
+				second = ChatColor.YELLOW + "" + s + " seconds";
 			}
-
-		} else {
-			checkMin();
-		}
-	}
-
-	public void checkMin() {
-		File countdownFile = new File(getDataFolder() + File.separator + "countdown.yml");
-		FileConfiguration countdownData = YamlConfiguration.loadConfiguration(countdownFile);
-		long c = countdownData.getLong("count");
-		long value = c;
-		long m = value / 60;
-		long s = value % 60;
-		String minute = "";
-		String second = "";
-		if (c > 59 && c < 3600) {
-			if (m > 1) {
-				minute = m + " minutes ";
+			if (c == 2) {
+				second = ChatColor.GOLD + "" + s + " seconds";
 			}
-			if (m == 1) {
-				minute = m + " minute ";
+			if (c == 1) {
+				second = ChatColor.RED + "" + s + " second";
 			}
-			if (m == 0) {
-				minute = "";
+			if (c == 0) {
+				second = ChatColor.LIGHT_PURPLE + "TIME UP!";
+				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+					@Override
+					public void run() {
+						removeBarAll();
+					}
+				}, 60);
 			}
 
-			if (s > 1) {
-				second = s + " seconds";
+			if (c >= 0) {
+				if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
+					sendBarAll(cd + week + day + hour + minute + second);
+				} else {
+					ActionBarAPI.sendToAll(cd + week + day + hour + minute + second);
+				}	
 			}
-			if (s == 1) {
-				second = s + " second";
-			}
-			if (s == 0) {
-				second = "";
-			}
-
-			if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
-				sendBarAll(cd + minute + second);
-			} else {
-				ActionBarAPI.sendToAll(cd + minute + second);
-			}
-
-		} else {
-			checkSec();
-		}
-	}
-
-	public void checkSec() {
-		File countdownFile = new File(getDataFolder() + File.separator + "countdown.yml");
-		FileConfiguration countdownData = YamlConfiguration.loadConfiguration(countdownFile);
-		long c = countdownData.getInt("count");
-		String second = "";
-		if (c > 5) {
-			second = c + " seconds";
-		}
-		if (c == 5) {
-			second = ChatColor.AQUA + "" + c + " seconds";
-		}
-		if (c == 4) {
-			second = ChatColor.GREEN + "" + c + " seconds";
-		}
-		if (c == 3) {
-			second = ChatColor.YELLOW + "" + c + " seconds";
-		}
-		if (c == 2) {
-			second = ChatColor.GOLD + "" + c + " seconds";
-		}
-		if (c == 1) {
-			second = ChatColor.RED + "" + c + " second";
-		}
-		if (c == 0) {
-			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
-			getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-				@Override
-				public void run() {
-					removeBarAll();
-				}
-			}, 60);
-		}
-		if (c >= 0) {
-			if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
-				sendBarAll(cd + second);
-			} else {
-				ActionBarAPI.sendToAll(cd + second);
-			}
-		}
 
 	}
 
@@ -397,7 +309,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		boolean st = countdownData.getBoolean("countdown_msg_toggle");
 		String ms = countdownData.getString("countdown_msg").replaceAll("&", cl);
 		if (ms.equalsIgnoreCase("Undefined")) {
-			checkDay();
+			calculateTime();
 		} else {
 			if (s % 4 == 0) {
 				if (c < 11) {
@@ -434,7 +346,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					ActionBarAPI.sendToAll(cd + ms);
 				}
 			} else {
-				checkDay();
+				calculateTime();
 			}
 		}
 		if (c == -1) {
