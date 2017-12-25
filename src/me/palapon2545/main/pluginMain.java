@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.Provider;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -123,6 +124,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	// PREFIX
 	String sv = ChatColor.BLUE + "Server> " + ChatColor.GRAY;
+	String ev = ChatColor.LIGHT_PURPLE + "Event> " + ChatColor.WHITE;
 	String pp = ChatColor.DARK_PURPLE + "Portal> " + ChatColor.GRAY;
 	String db = ChatColor.GOLD + "Database> " + ChatColor.GRAY;
 	String j = ChatColor.GREEN + "Join> ";
@@ -185,115 +187,115 @@ public class pluginMain extends JavaPlugin implements Listener {
 		File countdownFile = new File(getDataFolder() + File.separator + "countdown.yml");
 		FileConfiguration countdownData = YamlConfiguration.loadConfiguration(countdownFile);
 		long c = countdownData.getLong("count");
-			long w = c / 604800;
-			long wm = c % 604800;
-			long d = wm / 86400;
-			long dm = wm % 86400;
-			long h = dm / 3600;
-			long hm = dm % 3600;
-			long m = hm / 60;
-			long s = hm % 60;
-			String week = "";
-			String day = "";
-			String hour = "";
-			String minute = "";
-			String second = "";
-			
-			if (w > 1) {
-				week = w + " weeks ";
-			}
-			if (w == 1) {
-				week = w + " week ";
-			}
-			if (w == 0) {
-				week = "";
-			}
+		long w = c / 604800;
+		long wm = c % 604800;
+		long d = wm / 86400;
+		long dm = wm % 86400;
+		long h = dm / 3600;
+		long hm = dm % 3600;
+		long m = hm / 60;
+		long s = hm % 60;
+		String week = "";
+		String day = "";
+		String hour = "";
+		String minute = "";
+		String second = "";
 
-			if (w > 1) {
-				week = w + " weeks ";
-			}
-			if (w == 1) {
-				week = w + " week ";
-			}
-			if (w == 0) {
-				week = "";
-			}
-			
-			if (d > 1) {
-				day = d + " days ";
-			}
-			if (d == 1) {
-				day = d + " day ";
-			}
-			if (d == 0) {
-				hour = "";
-			}
+		if (w > 1) {
+			week = w + " weeks ";
+		}
+		if (w == 1) {
+			week = w + " week ";
+		}
+		if (w == 0) {
+			week = "";
+		}
 
-			if (h > 1) {
-				hour = h + " hours ";
-			}
-			if (h == 1) {
-				hour = h + " hour ";
-			}
-			if (h == 0) {
-				hour = "";
-			}
+		if (w > 1) {
+			week = w + " weeks ";
+		}
+		if (w == 1) {
+			week = w + " week ";
+		}
+		if (w == 0) {
+			week = "";
+		}
 
-			if (m > 1) {
-				minute = m + " minutes ";
-			}
-			if (m == 1) {
-				minute = m + " minute ";
-			}
-			if (m == 0) {
-				minute = "";
-			}
+		if (d > 1) {
+			day = d + " days ";
+		}
+		if (d == 1) {
+			day = d + " day ";
+		}
+		if (d == 0) {
+			hour = "";
+		}
 
-			if (s > 1) {
-				second = s + " seconds";
-			}
-			if (s == 1) {
-				second = s + " second";
-			}
-			if (s == 0) {
-				second = "";
-			}
-			
-			if (c > 5) {
-				second = s + " seconds";
-			}
-			if (c == 5) {
-				second = ChatColor.AQUA + "" + s + " seconds";
-			}
-			if (c == 4) {
-				second = ChatColor.GREEN + "" + s + " seconds";
-			}
-			if (c == 3) {
-				second = ChatColor.YELLOW + "" + s + " seconds";
-			}
-			if (c == 2) {
-				second = ChatColor.GOLD + "" + s + " seconds";
-			}
-			if (c == 1) {
-				second = ChatColor.RED + "" + s + " second";
-			}
-			if (c == 0) {
-				second = ChatColor.LIGHT_PURPLE + "TIME UP!";
-				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-					@Override
-					public void run() {
-						removeBarAll();
-					}
-				}, 60);
-			}
+		if (h > 1) {
+			hour = h + " hours ";
+		}
+		if (h == 1) {
+			hour = h + " hour ";
+		}
+		if (h == 0) {
+			hour = "";
+		}
 
-			if (c >= 0) {
-				if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
-					sendBarAll(cd + week + day + hour + minute + second);
-				} else {
-					ActionBarAPI.sendToAll(cd + week + day + hour + minute + second);
-				}	
+		if (m > 1) {
+			minute = m + " minutes ";
+		}
+		if (m == 1) {
+			minute = m + " minute ";
+		}
+		if (m == 0) {
+			minute = "";
+		}
+
+		if (s > 1) {
+			second = s + " seconds";
+		}
+		if (s == 1) {
+			second = s + " second";
+		}
+		if (s == 0) {
+			second = "";
+		}
+
+		if (c > 5) {
+			second = s + " seconds";
+		}
+		if (c == 5) {
+			second = ChatColor.AQUA + "" + s + " seconds";
+		}
+		if (c == 4) {
+			second = ChatColor.GREEN + "" + s + " seconds";
+		}
+		if (c == 3) {
+			second = ChatColor.YELLOW + "" + s + " seconds";
+		}
+		if (c == 2) {
+			second = ChatColor.GOLD + "" + s + " seconds";
+		}
+		if (c == 1) {
+			second = ChatColor.RED + "" + s + " second";
+		}
+		if (c == 0) {
+			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
+			getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+				@Override
+				public void run() {
+					removeBarAll();
+				}
+			}, 60);
+		}
+
+		if (c >= 0) {
+			if (getServer().getPluginManager().isPluginEnabled("BarAPI") == true) {
+				sendBarAll(cd + week + day + hour + minute + second);
+			} else {
+				ActionBarAPI.sendToAll(cd + week + day + hour + minute + second);
 			}
+		}
 
 	}
 
@@ -878,177 +880,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 					player.sendMessage(perm + np);
 					no(player);
 				}
-			}
-			if (CommandLabel.equalsIgnoreCase("event") || CommandLabel.equalsIgnoreCase("SMDMain:event")) {
-				String evn = getConfig().getString("event.name");
-				String evj = getConfig().getString("event.join");
-				String evs = getConfig().getString("event.queuelist." + playerName);
-				String re = "";
-				String status = "";
-				if (evj.equalsIgnoreCase("true")) {
-					status = ChatColor.GREEN + "Yes";
-				}
-				if (evj.equalsIgnoreCase("false")) {
-					status = ChatColor.RED + "No";
-				}
-				if (evs.equalsIgnoreCase(null) || evs.equalsIgnoreCase("false")) {
-					re = ChatColor.GRAY + "" + ChatColor.ITALIC + "Not Reserve";
-				}
-				if (evs.equalsIgnoreCase("true")) {
-					re = ChatColor.LIGHT_PURPLE + "Reserved";
-				}
-				if (args.length == 0) {
-					player.sendMessage(
-							"---------" + ChatColor.LIGHT_PURPLE + "[Event]" + ChatColor.WHITE + "---------");
-					player.sendMessage("Name: " + ChatColor.AQUA + evn);
-					player.sendMessage("Reservation: " + status);
-					player.sendMessage("Status: " + re);
-					player.sendMessage("");
-					player.sendMessage(
-							"'/event warp' " + ChatColor.GOLD + "-" + ChatColor.YELLOW + " Warp to event location");
-					player.sendMessage("'/event reserve'  " + ChatColor.GOLD + "-" + ChatColor.YELLOW
-							+ " Add/Cancel your reservation");
-					player.sendMessage("");
-				} else {
-					if (args[0].equalsIgnoreCase("warp")) {
-						String warp = getConfig().getString("event.warp");
-						String warpstatus = getConfig().getString("event.warpstatus");
-						if (warp != null && warpstatus.equalsIgnoreCase("true")) {
-							double x = getConfig().getDouble("event.warp.x");
-							double y = getConfig().getDouble("event.warp.y");
-							double z = getConfig().getDouble("event.warp.z");
-							double yaw = getConfig().getDouble("event.warp.yaw");
-							double pitch = getConfig().getDouble("event.warp.pitch");
-							String world = getConfig().getString("event.warp.world");
-							World p = Bukkit.getWorld(world);
-							Location loc = new Location(p, x, y, z);
-							loc.setPitch((float) pitch);
-							loc.setYaw((float) yaw);
-							player.teleport(loc);
-							player.sendMessage(pp + "Teleported to " + ChatColor.YELLOW + "Event's Spectate Location"
-									+ ChatColor.GRAY + ".");
-							player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 10, 0);
-						} else {
-							player.sendMessage(pp + ChatColor.YELLOW + "Event's Warp Location isn't available yet");
-							no(player);
-						}
-					}
-					if (args[0].equalsIgnoreCase("reserve")) {
-						String evl = getConfig().getString("event.queuelist." + playerName);
-						if (evj.equalsIgnoreCase("true")) {
-							if (evl.equalsIgnoreCase("false")
-									|| getConfig().getString("event.queuelist." + playerName) == null
-									|| evl.equalsIgnoreCase(null)) {
-								getConfig().set("event.queuelist." + playerName, "true");
-								saveConfig();
-								player.sendMessage(pp + "You reserved event's reserve slot");
-							} else {
-								getConfig().set("event.queuelist." + playerName, "false");
-								saveConfig();
-								player.sendMessage(pp + "You canceled your event's reserve slot");
-							}
-						} else {
-							player.sendMessage(pp + "You can't do it at this time (Reservation has been locked)");
-						}
-					}
-				}
-			}
-			if (CommandLabel.equalsIgnoreCase("eventadmin") || CommandLabel.equalsIgnoreCase("SMDMain:eventadmin")) {
-				if (player.isOp() || player.hasPermission("main.eventadmin") || player.hasPermission("main.*")
-						|| rank.equalsIgnoreCase("admin") || rank.equalsIgnoreCase("owner")) {
-					if (args.length == 0) {
-						player.sendMessage("------------------");
-						player.sendMessage("'/eventadmin setname' " + ChatColor.GOLD + "-" + ChatColor.YELLOW
-								+ " Set event's name");
-						player.sendMessage("'/eventadmin setwarp' " + ChatColor.GOLD + "-" + ChatColor.YELLOW
-								+ " Set event's warp location");
-						player.sendMessage("'/eventadmin reserve' " + ChatColor.GOLD + "-" + ChatColor.YELLOW
-								+ " Open/Close reservation system");
-						player.sendMessage(
-								"'/eventadmin close' " + ChatColor.GOLD + "-" + ChatColor.YELLOW + " Close event");
-						player.sendMessage("'/eventadmin warpplayer' " + ChatColor.GOLD + "-" + ChatColor.YELLOW
-								+ " Warp Reserved Player to your location");
-						player.sendMessage("------------------");
-					} else {
-						if (args[0].equalsIgnoreCase("setwarp")) {
-							Location pl = player.getLocation();
-							double plx = pl.getX();
-							double ply = pl.getY();
-							double plz = pl.getZ();
-							double plpitch = pl.getPitch();
-							double plyaw = pl.getYaw();
-							String plw = pl.getWorld().getName();
-							getConfig().set("event.warp.world", plw);
-							getConfig().set("event.warp.x", plx);
-							getConfig().set("event.warp.y", ply);
-							getConfig().set("event.warp.z", plz);
-							getConfig().set("event.warp.pitch", plpitch);
-							getConfig().set("event.warp.yaw", plyaw);
-							getConfig().set("event.warpstatus", "true");
-							saveConfig();
-							player.sendMessage(pp + ChatColor.GREEN + "Set new event's warp location");
-						}
-						if (args[0].equalsIgnoreCase("reserve")) {
-							if (getConfig().getString("event.join").equalsIgnoreCase("false")) {
-								getConfig().set("event.join", "true");
-								saveConfig();
-								player.sendMessage(pp + "Event Reserve: " + ChatColor.GREEN + "Enable");
-							} else {
-								getConfig().set("event.join", "false");
-								saveConfig();
-								player.sendMessage(pp + "Event Reserve: " + ChatColor.RED + "Disable");
-							}
-						}
-						if (args[0].equalsIgnoreCase("warpplayer")) {
-							Location pl = player.getLocation();
-							double plx = pl.getX();
-							double ply = pl.getY();
-							double plz = pl.getZ();
-							double plpitch = pl.getPitch();
-							double plyaw = pl.getYaw();
-							String plw = pl.getWorld().getName();
-							World p = Bukkit.getWorld(plw);
-							Location loc = new Location(p, plx, ply, plz);
-							loc.setPitch((float) plpitch);
-							loc.setYaw((float) plyaw);
-							for (Player o : Bukkit.getOnlinePlayers()) {
-								String join = getConfig().getString("event.queuelist." + o.getName());
-								if (join.equalsIgnoreCase("true")) {
-									o.teleport(loc);
-									player.sendMessage(
-											pp + "Admin teleport you to " + ChatColor.YELLOW + "Event's Location");
-								} else {
-
-								}
-							}
-						}
-						if (args[0].equalsIgnoreCase("setname")) {
-							message = "";
-							for (int i = 1; i != args.length; i++)
-								message += args[i] + " ";
-							message = message.replaceAll("&", cl);
-							getConfig().set("event.name", message);
-							saveConfig();
-							player.sendMessage(pp + "Set event's name to " + ChatColor.YELLOW + "' " + message + "'");
-						}
-						if (args[0].equalsIgnoreCase("close")) {
-							String evn = getConfig().getString("event.name");
-							Bukkit.broadcastMessage(pp + "Event " + ChatColor.YELLOW + evn + ChatColor.GRAY
-									+ "has been " + ChatColor.RED + "closed");
-							getConfig().set("event.warpstatus", "false");
-							getConfig().set("event.name", "none");
-							getConfig().set("event.join", "false");
-							for (Player p : Bukkit.getOnlinePlayers()) {
-								getConfig().set("event.queuelist." + p.getName(), "false");
-							}
-							saveConfig();
-						}
-					}
-				} else {
-					player.sendMessage(perm + np);
-					no(player);
-				}
-
 			}
 			if (CommandLabel.equalsIgnoreCase("gamemode") || CommandLabel.equalsIgnoreCase("SMDMain:gamemode")
 					|| CommandLabel.equalsIgnoreCase("gm") || CommandLabel.equalsIgnoreCase("SMDMain:gm")) {
@@ -2736,6 +2567,127 @@ public class pluginMain extends JavaPlugin implements Listener {
 					no(player);
 				}
 			}
+			if (CommandLabel.equalsIgnoreCase("privatewarp") || CommandLabel.equalsIgnoreCase("SMDMain:privatewarp")) {
+				if (args.length != 0) {
+					File privateWarpFile = new File(getDataFolder(),
+							File.separator + "PrivateWarpDatabase/" + args[1] + ".yml");
+					FileConfiguration privateWarpData = YamlConfiguration.loadConfiguration(privateWarpFile);
+					if (privateWarpFile.exists()) {
+						if (args.length == 1) {
+							double plx = privateWarpData.getDouble("x");
+							double ply = privateWarpData.getDouble("y");
+							double plz = privateWarpData.getDouble("z");
+							double plyaw = privateWarpData.getDouble("yaw");
+							double plpitch = privateWarpData.getDouble("pitch");
+							World plw = Bukkit.getWorld(privateWarpData.getString("world"));
+							Location loc = new Location(plw, plx, ply, plz);
+							loc.setPitch((float) plpitch);
+							loc.setYaw((float) plyaw);
+							player.teleport(loc);
+							player.sendMessage(sv + "Teleported to Warp " + ChatColor.GREEN + args[0]);
+							yes(player);	
+						} else {
+							if (args[1].equalsIgnoreCase("add")) {
+								
+							} else if (args[1].equalsIgnoreCase("remove")) {
+								
+							} else {
+								player.sendMessage(sv + type + "/privatewarp " + args[0] + " [add|remove] [playerName]");
+								no(player);
+							}
+						}
+					} else if (args[0].equalsIgnoreCase("create")) {
+						if (privateWarpFile.exists()) {
+							player.sendMessage(sv + "Warp " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " already exist.");
+							no(player);
+						} else {
+							ArrayList<String> hi = new ArrayList<String>();
+							Location pl = player.getLocation();
+							double plx = pl.getX();
+							double ply = pl.getY();
+							double plz = pl.getZ();
+							double plpitch = pl.getPitch();
+							double plyaw = pl.getYaw();
+							String plw = pl.getWorld().getName();
+							hi.add(playerName);
+							try {
+								privateWarpData.set("x", plx);
+								privateWarpData.set("y", ply);
+								privateWarpData.set("z", plz);
+								privateWarpData.set("yaw", plyaw);
+								privateWarpData.set("pitch", plpitch);
+								privateWarpData.set("world", plw);
+								privateWarpData.set("allow_player", hi);
+								privateWarpData.save(privateWarpFile);
+							} catch (IOException e) {
+								Bukkit.broadcastMessage(db + dbe);
+							}
+							player.sendMessage(sv + "Set private warp " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " complete!");
+						}
+					} else if (args[0].equalsIgnoreCase("delete")) {
+						if (privateWarpFile.exists()) {
+							privateWarpFile.delete();
+						} else {
+							
+						}
+					} else if (!privateWarpFile.exists()) {
+						player.sendMessage(sv + "Warp " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " not found.");
+						no(player);
+					} else {
+						player.sendMessage(sv + type + "/privatewarp [warpName|create|delete] [warpName]");
+						no(player);
+					}
+				} else {
+					player.sendMessage(sv + type + "/privatewarp [warpName|create|delete] [warpName]");
+					no(player);
+				}
+			}
+			if (CommandLabel.equalsIgnoreCase("test")) {
+				if (args.length > 0) {
+					for (int i = 0; i != args.length; i++)
+						message += args[i] + " ";
+					String message_ = message.replaceAll(" ", "");
+					LinkedList<String> vowel_text = new LinkedList<String>();
+					LinkedList<String> consonant_text = new LinkedList<String>();
+					String input = message.toLowerCase();
+					String[] split = message_.split("");
+					int length = message_.length();
+					int vowel = 0;
+					int consonant = 0;
+					player.sendMessage("");
+					player.sendMessage(sv + "ข้อความรับเข้าคือ " + ChatColor.YELLOW + input);
+					player.sendMessage("");
+					ChatColor color = ChatColor.RESET;
+					for (int i = 0; i < length; i++) {
+						String type = "";
+						if (split[i].equalsIgnoreCase("a") || split[i].equalsIgnoreCase("e")
+								|| split[i].equalsIgnoreCase("i") || split[i].equalsIgnoreCase("o")
+								|| split[i].equalsIgnoreCase("u")) {
+							vowel++;
+							type = "สระ";
+							color = ChatColor.BLUE;
+							vowel_text.add(split[i]);
+						} else {
+							consonant++;
+							type = "พยัญชนะ";
+							color = ChatColor.RED;
+							consonant_text.add(split[i]);
+						}
+						player.sendMessage(sv + "ตัวอักษรตำแหน่งที่ " + i + " คือ " + ChatColor.YELLOW + split[i]
+								+ ChatColor.GRAY + " เป็น " + color + type);
+					}
+					player.sendMessage("");
+					player.sendMessage(sv + "==สรุป==");
+					player.sendMessage(sv + "ข้อความรับเข้า " + ChatColor.YELLOW + input);
+					player.sendMessage(sv + "มีสระ " + ChatColor.BLUE + vowel + " ตัว" + ChatColor.GRAY + " ได้แก่ "
+							+ ChatColor.AQUA + vowel_text);
+					player.sendMessage(sv + "มีพยัญชนะ " + ChatColor.RED + consonant + " ตัว" + ChatColor.GRAY
+							+ " ได้แก่ " + ChatColor.LIGHT_PURPLE + consonant_text);
+					player.sendMessage(sv + "จบการทำงาน");
+				} else {
+					player.sendMessage("need_only_args[0]");
+				}
+			}
 			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
 				String v = getConfig().getString("free_item." + playerName);
 				if (v == null) {
@@ -2895,20 +2847,20 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		Bukkit.broadcastMessage(sv + "SMDMain System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
-		File warpfiles;
-		File reportfiles;
+		File warpFolder = new File(getDataFolder() + File.separator + "/WarpDatabase/");
+		File privateWarpFolder = new File(getDataFolder() + File.separator + "/PrivateWarpDatabase/");
+		File reportFolder = new File(getDataFolder() + File.separator + "/ReportDatabase/");
 		File countdownFile = new File(getDataFolder() + File.separator + "countdown.yml");
 		FileConfiguration countdownData = YamlConfiguration.loadConfiguration(countdownFile);
-		File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
-		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 		try {
-			warpfiles = new File(getDataFolder() + File.separator + "/WarpDatabase/");
-			reportfiles = new File(getDataFolder() + File.separator + "/ReportDatabase/");
-			if (!warpfiles.exists()) {
-				warpfiles.mkdirs();
+			if (!warpFolder.exists()) {
+				warpFolder.mkdirs();
 			}
-			if (!reportfiles.exists()) {
-				reportfiles.mkdirs();
+			if (!reportFolder.exists()) {
+				reportFolder.mkdirs();
+			}
+			if (!privateWarpFolder.exists()) {
+				privateWarpFolder.mkdirs();
 			}
 			if (!countdownFile.exists()) {
 				try {
@@ -2917,17 +2869,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 					countdownData.set("countdown_msg_toggle", "u");
 					countdownData.set("count", -1);
 					countdownData.save(countdownFile);
-				} catch (IOException e) {
-					Bukkit.broadcastMessage(db + dbe);
-				}
-			}
-			if (!tempFile.exists()) {
-				try {
-					FileWriter writer = new FileWriter(tempFile, false);
-					writer.write("#This is a temp file for SMDMain plugin." + String.format("%n"));
-					writer.write("#It will be use in future." + String.format("%n"));
-					writer.write("#At this time their is nothing yet." + String.format("%n"));
-					writer.close();
 				} catch (IOException e) {
 					Bukkit.broadcastMessage(db + dbe);
 				}

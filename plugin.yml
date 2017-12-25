@@ -63,6 +63,9 @@ commands:
   qwerty:
        description: qwertyuiop!
        usage: /qwerty
+  test:
+       description: debug command!
+       usage: /test
   removehome:
        description: Remove home location
        usage: /removehome [name]
@@ -195,12 +198,9 @@ commands:
   takemoney:
        description: take money from other player
        usage: /takemoney [player] [amount]
-  event:
-       description: Event command
-       usage: /event [arg]
-  eventadmin:
-       description: Event admin command
-       usage: /eventadmin [arg]
+  privatewarp:
+       description: warp to server warp location.
+       usage: /privatewarp [warpname]
   warp:
        description: warp to server warp location.
        usage: /warp [warpname]
