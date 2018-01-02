@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.main.pluginMain
-version: 1.1_BETA-1
+version: 1.1_BETA2
 description: Core of MineSky Server
 author: PondJaTH
 softdepend: [BarAPI]
@@ -140,6 +140,10 @@ commands:
        description: Broadcast message
        usage: /broadcast [text]
        aliases: [bc]
+  publish:
+       description: Publish message
+       usage: /publish [text]
+       aliases: [pb]
   rank:
        description: Rank
        usage: /rank [member|vip|helper|staff|builder|admin|owner] [player]
@@ -198,9 +202,6 @@ commands:
   takemoney:
        description: take money from other player
        usage: /takemoney [player] [amount]
-  privatewarp:
-       description: warp to server warp location.
-       usage: /privatewarp [warpname]
   warp:
        description: warp to server warp location.
        usage: /warp [warpname]

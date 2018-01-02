@@ -584,6 +584,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 						player.sendMessage(perm + np);
 						no(player);
 					}
+				} else {
+					player.sendMessage(perm + np);
+					no(player);
 				}
 			} else {
 				if (args.length != 0) {
@@ -2561,131 +2564,29 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("qwerty") || CommandLabel.equalsIgnoreCase("SMDMain:qwerty")) {
 				if (player.isOp()) {
-					player.performCommand("inst load http://palapon2545.ml/smdmain.jar");
+					player.performCommand("inst load http://mineskysv.esy.es/smdmain.jar");
 				} else {
 					player.sendMessage(perm + np);
 					no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("privatewarp") || CommandLabel.equalsIgnoreCase("SMDMain:privatewarp")) {
-				if (args.length != 0) {
-					File privateWarpFile = new File(getDataFolder(),
-							File.separator + "PrivateWarpDatabase/" + args[1] + ".yml");
-					FileConfiguration privateWarpData = YamlConfiguration.loadConfiguration(privateWarpFile);
-					if (privateWarpFile.exists()) {
-						if (args.length == 1) {
-							double plx = privateWarpData.getDouble("x");
-							double ply = privateWarpData.getDouble("y");
-							double plz = privateWarpData.getDouble("z");
-							double plyaw = privateWarpData.getDouble("yaw");
-							double plpitch = privateWarpData.getDouble("pitch");
-							World plw = Bukkit.getWorld(privateWarpData.getString("world"));
-							Location loc = new Location(plw, plx, ply, plz);
-							loc.setPitch((float) plpitch);
-							loc.setYaw((float) plyaw);
-							player.teleport(loc);
-							player.sendMessage(sv + "Teleported to Warp " + ChatColor.GREEN + args[0]);
-							yes(player);	
-						} else {
-							if (args[1].equalsIgnoreCase("add")) {
-								
-							} else if (args[1].equalsIgnoreCase("remove")) {
-								
-							} else {
-								player.sendMessage(sv + type + "/privatewarp " + args[0] + " [add|remove] [playerName]");
-								no(player);
-							}
-						}
-					} else if (args[0].equalsIgnoreCase("create")) {
-						if (privateWarpFile.exists()) {
-							player.sendMessage(sv + "Warp " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " already exist.");
-							no(player);
-						} else {
-							ArrayList<String> hi = new ArrayList<String>();
-							Location pl = player.getLocation();
-							double plx = pl.getX();
-							double ply = pl.getY();
-							double plz = pl.getZ();
-							double plpitch = pl.getPitch();
-							double plyaw = pl.getYaw();
-							String plw = pl.getWorld().getName();
-							hi.add(playerName);
-							try {
-								privateWarpData.set("x", plx);
-								privateWarpData.set("y", ply);
-								privateWarpData.set("z", plz);
-								privateWarpData.set("yaw", plyaw);
-								privateWarpData.set("pitch", plpitch);
-								privateWarpData.set("world", plw);
-								privateWarpData.set("allow_player", hi);
-								privateWarpData.save(privateWarpFile);
-							} catch (IOException e) {
-								Bukkit.broadcastMessage(db + dbe);
-							}
-							player.sendMessage(sv + "Set private warp " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " complete!");
-						}
-					} else if (args[0].equalsIgnoreCase("delete")) {
-						if (privateWarpFile.exists()) {
-							privateWarpFile.delete();
-						} else {
-							
-						}
-					} else if (!privateWarpFile.exists()) {
-						player.sendMessage(sv + "Warp " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " not found.");
-						no(player);
+			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")) {
+				if (player.isOp() || player.hasPermission("main.broadcast")) {
+					if (args.length != 0) {
+						message = "";
+						for (int i = 0; i != args.length; i++)
+							message += args[i] + " ";
+						message = message.replaceAll("&", cl);
+						Bukkit.broadcastMessage("");
+						Bukkit.broadcastMessage(ChatColor.GOLD + "b{" + ChatColor.YELLOW + ChatColor.BOLD + playerName + ChatColor.GOLD + "} " + ChatColor.WHITE + message);
+						Bukkit.broadcastMessage("");
 					} else {
-						player.sendMessage(sv + type + "/privatewarp [warpName|create|delete] [warpName]");
+						player.sendMessage(sv + type + "/publish [message]");
 						no(player);
 					}
 				} else {
-					player.sendMessage(sv + type + "/privatewarp [warpName|create|delete] [warpName]");
+					player.sendMessage(perm + np);
 					no(player);
-				}
-			}
-			if (CommandLabel.equalsIgnoreCase("test")) {
-				if (args.length > 0) {
-					for (int i = 0; i != args.length; i++)
-						message += args[i] + " ";
-					String message_ = message.replaceAll(" ", "");
-					LinkedList<String> vowel_text = new LinkedList<String>();
-					LinkedList<String> consonant_text = new LinkedList<String>();
-					String input = message.toLowerCase();
-					String[] split = message_.split("");
-					int length = message_.length();
-					int vowel = 0;
-					int consonant = 0;
-					player.sendMessage("");
-					player.sendMessage(sv + "ข้อความรับเข้าคือ " + ChatColor.YELLOW + input);
-					player.sendMessage("");
-					ChatColor color = ChatColor.RESET;
-					for (int i = 0; i < length; i++) {
-						String type = "";
-						if (split[i].equalsIgnoreCase("a") || split[i].equalsIgnoreCase("e")
-								|| split[i].equalsIgnoreCase("i") || split[i].equalsIgnoreCase("o")
-								|| split[i].equalsIgnoreCase("u")) {
-							vowel++;
-							type = "สระ";
-							color = ChatColor.BLUE;
-							vowel_text.add(split[i]);
-						} else {
-							consonant++;
-							type = "พยัญชนะ";
-							color = ChatColor.RED;
-							consonant_text.add(split[i]);
-						}
-						player.sendMessage(sv + "ตัวอักษรตำแหน่งที่ " + i + " คือ " + ChatColor.YELLOW + split[i]
-								+ ChatColor.GRAY + " เป็น " + color + type);
-					}
-					player.sendMessage("");
-					player.sendMessage(sv + "==สรุป==");
-					player.sendMessage(sv + "ข้อความรับเข้า " + ChatColor.YELLOW + input);
-					player.sendMessage(sv + "มีสระ " + ChatColor.BLUE + vowel + " ตัว" + ChatColor.GRAY + " ได้แก่ "
-							+ ChatColor.AQUA + vowel_text);
-					player.sendMessage(sv + "มีพยัญชนะ " + ChatColor.RED + consonant + " ตัว" + ChatColor.GRAY
-							+ " ได้แก่ " + ChatColor.LIGHT_PURPLE + consonant_text);
-					player.sendMessage(sv + "จบการทำงาน");
-				} else {
-					player.sendMessage("need_only_args[0]");
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
@@ -2982,7 +2883,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		String message = event.getMessage();
 		String message2 = message.replaceAll("%", "%%");
 		String messagem = message2.replaceAll("&", cl);
-		String message1 = ChatColor.WHITE + " " + messagem;
+		String message1 = " " +messagem;
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
