@@ -1,7 +1,7 @@
 name: SMDMain
-main: me.palapon2545.main.pluginMain
-version: 1.1_BETA2
-description: Core of MineSky Server
+main: me.palapon2545.SMDMain.Main.pluginMain
+version: 1.1_BETA-5a
+description: palapon2545's first java plugin development.
 author: PondJaTH
 softdepend: [BarAPI]
 load: POSTWORLD

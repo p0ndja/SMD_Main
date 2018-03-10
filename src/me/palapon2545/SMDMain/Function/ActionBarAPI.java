@@ -1,4 +1,4 @@
-package me.palapon2545.main;
+package me.palapon2545.SMDMain.Function;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
