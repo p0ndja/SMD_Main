@@ -64,6 +64,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.palapon2545.SMDMain.EventListener.OnInventoryEvent;
 import me.palapon2545.SMDMain.EventListener.OnPlayerCommunication;
 import me.palapon2545.SMDMain.EventListener.OnPlayerConnection;
 import me.palapon2545.SMDMain.EventListener.OnPlayerMovement;
@@ -71,6 +72,9 @@ import me.palapon2545.SMDMain.Function.ActionBarAPI;
 import me.palapon2545.SMDMain.Function.AutoSaveWorld;
 import me.palapon2545.SMDMain.Function.BossBar;
 import me.palapon2545.SMDMain.Function.Countdown;
+import me.palapon2545.SMDMain.Function.FreeItem;
+import me.palapon2545.SMDMain.Function.Money;
+import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 
@@ -81,24 +85,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		pm.registerEvents(new OnPlayerConnection(this), this);
 		pm.registerEvents(new OnPlayerCommunication(this), this);
 		pm.registerEvents(new OnPlayerMovement(this), this);
-	}
-
-	public static int getPing(Player p) {
-		Class<?> CPClass;
-		String bpName = Bukkit.getServer().getClass().getPackage().getName(),
-				version = bpName.substring(bpName.lastIndexOf(".") + 1, bpName.length());
-		try {
-			CPClass = Class.forName("org.bukkit.craftbukkit." + version + ".entity.CraftPlayer");
-			Object CraftPlayer = CPClass.cast(p);
-			Method getHandle = CraftPlayer.getClass().getMethod("getHandle", new Class[0]);
-			Object EntityPlayer = getHandle.invoke(CraftPlayer, new Object[0]);
-			Field ping = EntityPlayer.getClass().getDeclaredField("ping");
-			return ping.getInt(EntityPlayer);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return 0;
+		pm.registerEvents(new OnInventoryEvent(this), this);
 	}
 
 	public static boolean isNumeric(String str) {
@@ -119,16 +106,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			return original;
 		}
 		return original.substring(0, 1).toUpperCase() + original.substring(1);
-	}
-
-	public static boolean isInt(String s) {
-		try {
-			Integer.parseInt(s);
-		} catch (NumberFormatException nfe) {
-			nfe.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 
 	public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
@@ -236,7 +213,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static void no(Player p) {
+	public void no(Player p) {
 		p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1, 0);
 	}
 
@@ -923,7 +900,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 				Player targetPlayer = Bukkit.getPlayer(target);
 				if (targetPlayer != null) {
-					int ping = getPing(player);
+					int ping = Ping.get(player);
 					ChatColor color = ChatColor.WHITE;
 					if (ping < 31) {
 						color = ChatColor.AQUA;
@@ -1218,7 +1195,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 									player.sendMessage(Prefix.sv + "Set timer to " + ChatColor.YELLOW + args[1]
 											+ " seconds " + countdownMessageToPlayer);
 								} else {
-									player.sendMessage(Prefix.sv + ChatColor.YELLOW + args[1] + Prefix.nn);
+									player.sendMessage(Prefix.sv + ChatColor.YELLOW + args[1] + Prefix.non);
 								}
 							} else {
 								player.sendMessage(Prefix.sv + Prefix.type + "/countdown start [second] [message]");
@@ -1648,7 +1625,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							String targetQuota = "";
 							if (args[1].equalsIgnoreCase("tpr") || args[1].equalsIgnoreCase("home")
 									|| args[1].equalsIgnoreCase("luckyclick")) {
-								if (isInt(args[2])) {
+								if (isNumeric(args[2])) {
 									if (args[1].equalsIgnoreCase("tpr")) {
 										targetQuota = "Quota.TPR";
 									} else if (args[1].equalsIgnoreCase("luckyclick")) {
@@ -1926,40 +1903,18 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (player.hasPermission("main.money") || player.isOp() || player.hasPermission("main.*")
 						|| rank.equalsIgnoreCase("admin") || rank.equalsIgnoreCase("owner")) {
 					if (args.length == 2) {
-						if (Bukkit.getServer().getPlayer(args[0]) != null) {
-							Player targetPlayer = player.getServer().getPlayer(args[0]);
-							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(getDataFolder(),
-									File.separator + "PlayerDatabase/" + targetPlayerName);
-							File f1 = new File(userdata1, File.separator + "config.yml");
-							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							long targetPlayerMoney = playerData1.getLong("money");
-							if (isInt(args[1]) && Integer.parseInt(args[1]) > 0) {
-								long n = (long) (targetPlayerMoney + Integer.parseInt(args[1]));
-								try {
-									playerData1.set("money", n);
-									playerData1.save(f1);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-								player.sendMessage(Prefix.sv + "You gave " + ChatColor.GREEN + args[1] + " Coin(s) "
-										+ ChatColor.GRAY + "to " + ChatColor.AQUA + targetPlayerName + ChatColor.GRAY
-										+ ".");
-								targetPlayer.sendMessage(Prefix.sv + "You received " + ChatColor.GREEN + args[1]
-										+ " Coin(s) " + ChatColor.GRAY + "from " + ChatColor.AQUA + "Server"
-										+ ChatColor.GRAY + ".");
-								yes(player);
+						Player receiver = Bukkit.getPlayer(args[0]);
+						if (receiver != null) {
+							if (isNumeric(args[1]) == true) {
+								long amount = Long.parseLong(args[1]);
+								Money.give(receiver, amount);
 							} else {
-								player.sendMessage(Prefix.sv + args[1] + " is not number or it lower than 0");
+								player.sendMessage(Prefix.sv + ChatColor.YELLOW + args[1] + Prefix.non);
 								no(player);
 							}
-						} else {
-							player.sendMessage(Prefix.sv + "Player " + ChatColor.YELLOW + args[0] + ChatColor.GRAY
-									+ " not found.");
-							no(player);
 						}
 					} else {
-						player.sendMessage(Prefix.sv + Prefix.type + "/givemoney [player] [money]");
+						player.sendMessage(Prefix.sv + Prefix.type + "/givemoney [player] [amount]");
 						no(player);
 					}
 				} else {
@@ -1972,40 +1927,18 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (player.hasPermission("main.money") || player.isOp() || player.hasPermission("main.*")
 						|| rank.equalsIgnoreCase("admin") || rank.equalsIgnoreCase("owner")) {
 					if (args.length == 2) {
-						if (Bukkit.getServer().getPlayer(args[0]) != null) {
-							Player targetPlayer = player.getServer().getPlayer(args[0]);
-							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(getDataFolder(),
-									File.separator + "PlayerDatabase/" + targetPlayerName);
-							File f1 = new File(userdata1, File.separator + "config.yml");
-							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							long targetPlayerMoney = playerData1.getLong("money");
-							if (isInt(args[1]) && Integer.parseInt(args[1]) > 0) {
-								long n = (long) (targetPlayerMoney - Integer.parseInt(args[1]));
-								try {
-									playerData1.set("money", n);
-									playerData1.save(f1);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-								player.sendMessage(Prefix.sv + "You took " + ChatColor.GREEN + args[1] + " Coin(s) "
-										+ ChatColor.GRAY + "from " + ChatColor.AQUA + targetPlayerName + ChatColor.GRAY
-										+ ".");
-								targetPlayer.sendMessage(Prefix.sv + "You paid " + ChatColor.GREEN + args[1]
-										+ " Coin(s) " + ChatColor.GRAY + "to " + ChatColor.AQUA + "Server"
-										+ ChatColor.GRAY + ".");
-								yes(player);
+						Player payer = Bukkit.getPlayer(args[0]);
+						if (payer != null) {
+							if (isNumeric(args[1]) == true) {
+								long amount = Long.parseLong(args[1]);
+								Money.take(payer, amount);
 							} else {
-								player.sendMessage(Prefix.sv + args[1] + " is not number or it lower than 0");
+								player.sendMessage(Prefix.sv + ChatColor.YELLOW + args[1] + Prefix.non);
 								no(player);
 							}
-						} else {
-							player.sendMessage(Prefix.sv + "Player " + ChatColor.YELLOW + args[0] + ChatColor.GRAY
-									+ " not found.");
-							no(player);
 						}
 					} else {
-						player.sendMessage(Prefix.sv + Prefix.type + "/givemoney [player] [money]");
+						player.sendMessage(Prefix.sv + Prefix.type + "/takemoney [player] [amount]");
 						no(player);
 					}
 				} else {
@@ -2015,57 +1948,20 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 			}
 			if (CommandLabel.equalsIgnoreCase("paymoney") || CommandLabel.equalsIgnoreCase("SMDMain:paymoney")) {
-				long money = playerData.getLong("money");
 				if (args.length == 2) {
-					if (Bukkit.getServer().getPlayer(args[0]) != null) {
-						Player targetPlayer = player.getServer().getPlayer(args[0]);
-						String targetPlayerName = targetPlayer.getName();
-						File userdata1 = new File(getDataFolder(),
-								File.separator + "PlayerDatabase/" + targetPlayerName);
-						File f1 = new File(userdata1, File.separator + "config.yml");
-						FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-						long targetPlayerMoney = playerData1.getLong("money");
-						if (isInt(args[1])) {
-							long paymoney = Integer.parseInt(args[1]);
-							if (paymoney > 0 && paymoney < money) {
-								try {
-									playerData.set("money", money - paymoney);
-									playerData.save(f);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-								try {
-									playerData1.set("money", targetPlayerMoney + paymoney);
-									playerData1.save(f1);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-								player.sendMessage(Prefix.sv + ChatColor.GRAY + "You paid " + ChatColor.GREEN + args[1]
-										+ ChatColor.GRAY + " to " + ChatColor.YELLOW + targetPlayerName);
-								targetPlayer.sendMessage(Prefix.sv + ChatColor.GRAY + "You received " + ChatColor.GREEN
-										+ args[1] + ChatColor.GRAY + " from " + ChatColor.YELLOW + playerName);
-								yes(player);
-								yes(targetPlayer);
-							} else if (paymoney < 0) {
-								player.sendMessage(Prefix.sv + "Payment need to more than 0");
-								no(player);
-							} else if (paymoney > money) {
-								player.sendMessage(Prefix.sv + "You don't have enough money");
-								no(player);
-							}
+					Player receiver = Bukkit.getPlayer(args[0]);
+					if (receiver != null) {
+						if (isNumeric(args[1]) == true) {
+							long amount = Long.parseLong(args[1]);
+							Money.tranfer(player, receiver, amount);
 						} else {
 							player.sendMessage(Prefix.sv + ChatColor.YELLOW + args[1] + Prefix.non);
 							no(player);
 						}
-					} else {
-						player.sendMessage(
-								Prefix.sv + "Player " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + " not found.");
-						no(player);
 					}
 				} else {
 					player.sendMessage(Prefix.sv + Prefix.type + "/paymoney [player] [amount]");
 					no(player);
-
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("register") || CommandLabel.equalsIgnoreCase("SMDMain:register")
@@ -2387,7 +2283,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("test")) {
 				if (player.isOp()) {
-
+					player.sendMessage(isNumeric("1") + "");
+					player.sendMessage(isNumeric("1") + "");
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")) {
@@ -2416,7 +2313,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					v = "false";
 				}
 				if (v.equalsIgnoreCase("false")) {
-					openFreeGUI(player);
+					FreeItem.openFreeGUI(player);
 				} else {
 					player.sendMessage(Prefix.sv + "You're already redeem free item.");
 				}
@@ -2641,7 +2538,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		getConfig().set("countdown_message", ms);
 
 		regEvents();
-		
+
 		saveConfig();
 
 		BukkitScheduler s = getServer().getScheduler();
@@ -2695,30 +2592,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			} else {
 
 			}
-		}
-	}
-
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e) {
-		if (e.getInventory() instanceof EnchantingInventory) {
-			EnchantingInventory inv = (EnchantingInventory) e.getInventory();
-			Dye d = new Dye();
-			d.setColor(DyeColor.BLUE);
-			ItemStack i = d.toItemStack();
-			i.setAmount(0);
-			inv.setItem(1, i);
-		}
-	}
-
-	@EventHandler
-	public void onInventoryOpen(InventoryOpenEvent e) {
-		if (e.getInventory() instanceof EnchantingInventory) {
-			EnchantingInventory inv = (EnchantingInventory) e.getInventory();
-			Dye d = new Dye();
-			d.setColor(DyeColor.BLUE);
-			ItemStack i = d.toItemStack();
-			i.setAmount(64);
-			inv.setItem(1, i);
 		}
 	}
 
@@ -3022,7 +2895,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				int homeq = playerData.getInt("Quota.Home");
 				int luckyq = playerData.getInt("Quota.LuckyClick");
 				if (s.getLine(2).equalsIgnoreCase("home")) {
-					if (isInt(s.getLine(1))) {
+					if (isNumeric(s.getLine(1))) {
 						if (money > (Integer.parseInt(s.getLine(1)) * 5000)) {
 							try {
 								playerData.set("Quota.Home", homeq + Integer.parseInt(s.getLine(1)));
@@ -3245,76 +3118,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		p.openInventory(inv);
 	}
 
-	public void openFreeGUI(Player p) {
-		Inventory inv;
-		inv = Bukkit.createInventory(null, 54, "Free Item");
-		ItemStack black = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
-		ItemMeta bl = black.getItemMeta();
-		bl.setDisplayName(ChatColor.WHITE + " ");
-		black.setItemMeta(bl);
-		int x1 = 0;
-		int x2 = 53;
-		for (int x = x1; x <= x2; x++) {
-			inv.setItem(x, black);
-		}
-
-		ItemStack wooden_sword = new ItemStack(Material.WOOD_SWORD, 1);
-		ItemStack wooden_axe = new ItemStack(Material.WOOD_AXE, 1);
-		ItemStack wooden_pickaxe = new ItemStack(Material.WOOD_PICKAXE, 1);
-		ItemStack wooden_shovel = new ItemStack(Material.WOOD_SPADE, 1);
-		ItemStack wooden_hoe = new ItemStack(Material.WOOD_HOE, 1);
-		ItemStack bread = new ItemStack(Material.BREAD, 16);
-		inv.setItem(11, wooden_sword);
-		inv.setItem(12, wooden_axe);
-		inv.setItem(13, wooden_pickaxe);
-		inv.setItem(14, wooden_shovel);
-		inv.setItem(15, wooden_hoe);
-		inv.setItem(20, bread);
-
-		ItemStack emerald = new ItemStack(Material.EMERALD, 1);
-		ItemMeta em = black.getItemMeta();
-		em.setDisplayName(ChatColor.GREEN + "+ Money " + ChatColor.GOLD + ChatColor.BOLD + "1k Coin");
-		emerald.setItemMeta(em);
-		inv.setItem(21, emerald);
-
-		ItemStack bed = new ItemStack(Material.BED, 3);
-		ItemMeta bedm = black.getItemMeta();
-		bedm.setDisplayName(ChatColor.RED + "+ Sethome " + ChatColor.GOLD + ChatColor.BOLD + "3 places");
-		bed.setItemMeta(bedm);
-		inv.setItem(22, bed);
-
-		ItemStack flower = new ItemStack(Material.DOUBLE_PLANT, 15);
-		ItemMeta flowerm = black.getItemMeta();
-		flowerm.setDisplayName(
-				ChatColor.LIGHT_PURPLE + "+ LuckyClick Quota " + ChatColor.AQUA + ChatColor.BOLD + "15 quotas");
-		flower.setItemMeta(flowerm);
-		inv.setItem(23, flower);
-
-		ItemStack teleport = new ItemStack(Material.ENDER_PEARL, 10);
-		ItemMeta teleportm = black.getItemMeta();
-		teleportm.setDisplayName(ChatColor.BLUE + "+ TPR Quota " + ChatColor.AQUA + ChatColor.BOLD + "10 quotas");
-		teleport.setItemMeta(teleportm);
-		inv.setItem(24, teleport);
-
-		ItemStack yes = new ItemStack(Material.EMERALD_BLOCK, 1);
-		ItemMeta yesm = black.getItemMeta();
-		yesm.setDisplayName(ChatColor.GREEN + "Get all of them");
-		inv.setItem(37, yes);
-		inv.setItem(38, yes);
-		inv.setItem(46, yes);
-		inv.setItem(47, yes);
-
-		ItemStack no = new ItemStack(Material.REDSTONE_BLOCK, 1);
-		ItemMeta nom = black.getItemMeta();
-		nom.setDisplayName(ChatColor.GREEN + "I don't want them");
-		inv.setItem(42, no);
-		inv.setItem(43, no);
-		inv.setItem(51, no);
-		inv.setItem(52, no);
-
-		p.openInventory(inv);
-	}
-
 	public void playCircularEffect(Location location, Effect effect, boolean v) {
 		for (int i = 0; i <= 8; i += ((!v && (i == 3)) ? 2 : 1))
 			location.getWorld().playEffect(location, effect, i);
@@ -3387,7 +3190,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							if (s2 != null) {
 								if (s2.getLine(0).equalsIgnoreCase("[pay]")) {
 									long targetPlayerMoney = playerData.getLong("money");
-									if (isInt(s2.getLine(1)) && Integer.parseInt(s2.getLine(1)) > 0) {
+									if (isNumeric(s2.getLine(1)) && Integer.parseInt(s2.getLine(1)) > 0) {
 										long n = (long) (targetPlayerMoney - Integer.parseInt(s2.getLine(1)));
 										if (n < 0) {
 											n = 0;

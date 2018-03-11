@@ -180,7 +180,7 @@ public class OnPlayerConnection implements Listener{
 			World p = Bukkit.getWorld(world);
 			if (p == null) {
 				player.sendMessage(Prefix.pp + "Spawn location not found! (Wrong world)");
-				pluginMain.no(player);
+				pl.no(player);
 			}
 			Location loc = new Location(p, x, y, z);
 			loc.setPitch(pitch);
@@ -190,7 +190,7 @@ public class OnPlayerConnection implements Listener{
 			player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 10, 0);
 		} else {
 			player.sendMessage(Prefix.pp + "Spawn location not found! (Not set yet)");
-			pluginMain.no(player);
+			pl.no(player);
 		}
 	}
 	
@@ -202,21 +202,25 @@ public class OnPlayerConnection implements Listener{
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String rank = playerData.getString("rank");
+		String RankDisplay;
 		if (rank.equalsIgnoreCase("default")) {
-			event.setQuitMessage(Prefix.l + ChatColor.BLUE + player.getName());
+			RankDisplay = Rank.Default;
 		} else if (rank.equalsIgnoreCase("staff")) {
-			event.setQuitMessage(Prefix.l + ChatColor.DARK_BLUE + ChatColor.BOLD + "Staff" + ChatColor.BLUE + playerName);
+			RankDisplay = Rank.Staff;
 		} else if (rank.equalsIgnoreCase("vip")) {
-			event.setQuitMessage(Prefix.l + ChatColor.GREEN + ChatColor.BOLD + "VIP" + ChatColor.DARK_GREEN + playerName);
-		} else if (rank.equalsIgnoreCase("admin")) {
-			event.setQuitMessage(Prefix.l + ChatColor.DARK_RED + ChatColor.BOLD + "Admin" + ChatColor.RED + playerName);
-		} else if (rank.equalsIgnoreCase("owner")) {
-			event.setQuitMessage(Prefix.l + ChatColor.GOLD + ChatColor.BOLD + "Owner" + ChatColor.YELLOW + playerName);
-		} else if (rank.equalsIgnoreCase("builder")) {
-			event.setQuitMessage(Prefix.l + ChatColor.DARK_GREEN + ChatColor.BOLD + "Builder" + ChatColor.GREEN + playerName);
+			RankDisplay = Rank.Vip;
 		} else if (rank.equalsIgnoreCase("helper")) {
-			event.setQuitMessage(Prefix.l + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Helper" + ChatColor.WHITE + playerName);
+			RankDisplay = Rank.Helper;
+		} else if (rank.equalsIgnoreCase("admin")) {
+			RankDisplay = Rank.Admin;
+		} else if (rank.equalsIgnoreCase("owner")) {
+			RankDisplay = Rank.Staff;
+		} else if (rank.equalsIgnoreCase("builder")) {
+			RankDisplay = Rank.Builder;
+		} else {
+			RankDisplay = Rank.Default;
 		}
+		event.setQuitMessage(Prefix.l + RankDisplay + playerName);
 
 		int g = 0;
 		GameMode gm = player.getGameMode();

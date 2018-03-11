@@ -19,10 +19,9 @@ public class Prefix {
 
 	public static String np = ChatColor.RED + "" + ChatColor.BOLD + "ACCESS DENIED!" + ChatColor.GRAY
 			+ " You don't have permission!";
-	public static String noi = "You don't have enough item.";
-	public static String nom = "You don't have enough money.";
+	public static String noi = ChatColor.RED + "You don't have enough item.";
+	public static String nom = ChatColor.RED + "You don't have enough money.";
 	public static String non = ChatColor.GRAY + " is not number.";
-	public static String nn = ChatColor.GRAY + " is not number.";
 	public static String dbe = ChatColor.RED + "There are some errors that interrupt database.";
 	
 	public static String Ampersand = "§";

@@ -46,7 +46,7 @@ public class OnPlayerCommunication implements Listener {
 		if (muteis.equalsIgnoreCase("true")) {
 			player.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.GRAY + "You have been muted.");
 			player.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.YELLOW + "Reason: " + ChatColor.GRAY + mutere);
-			pluginMain.no(player);
+			pl.no(player);
 			event.setCancelled(true);
 		} else if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
