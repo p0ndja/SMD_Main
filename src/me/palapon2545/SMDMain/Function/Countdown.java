@@ -1,5 +1,6 @@
 package me.palapon2545.SMDMain.Function;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -72,91 +73,63 @@ public class Countdown {
 
 		if (w > 1) {
 			week = w + " weeks ";
-		}
-		if (w == 1) {
+		} else if (w == 1) {
 			week = w + " week ";
-		}
-		if (w == 0) {
-			week = "";
 		}
 
 		if (w > 1) {
 			week = w + " weeks ";
-		}
-		if (w == 1) {
+		} else if (w == 1) {
 			week = w + " week ";
-		}
-		if (w == 0) {
-			week = "";
 		}
 
 		if (d > 1) {
 			day = d + " days ";
-		}
-		if (d == 1) {
+		} else if (d == 1) {
 			day = d + " day ";
-		}
-		if (d == 0) {
-			hour = "";
 		}
 
 		if (h > 1) {
 			hour = h + " hours ";
-		}
-		if (h == 1) {
+		} else if (h == 1) {
 			hour = h + " hour ";
-		}
-		if (h == 0) {
-			hour = "";
 		}
 
 		if (m > 1) {
 			minute = m + " minutes ";
-		}
-		if (m == 1) {
+		} else if (m == 1) {
 			minute = m + " minute ";
 		}
-		if (m == 0) {
-			minute = "";
-		}
-
+		
 		if (s > 1) {
 			second = s + " seconds";
-		}
-		if (s == 1) {
+		} else if (s == 1) {
 			second = s + " second";
 		}
-		if (s == 0) {
-			second = "";
-		}
 
-		if (c > 5) {
-			second = s + " seconds";
-		}
 		if (c == 5) {
 			second = ChatColor.AQUA + "" + s + " seconds";
-		}
-		if (c == 4) {
+		} else if (c == 4) {
 			second = ChatColor.GREEN + "" + s + " seconds";
-		}
-		if (c == 3) {
+		} else if (c == 3) {
 			second = ChatColor.YELLOW + "" + s + " seconds";
-		}
-		if (c == 2) {
+		} else if (c == 2) {
 			second = ChatColor.GOLD + "" + s + " seconds";
-		}
-		if (c == 1) {
+		} else if (c == 1) {
 			second = ChatColor.RED + "" + s + " second";
-		}
-		if (c == 0) {
+		} else if (c == 0) {
 			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
-		} if (c == -1) {
+		} else if (c == -1) {
 			BossBar.removeBarAll();
+		} else {
+			//NOTHING
 		}
+		
+		long percent = ((c * 100)/ StockInt.CountdownStartLength);
 
 		if (c >= 0) {
 			if (StockInt.BarAPIHook == true) {
-				BossBar.sendBarAll(Prefix.cd + week + day + hour + minute + second);
+				BossBar.sendBarAll(Prefix.cd + week + day + hour + minute + second, (float) percent);
 			} else {
 				ActionBarAPI.sendToAll(Prefix.cd + week + day + hour + minute + second);
 			}

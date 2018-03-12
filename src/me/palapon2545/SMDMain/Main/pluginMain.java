@@ -1,12 +1,7 @@
 package me.palapon2545.SMDMain.Main;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.security.Provider;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,7 +13,6 @@ import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -37,32 +31,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Dye;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.palapon2545.SMDMain.EventListener.OnInventoryEvent;
 import me.palapon2545.SMDMain.EventListener.OnPlayerCommunication;
@@ -1191,6 +1173,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 										countdownMessageToPlayer = "with message " + ChatColor.GREEN + message;
 									}
 									StockInt.CountdownLength = i;
+									StockInt.CountdownStartLength = i;
 									StockInt.CountdownMessage = countdownMessage;
 									player.sendMessage(Prefix.sv + "Set timer to " + ChatColor.YELLOW + args[1]
 											+ " seconds " + countdownMessageToPlayer);
@@ -1210,7 +1193,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 								ActionBarAPI.sendToAll(Prefix.cd + "Countdown has been cancelled");
 							}
 
-							StockInt.CountdownLength = -1;
+							StockInt.CountdownLength = -2;
+							StockInt.CountdownStartLength = -2;
 							StockInt.CountdownMessage = "null";
 
 						} else {
@@ -2217,9 +2201,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 							player.sendMessage(Prefix.sv + "Are you kidding? You can't talking with yourself!");
 							no(player);
 						} else {
-							p.sendMessage(ChatColor.AQUA + playerName + ChatColor.WHITE + " ➡ " + ChatColor.GREEN
+							p.sendMessage(ChatColor.AQUA + playerName + ChatColor.WHITE + " to " + ChatColor.GREEN
 									+ "You" + ChatColor.WHITE + ": " + message);
-							player.sendMessage(ChatColor.AQUA + "You" + ChatColor.WHITE + " ➡ " + ChatColor.GREEN
+							player.sendMessage(ChatColor.AQUA + "You" + ChatColor.WHITE + " to " + ChatColor.GREEN
 									+ p.getName() + ChatColor.WHITE + ": " + message);
 							File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
 							FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
@@ -2259,9 +2243,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 									+ " not found or offline.");
 							no(player);
 						} else {
-							p.sendMessage(ChatColor.AQUA + playerName + ChatColor.WHITE + " ➡ " + ChatColor.GREEN
+							p.sendMessage(ChatColor.AQUA + playerName + ChatColor.WHITE + " to " + ChatColor.GREEN
 									+ "You" + ChatColor.WHITE + ": " + message);
-							player.sendMessage(ChatColor.AQUA + "You" + ChatColor.WHITE + " ➡ " + ChatColor.GREEN
+							player.sendMessage(ChatColor.AQUA + "You" + ChatColor.WHITE + " to " + ChatColor.GREEN
 									+ p.getName() + ChatColor.WHITE + ": " + message);
 						}
 					} else {
@@ -2282,10 +2266,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("test")) {
-				if (player.isOp()) {
-					player.sendMessage(isNumeric("1") + "");
-					player.sendMessage(isNumeric("1") + "");
-				}
+				
 			}
 			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")) {
 				if (player.isOp() || player.hasPermission("main.broadcast")) {
@@ -2463,6 +2444,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 		BossBar.removeBarAll();
 		getConfig().set("countdown", StockInt.CountdownLength);
+		getConfig().set("countdown_startLength", StockInt.CountdownStartLength);
 		getConfig().set("countdown_message", StockInt.CountdownMessage);
 		saveConfig();
 
@@ -2526,8 +2508,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 		Bukkit.broadcastMessage("Developer: " + ChatColor.GOLD + author);
 		Bukkit.broadcastMessage("");
 
-		long c = getConfig().getLong("count");
+		long c = getConfig().getLong("countdown");
 		StockInt.CountdownLength = c;
+		
+		long cs = getConfig().getLong("countdown_startLength");
+		StockInt.CountdownStartLength = cs;
 
 		String ms = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
 		if (ms == null) {
@@ -2574,7 +2559,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (StockInt.blockLogin.contains(playerName)) {
 				if (o == 20) {
 					p.kickPlayer(
-							"§cLogin Timeout (60 Seconds), §fPlease §are-join and try again.§r\nIf you forget password please contact at §b§lFanpage§r\n§nhttps://www.facebook.com/mineskymc");
+							"ยงcLogin Timeout (60 Seconds), ยงfPlease ยงare-join and try again.ยงr\nIf you forget password please contact at ยงbยงlFanpageยงr\nยงnhttps://www.facebook.com/mineskymc");
 				} else {
 					p.sendMessage("");
 					p.sendMessage(Prefix.sv + "Please login or register!");
@@ -3131,8 +3116,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (l0.endsWith("[tp]") || l0.endsWith("[sell]") || l0.endsWith("[buy]") || l0.endsWith("[luckyclick]")
 				|| l0.endsWith("[cmd]") || l0.endsWith("[buyquota]")) {
 			if (!player.isOp() && !player.hasPermission("main.sign")) {
-				event.setLine(0, "§4§lSorry§r, but");
-				event.setLine(1, "You §lneed §rperm.");
+				event.setLine(0, "ยง4ยงlSorryยงr, but");
+				event.setLine(1, "You ยงlneed ยงrperm.");
 				event.setLine(2, "or op to create sign with");
 				event.setLine(3, "'" + line0 + "'" + " prefix!");
 				player.sendMessage(Prefix.perm + Prefix.np);
