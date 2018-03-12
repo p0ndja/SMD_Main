@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import me.confuser.barapi.BarAPI;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class BossBar {
 
