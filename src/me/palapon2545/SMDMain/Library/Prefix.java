@@ -24,5 +24,7 @@ public class Prefix {
 	public static String non = ChatColor.GRAY + " is not number.";
 	public static String dbe = ChatColor.RED + "There are some errors that interrupt database.";
 	
-	public static String Ampersand = "§";
+	
+	static char aa = '\u00a7';
+	public static String Ampersand = aa + "";
 }

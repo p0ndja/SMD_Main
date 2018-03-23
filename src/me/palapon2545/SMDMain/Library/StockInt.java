@@ -6,11 +6,10 @@ import java.util.List;
 import org.bukkit.Material;
 
 public class StockInt {
-	public static long CountdownLength = 0;
-	public static long CountdownStartLength = 0;
+	public static long CountdownLength = -3;
+	public static long CountdownStartLength = -3;
 	public static String CountdownMessage = "null";
 	public static boolean BarAPIHook = false;
-	public static boolean BossBarAPIHook = false;
 	public static boolean LoginFeature = false;
 	public static List<String> blockLogin = new ArrayList<String>();
 	

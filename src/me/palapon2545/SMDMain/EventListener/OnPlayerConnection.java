@@ -101,7 +101,7 @@ public class OnPlayerConnection implements Listener{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String rank = playerData.getString("rank");
+			
 			int countwarn = playerData.getInt("warn");
 			if (countwarn > 0) {
 				player.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "ALERT!" + ChatColor.RED
@@ -110,9 +110,10 @@ public class OnPlayerConnection implements Listener{
 						+ ChatColor.BOLD + "BANNED.");
 			}
 			
+			String rank = playerData.getString("rank");
 			String RankDisplay;
-			if (rank.equalsIgnoreCase("default")) {
-				RankDisplay = Rank.Default;
+			if (rank.equalsIgnoreCase("member")) {
+				RankDisplay = Rank.Member;
 			} else if (rank.equalsIgnoreCase("staff")) {
 				RankDisplay = Rank.Staff;
 			} else if (rank.equalsIgnoreCase("vip")) {
@@ -122,11 +123,11 @@ public class OnPlayerConnection implements Listener{
 			} else if (rank.equalsIgnoreCase("admin")) {
 				RankDisplay = Rank.Admin;
 			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Staff;
+				RankDisplay = Rank.Owner;
 			} else if (rank.equalsIgnoreCase("builder")) {
 				RankDisplay = Rank.Builder;
 			} else {
-				RankDisplay = Rank.Default;
+				RankDisplay = Rank.Member;
 			}
 			player.setDisplayName(RankDisplay + playerName);
 			player.setPlayerListName(RankDisplay + playerName);
@@ -203,8 +204,8 @@ public class OnPlayerConnection implements Listener{
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String rank = playerData.getString("rank");
 		String RankDisplay;
-		if (rank.equalsIgnoreCase("default")) {
-			RankDisplay = Rank.Default;
+		if (rank.equalsIgnoreCase("member")) {
+			RankDisplay = Rank.Member;
 		} else if (rank.equalsIgnoreCase("staff")) {
 			RankDisplay = Rank.Staff;
 		} else if (rank.equalsIgnoreCase("vip")) {
@@ -214,11 +215,11 @@ public class OnPlayerConnection implements Listener{
 		} else if (rank.equalsIgnoreCase("admin")) {
 			RankDisplay = Rank.Admin;
 		} else if (rank.equalsIgnoreCase("owner")) {
-			RankDisplay = Rank.Staff;
+			RankDisplay = Rank.Owner;
 		} else if (rank.equalsIgnoreCase("builder")) {
 			RankDisplay = Rank.Builder;
 		} else {
-			RankDisplay = Rank.Default;
+			RankDisplay = Rank.Member;
 		}
 		event.setQuitMessage(Prefix.l + RankDisplay + playerName);
 

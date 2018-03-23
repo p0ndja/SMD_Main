@@ -57,8 +57,8 @@ public class OnPlayerCommunication implements Listener {
 			String RankDisplay;
 			ChatColor MessageColor = ChatColor.WHITE;
 
-			if (rank.equalsIgnoreCase("default")) {
-				RankDisplay = Rank.Default;
+			if (rank.equalsIgnoreCase("member")) {
+				RankDisplay = Rank.Member;
 			} else if (rank.equalsIgnoreCase("staff")) {
 				RankDisplay = Rank.Staff;
 			} else if (rank.equalsIgnoreCase("vip")) {
@@ -68,11 +68,11 @@ public class OnPlayerCommunication implements Listener {
 			} else if (rank.equalsIgnoreCase("admin")) {
 				RankDisplay = Rank.Admin;
 			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Staff;
+				RankDisplay = Rank.Owner;
 			} else if (rank.equalsIgnoreCase("builder")) {
 				RankDisplay = Rank.Builder;
 			} else {
-				RankDisplay = Rank.Default;
+				RankDisplay = Rank.Member;
 			}
 
 			if (rank.equalsIgnoreCase("default")) {
