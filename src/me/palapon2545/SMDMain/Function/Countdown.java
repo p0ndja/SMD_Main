@@ -13,7 +13,7 @@ import me.palapon2545.SMDMain.Function.BossBar;
 public class Countdown {
 
 	static boolean CountdownDisplayMessageBoolean = false;
-
+	
 	public static boolean Countdown() {
 		long c = StockInt.CountdownLength;
 		long n = c - 1;
@@ -47,14 +47,14 @@ public class Countdown {
 				CalculateTimer();
 			}
 		}
-		if (c == -3) {
-			StockInt.CountdownLength = -3;
+		if (c == -2) {
+			StockInt.CountdownLength = -2;
 		} else {
 			StockInt.CountdownLength = n;
 		}
 		return false;
 	}
-
+	
 	public static void CalculateTimer() {
 		long c = StockInt.CountdownLength;
 		long w = c / 604800;
@@ -100,7 +100,7 @@ public class Countdown {
 		} else if (m == 1) {
 			minute = m + " minute ";
 		}
-
+		
 		if (s > 1) {
 			second = s + " seconds";
 		} else if (s == 1) {
@@ -119,15 +119,13 @@ public class Countdown {
 			second = ChatColor.RED + "" + s + " second";
 		} else if (c == 0) {
 			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
-		} else if (c == -2) {
-			if (StockInt.BarAPIHook == true) {
-				BossBar.removeBarAll();
-			}
+		} else if (c == -1) {
+			BossBar.removeBarAll();
 		} else {
-			// NOTHING
+			//NOTHING
 		}
-
-		long percent = ((c * 100) / StockInt.CountdownStartLength);
+		
+		long percent = ((c * 100)/ StockInt.CountdownStartLength);
 
 		if (c >= 0) {
 			if (StockInt.BarAPIHook == true) {

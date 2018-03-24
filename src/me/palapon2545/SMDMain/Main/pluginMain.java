@@ -33,6 +33,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
@@ -46,7 +47,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import me.palapon2545.SMDMain.EventListener.OnInventoryEvent;
-import me.palapon2545.SMDMain.EventListener.OnPlayerClickSign;
 import me.palapon2545.SMDMain.EventListener.OnPlayerCommunication;
 import me.palapon2545.SMDMain.EventListener.OnPlayerConnection;
 import me.palapon2545.SMDMain.EventListener.OnPlayerMovement;
@@ -58,7 +58,6 @@ import me.palapon2545.SMDMain.Function.FreeItem;
 import me.palapon2545.SMDMain.Function.Money;
 import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Library.Prefix;
-import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
 
 public class pluginMain extends JavaPlugin implements Listener {
@@ -69,7 +68,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		pm.registerEvents(new OnPlayerCommunication(this), this);
 		pm.registerEvents(new OnPlayerMovement(this), this);
 		pm.registerEvents(new OnInventoryEvent(this), this);
-		pm.registerEvents(new OnPlayerClickSign(this), this);
 	}
 
 	public static boolean isNumeric(String str) {
@@ -104,6 +102,37 @@ public class pluginMain extends JavaPlugin implements Listener {
 		list.addAll(Arrays.asList(element));
 		getConfig().set(key, list);
 		saveConfig();
+	}
+
+	public void buy(Player player, String item, int amount, long price, short data) {
+		String playerName = player.getName();
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		Material l = Material.getMaterial(item.toUpperCase());
+		if (l != null) {
+			Inventory inv = player.getInventory();
+			long money = playerData.getLong("money");
+			ItemStack c = new ItemStack(l);
+			c.getData().setData((byte) data);
+			if (money >= price) {
+				inv.addItem(new ItemStack(l, amount, data));
+				try {
+					playerData.set("money", money - price);
+					playerData.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				player.sendMessage(Prefix.sv + "You paid " + ChatColor.GOLD + price + " Coin(s) " + ChatColor.GRAY
+						+ "from buying " + ChatColor.AQUA + amount + "x " + item);
+			} else {
+				player.sendMessage(Prefix.sv + Prefix.nom);
+				no(player);
+			}
+		} else {
+			player.sendMessage(Prefix.sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
+			no(player);
+		}
 	}
 
 	@EventHandler
@@ -696,13 +725,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.heal")
 						|| !rank.equalsIgnoreCase("default")) {
 					String target = playerName;
-
-					if (!args[0].isEmpty()) {
+					if (args.length == 1) {
 						target = args[0];
-					} else {
-						target = playerName;
 					}
-
 					if (args[0].equalsIgnoreCase("all")) {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							for (PotionEffect Effect : p.getActivePotionEffects()) {
@@ -1140,22 +1165,18 @@ public class pluginMain extends JavaPlugin implements Listener {
 							if (args.length >= 2) {
 								if (isNumeric(args[1])) {
 									long i = Long.parseLong(args[1]);
-									if (i < 1) {
-										player.sendMessage(Prefix.sv + "Countdown need to more than 0 second!");
-									} else {
-										if (args.length > 2) {
-											for (int m = 2; m != args.length; m++)
-												message += args[m] + " ";
-											message = message.replaceAll("&", Prefix.Ampersand);
-											countdownMessage = message;
-											countdownMessageToPlayer = "with message " + ChatColor.GREEN + message;
-										}
-										StockInt.CountdownLength = i;
-										StockInt.CountdownStartLength = i;
-										StockInt.CountdownMessage = countdownMessage;
-										player.sendMessage(Prefix.sv + "Set timer to " + ChatColor.YELLOW + args[1]
-												+ " seconds " + countdownMessageToPlayer);
+									if (args.length > 2) {
+										for (int m = 2; m != args.length; m++)
+											message += args[m] + " ";
+										message = message.replaceAll("&", Prefix.Ampersand);
+										countdownMessage = message;
+										countdownMessageToPlayer = "with message " + ChatColor.GREEN + message;
 									}
+									StockInt.CountdownLength = i;
+									StockInt.CountdownStartLength = i;
+									StockInt.CountdownMessage = countdownMessage;
+									player.sendMessage(Prefix.sv + "Set timer to " + ChatColor.YELLOW + args[1]
+											+ " seconds " + countdownMessageToPlayer);
 								} else {
 									player.sendMessage(Prefix.sv + ChatColor.YELLOW + args[1] + Prefix.non);
 								}
@@ -1434,10 +1455,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 							String targetRank = "";
 							ChatColor targetListPrefixColor = ChatColor.GRAY;
 							ChatColor targetListNameColor = ChatColor.GRAY;
-							if (args[0].equalsIgnoreCase("member")) {
-								targetRank = "member";
-								targetListPrefixColor = ChatColor.GRAY;
-								targetListNameColor = ChatColor.DARK_AQUA;
+							if (args[0].equalsIgnoreCase("default")) {
+								targetRank = "default";
+								targetListPrefixColor = ChatColor.BLUE;
+								targetListNameColor = ChatColor.BLUE;
 							} else if (args[0].equalsIgnoreCase("vip")) {
 								targetRank = "vip";
 								targetListPrefixColor = ChatColor.GREEN;
@@ -1464,7 +1485,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 								targetListNameColor = ChatColor.YELLOW;
 							} else {
 								player.sendMessage(Prefix.db + Prefix.type
-										+ "/rank [member|vip|helper|staff|builder|admin|owner] " + targetPlayerName);
+										+ "/rank [default|vip|helper|staff|builder|admin|owner] " + targetPlayerName);
 								no(player);
 								return true;
 							}
@@ -1478,16 +1499,16 @@ public class pluginMain extends JavaPlugin implements Listener {
 								yes(p);
 							}
 							String rankU = makeFirstCapital(args[0]);
-
-							if (targetRank.equalsIgnoreCase("vip")) {
+							if (targetRank.equalsIgnoreCase("default")) {
+								targetPlayer.setPlayerListName(targetListNameColor + targetPlayerName);
+							} else if (targetRank.equalsIgnoreCase("vip")) {
+								targetPlayer.setPlayerListName(targetListPrefixColor + "" + ChatColor.BOLD
+										+ rankU.toUpperCase() + targetListNameColor + targetPlayerName);
 								rankU = "VIP";
+							} else {
+								targetPlayer.setPlayerListName(targetListPrefixColor + "" + ChatColor.BOLD + rankU
+										+ targetListNameColor + targetPlayerName);
 							}
-
-							targetPlayer.setPlayerListName(targetListPrefixColor + "" + ChatColor.BOLD + rankU
-									+ targetListNameColor + targetPlayerName);
-							targetPlayer.setDisplayName(targetListPrefixColor + "" + ChatColor.BOLD + rankU
-									+ targetListNameColor + targetPlayerName);
-
 							Bukkit.broadcastMessage(Prefix.db + "Player " + ChatColor.YELLOW + targetPlayerName
 									+ "'s rank " + ChatColor.GRAY + "has been updated to " + targetListPrefixColor
 									+ ChatColor.BOLD + rankU);
@@ -1498,7 +1519,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						}
 					} else {
 						player.sendMessage(ChatColor.BLUE + "Rank> " + Prefix.type
-								+ "/rank [member|vip|helper|staff|builder|admin|owner] [player]");
+								+ "/rank [default|vip|helper|staff|builder|admin|owner] [player]");
 						no(player);
 					}
 				} else {
@@ -2245,7 +2266,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("test")) {
-
+				
 			}
 			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")) {
 				if (player.isOp() || player.hasPermission("main.broadcast")) {
@@ -2489,7 +2510,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 		long c = getConfig().getLong("countdown");
 		StockInt.CountdownLength = c;
-
+		
 		long cs = getConfig().getLong("countdown_startLength");
 		StockInt.CountdownStartLength = cs;
 
@@ -2504,34 +2525,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		regEvents();
 
 		saveConfig();
-
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			String playerName = p.getName();
-			File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
-			File f = new File(userdata, File.separator + "config.yml");
-			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-			String rank = playerData.getString("rank");
-			String RankDisplay;
-			if (rank.equalsIgnoreCase("member")) {
-				RankDisplay = Rank.Member;
-			} else if (rank.equalsIgnoreCase("staff")) {
-				RankDisplay = Rank.Staff;
-			} else if (rank.equalsIgnoreCase("vip")) {
-				RankDisplay = Rank.Vip;
-			} else if (rank.equalsIgnoreCase("helper")) {
-				RankDisplay = Rank.Helper;
-			} else if (rank.equalsIgnoreCase("admin")) {
-				RankDisplay = Rank.Admin;
-			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Owner;
-			} else if (rank.equalsIgnoreCase("builder")) {
-				RankDisplay = Rank.Builder;
-			} else {
-				RankDisplay = Rank.Member;
-			}
-			p.setDisplayName(RankDisplay + playerName);
-			p.setPlayerListName(RankDisplay + playerName);
-		}
 
 		BukkitScheduler s = getServer().getScheduler();
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -2584,6 +2577,366 @@ public class pluginMain extends JavaPlugin implements Listener {
 			} else {
 
 			}
+		}
+	}
+
+	@EventHandler
+	public void onPlayerClick(PlayerInteractEvent e) {
+		Action act;
+		act = e.getAction();
+		if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.SOIL)
+			e.setCancelled(true);
+		if ((act == Action.RIGHT_CLICK_BLOCK) == false) {
+			return;
+		}
+		Player player = e.getPlayer();
+		Block block = e.getClickedBlock();
+		String playerName = player.getName();
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		long money = playerData.getLong("money");
+		if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
+			Sign s = (Sign) block.getState();
+			if (s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) {
+				String s0 = s.getLine(0).toLowerCase();
+				int sLine_amount = Integer.parseInt(s.getLine(1));
+				String s2 = s.getLine(2).toLowerCase();
+				String sLine_item = "";
+				short sLine_data = 0;
+				if (!s2.contains(":")) {
+					sLine_item = s.getLine(2);
+				} else {
+					String[] line2 = s.getLine(2).split(":");
+					sLine_item = line2[0];
+					sLine_data = (short) Integer.parseInt(line2[1]);
+				}
+				long sLine_price = Integer.parseInt(s.getLine(3));
+				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s2.isEmpty() && !s.getLine(3).isEmpty()) {
+					if (s0.endsWith("[sell]")) {
+						sell(player, sLine_item, sLine_amount, sLine_price, sLine_data);
+					}
+					if (s0.endsWith("[buy]")) {
+						buy(player, sLine_item, sLine_amount, sLine_price, sLine_data);
+					}
+				} else {
+					return;
+				}
+			}
+			int lcq = playerData.getInt("Quota.LuckyClick");
+			if (s.getLine(0).equalsIgnoreCase("[luckyclick]")) {
+				if (lcq < 1) {
+					player.sendMessage(Prefix.sv + "You don't have enough quota!");
+					no(player);
+					player.sendMessage(Prefix.sv + "Use " + ChatColor.AQUA + "/buyquota LuckyClick" + ChatColor.GRAY
+							+ " to buy more quota.");
+				} else {
+					try {
+						playerData.set("Quota.LuckyClick", lcq - 1);
+						playerData.save(f);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					int r = new Random().nextInt(20);
+					if (r == 0) {
+						int r1 = new Random().nextInt(6);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.DIAMOND, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " DIAMOND");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.DIAMOND, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " DIAMOND");
+						}
+					}
+					if (r == 1) {
+						int r1 = new Random().nextInt(16);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.IRON_INGOT, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " IRON_INGOT");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.IRON_INGOT, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " IRON_INGOT");
+						}
+					}
+					if (r == 2) {
+						int r1 = new Random().nextInt(501);
+						if (r1 == 0) {
+							r1 = 1;
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " Coin(s)");
+						}
+						if (r1 > 0) {
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " Coin(s)");
+						}
+						try {
+							playerData.set("money", money + r1);
+							playerData.save(f);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+					if (r == 3) {
+						int r1 = new Random().nextInt(21);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.EXP_BOTTLE, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " EXP_BOTTLE");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.EXP_BOTTLE, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " EXP_BOTTLE");
+						}
+					}
+					if (r == 4) {
+						int r1 = new Random().nextInt(11);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.GOLD_INGOT, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " GOLD_INGOT");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.GOLD_INGOT, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " GOLD_INGOT");
+						}
+					}
+					if (r == 5) {
+						int r1 = new Random().nextInt(201);
+						if (r1 == 0) {
+							r1 = 1;
+						}
+						try {
+							playerData.set("money", money - r1);
+							playerData.save(f);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You got "
+								+ ChatColor.RED + "-" + r1 + " Coin(s)");
+					}
+					if (r == 6) {
+						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 600, 10));
+						player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You got "
+								+ ChatColor.RED + "30 second CONFUSED Effect");
+					}
+					if (r == 7) {
+						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1200, 10));
+						player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You got "
+								+ ChatColor.RED + "1 minute SLOW_DIGGING Effect");
+					}
+					if (r == 8) {
+						int r1 = new Random().nextInt(65);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.DIRT, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You got "
+									+ ChatColor.RED + r1 + " Dirt");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.DIRT, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You got "
+									+ ChatColor.RED + r1 + " Dirt");
+						}
+					}
+					if (r == 9) {
+						player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You don't get "
+								+ ChatColor.RED + "ANYTHING");
+					}
+					if (r == 10) {
+						int r1 = new Random().nextInt(16);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.INK_SACK, r1, (short) 4);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " LAPIS_LAZURI");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.INK_SACK, r1, (short) 4);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " LAPIS_LAZURI");
+						}
+					}
+					if (r == 11) {
+						int r1 = new Random().nextInt(4);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.EMERALD, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " EMERALD");
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.EMERALD, r1);
+							player.getInventory().addItem(item);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " EMERALD");
+						}
+					}
+					if (r == 12) {
+						player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 1200, 10));
+						player.sendMessage(Prefix.lc + ChatColor.RED + "Bad Luck! " + ChatColor.WHITE + "You got "
+								+ ChatColor.RED + "1 Minute BLINDNESS Effect");
+					}
+					if (r == 13) {
+						player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 10));
+						player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE + "You got "
+								+ ChatColor.YELLOW + "10 second REGENERATION Effect");
+					}
+					if (r == 14) {
+						ItemStack item = new ItemStack(Material.GOLDEN_APPLE, 1);
+						player.getInventory().addItem(item);
+						player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE + "You got "
+								+ ChatColor.YELLOW + "1 NORMAL_GOLDEN_APPLE");
+					}
+					if (r == 15) {
+						player.sendMessage(Prefix.lc + ChatColor.RED + "Bad Luck! " + ChatColor.WHITE + "You got "
+								+ ChatColor.RED + "I'm Gay Message, LOL!");
+						player.chat("I'm Gay~!");
+					}
+					if (r == 16) {
+						int r1 = new Random().nextInt(21);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.REDSTONE, r1);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " REDSTONE");
+							player.getInventory().addItem(item);
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.REDSTONE, r1);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " REDSTONE");
+							player.getInventory().addItem(item);
+						}
+					}
+					if (r == 17) {
+						player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE + "You got "
+								+ ChatColor.YELLOW + "AIR " + ChatColor.GRAY + ChatColor.ITALIC + "(Seriously?)");
+					}
+					if (r == 18) {
+						int r1 = new Random().nextInt(21);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.COAL, r1);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! (or not) " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " COAL");
+							player.getInventory().addItem(item);
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.COAL, r1);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! (or not) " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " COAL");
+							player.getInventory().addItem(item);
+						}
+					}
+					if (r == 19) {
+						int r1 = new Random().nextInt(31);
+						if (r1 == 0) {
+							r1 = 1;
+							ItemStack item = new ItemStack(Material.COBBLESTONE, r1);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! (or not) " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " COBBLESTONE");
+							player.getInventory().addItem(item);
+						}
+						if (r1 > 0) {
+							ItemStack item = new ItemStack(Material.COBBLESTONE, r1);
+							player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! (or not) " + ChatColor.WHITE
+									+ "You got " + ChatColor.YELLOW + r1 + " COBBLESTONE");
+							player.getInventory().addItem(item);
+						}
+					}
+					int lcq2 = playerData.getInt("Quota.LuckyClick");
+					player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 10, 0);
+					player.sendMessage(
+							Prefix.sv + "You have " + ChatColor.LIGHT_PURPLE + lcq2 + " Lucky Click Quota leff!");
+				}
+			}
+			if (s.getLine(0).equalsIgnoreCase("[buyquota]")) {
+				int tprq = playerData.getInt("Quota.TPR");
+				int homeq = playerData.getInt("Quota.Home");
+				int luckyq = playerData.getInt("Quota.LuckyClick");
+				if (s.getLine(2).equalsIgnoreCase("home")) {
+					if (isNumeric(s.getLine(1))) {
+						if (money > (Integer.parseInt(s.getLine(1)) * 5000)) {
+							try {
+								playerData.set("Quota.Home", homeq + Integer.parseInt(s.getLine(1)));
+								playerData.set("money", money - (Integer.parseInt(s.getLine(1)) * 5000));
+								playerData.save(f);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							player.sendMessage(Prefix.sv + "You " + ChatColor.YELLOW + "paid "
+									+ (Integer.parseInt(s.getLine(1)) * 5000) + " Coins" + ChatColor.GRAY
+									+ " to bought " + ChatColor.GREEN + s.getLine(1) + "x Home Quota");
+							yes(player);
+						} else {
+							player.sendMessage(Prefix.sv + Prefix.nom);
+							no(player);
+						}
+					}
+				} else if (s.getLine(2).equalsIgnoreCase("tpr")) {
+					if (money > (Integer.parseInt(s.getLine(1)) * 300)) {
+						try {
+							playerData.set("Quota.TPR", tprq + Integer.parseInt(s.getLine(1)));
+							playerData.set("money", money - (Integer.parseInt(s.getLine(1)) * 300));
+							playerData.save(f);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						player.sendMessage(Prefix.sv + "You " + ChatColor.YELLOW + "paid "
+								+ (Integer.parseInt(s.getLine(1)) * 300) + " Coins" + ChatColor.GRAY + " to bought "
+								+ ChatColor.GREEN + s.getLine(1) + "x TPR Quota");
+						yes(player);
+					} else {
+						player.sendMessage(Prefix.sv + Prefix.nom);
+						no(player);
+					}
+				}
+				if (s.getLine(2).equalsIgnoreCase("luckyclick")) {
+					if (money > (Integer.parseInt(s.getLine(1)) * 500)) {
+						try {
+							playerData.set("Quota.LuckyClick", luckyq + Integer.parseInt(s.getLine(1)));
+							playerData.set("money", money - (Integer.parseInt(s.getLine(1)) * 500));
+							playerData.save(f);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						player.sendMessage(Prefix.sv + "You " + ChatColor.YELLOW + "paid "
+								+ (Integer.parseInt(s.getLine(1)) * 500) + " Coins" + ChatColor.GRAY + " to bought "
+								+ ChatColor.GREEN + s.getLine(1) + "x LuckyClick Quota");
+						yes(player);
+					} else {
+						player.sendMessage(Prefix.sv + Prefix.nom);
+						no(player);
+					}
+				}
+			}
+		} else {
+			return;
 		}
 	}
 
@@ -2854,6 +3207,88 @@ public class pluginMain extends JavaPlugin implements Listener {
 		list.removeAll(Arrays.asList(element));
 		getConfig().set(key, list);
 		saveConfig();
+	}
+
+	public boolean decreseitem1(Player player, int itemid, int itemdata, boolean forcetruedata) {
+		ItemStack itm = null;
+		int lenl = 0;
+
+		if (itemid == 0) {
+			return false;
+		}
+
+		for (lenl = 0; lenl < player.getInventory().getContents().length; lenl++) {
+			if (player.getInventory().getItem(lenl) == null) {
+				continue;
+			}
+
+			itm = player.getInventory().getItem(lenl);
+
+			if (itm.getType().getId() != itemid) {
+				continue;
+			}
+
+			if (forcetruedata == true) {
+				if (itm.getData().getData() != itemdata) {
+					continue;
+				}
+			}
+
+			if (itm.getAmount() != 1) {
+				itm.setAmount(itm.getAmount() - 1);
+				return true;
+			} else {
+				ItemStack emy = player.getItemInHand();
+				emy.setTypeId(0);
+
+				player.getInventory().setItem(lenl, emy);
+
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	public void sell(Player player, String item, int amount, long price, short data) {
+		String playerName = player.getName();
+		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		Material l = Material.getMaterial(item.toUpperCase());
+
+		if (l != null) {
+
+			Inventory inv = player.getInventory();
+			long money = playerData.getLong("money");
+			ItemStack curItem = new ItemStack(l, amount, data);
+			int sellCount = 0;
+			for (int lAmount = 0; lAmount < amount; lAmount++) {
+				boolean cando = decreseitem1(player, curItem.getType().getId(), curItem.getData().getData(), true);
+				if (cando == true) {
+					sellCount++;
+				}
+			}
+
+			// can sell
+			if (sellCount > 0) {
+				double gotPrice = ((double) price / (double) amount) * sellCount;
+				try {
+					playerData.set("money", money + gotPrice);
+					playerData.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				player.sendMessage(Prefix.sv + "You got " + ChatColor.GOLD + gotPrice + " Coin(s) " + ChatColor.GRAY
+						+ "from selling " + ChatColor.AQUA + sellCount + "x " + item);
+			} else {
+				player.sendMessage(Prefix.sv + Prefix.noi);
+				no(player);
+			}
+		} else {
+			player.sendMessage(Prefix.sv + "Item " + ChatColor.YELLOW + item + ChatColor.GRAY + " not found.");
+			no(player);
+		}
 	}
 
 	public void yes(Player p) {

@@ -9,5 +9,5 @@ public class Rank {
 	public static String Owner = ChatColor.GOLD + "" + ChatColor.BOLD + "Owner" + ChatColor.YELLOW;
 	public static String Builder = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Builder" + ChatColor.GREEN;
 	public static String Helper = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Helper" + ChatColor.WHITE;
-	public static String Member = ChatColor.GRAY + "" + ChatColor.BOLD + "Member" + ChatColor.DARK_AQUA;
+	public static String Default = ChatColor.BLUE + "";
 }
