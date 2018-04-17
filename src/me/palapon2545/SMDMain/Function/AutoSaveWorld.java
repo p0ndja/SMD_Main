@@ -13,7 +13,7 @@ public class AutoSaveWorld {
 		int player = Bukkit.getServer().getOnlinePlayers().size();
 		if (player > 0) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				p.sendMessage(Prefix.sv + ChatColor.AQUA + "World and Player data has been saved.");
+				p.sendMessage(Prefix.server + ChatColor.AQUA + "World and Player data has been saved.");
 				p.saveData();
 			}
 			for (World w : Bukkit.getWorlds()) {

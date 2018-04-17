@@ -72,6 +72,8 @@ public class OnPlayerConnection implements Listener{
 				playerData.set("Security.email", "none");
 				playerData.createSection("gamemode");
 				playerData.set("gamemode", 0);
+				playerData.createSection("god");
+				playerData.set("god", "false");
 				pl.getConfig().set("redeem.player." + playerName, "false");
 				pl.getConfig().set("free_item." + playerName, "false");
 				pl.getConfig().set("event.queuelist." + playerName, "false");
@@ -84,7 +86,7 @@ public class OnPlayerConnection implements Listener{
 		if (f.exists()) {
 			String invi = playerData.getString("Invisible");
 			if (invi.equalsIgnoreCase("true")) {
-				player.sendMessage(Prefix.sv + "You're now " + ChatColor.AQUA + "invisible.");
+				player.sendMessage(Prefix.server + "You're now " + ChatColor.AQUA + "invisible.");
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.hasPermission("main.seeinvisible") || p.isOp() || p.hasPermission("main.*")) {
 						p.showPlayer(player);
@@ -122,7 +124,7 @@ public class OnPlayerConnection implements Listener{
 			} else if (rank.equalsIgnoreCase("admin")) {
 				RankDisplay = Rank.Admin;
 			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Staff;
+				RankDisplay = Rank.Owner;
 			} else if (rank.equalsIgnoreCase("builder")) {
 				RankDisplay = Rank.Builder;
 			} else {
@@ -150,7 +152,7 @@ public class OnPlayerConnection implements Listener{
 			playerData.save(f);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.db + Prefix.dbe);
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 
 		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
@@ -161,7 +163,7 @@ public class OnPlayerConnection implements Listener{
 			tempData.save(tempFile);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.db + Prefix.dbe);
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 
 		player.sendMessage("");
@@ -179,17 +181,17 @@ public class OnPlayerConnection implements Listener{
 			String world = pl.getConfig().getString("spawn" + "." + "spawn" + ".world");
 			World p = Bukkit.getWorld(world);
 			if (p == null) {
-				player.sendMessage(Prefix.pp + "Spawn location not found! (Wrong world)");
+				player.sendMessage(Prefix.portal + "Spawn location not found! (Wrong world)");
 				pl.no(player);
 			}
 			Location loc = new Location(p, x, y, z);
 			loc.setPitch(pitch);
 			loc.setYaw(yaw);
 			player.teleport(loc);
-			player.sendMessage(Prefix.pp + "Teleported to " + ChatColor.YELLOW + "Spawn" + ChatColor.GRAY + ".");
+			player.sendMessage(Prefix.portal + "Teleported to " + ChatColor.YELLOW + "Spawn" + ChatColor.GRAY + ".");
 			player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 10, 0);
 		} else {
-			player.sendMessage(Prefix.pp + "Spawn location not found! (Not set yet)");
+			player.sendMessage(Prefix.portal + "Spawn location not found! (Not set yet)");
 			pl.no(player);
 		}
 	}
@@ -214,7 +216,7 @@ public class OnPlayerConnection implements Listener{
 		} else if (rank.equalsIgnoreCase("admin")) {
 			RankDisplay = Rank.Admin;
 		} else if (rank.equalsIgnoreCase("owner")) {
-			RankDisplay = Rank.Staff;
+			RankDisplay = Rank.Owner;
 		} else if (rank.equalsIgnoreCase("builder")) {
 			RankDisplay = Rank.Builder;
 		} else {
@@ -245,12 +247,18 @@ public class OnPlayerConnection implements Listener{
 			tempData.save(tempFile);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.db + Prefix.dbe);
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 
 		pl.getConfig().set("event.queuelist." + playerName, "false");
 		pl.getConfig().set("gamemode." + playerName, g);
 		pl.saveConfig();
+		
+		if (StockInt.LoginFeature == true) {
+			StockInt.blockLogin.remove(playerName);
+			player.setGameMode(GameMode.SPECTATOR);
+		}
+		
 		int n = Bukkit.getServer().getOnlinePlayers().size();
 		if (n == 0 || n < 0) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");

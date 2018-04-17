@@ -68,17 +68,11 @@ public class OnPlayerCommunication implements Listener {
 			} else if (rank.equalsIgnoreCase("admin")) {
 				RankDisplay = Rank.Admin;
 			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Staff;
+				RankDisplay = Rank.Owner;
 			} else if (rank.equalsIgnoreCase("builder")) {
 				RankDisplay = Rank.Builder;
 			} else {
 				RankDisplay = Rank.Default;
-			}
-
-			if (rank.equalsIgnoreCase("default")) {
-				MessageColor = ChatColor.GRAY;
-			} else {
-				MessageColor = ChatColor.WHITE;
 			}
 
 			event.setFormat(RankDisplay + playerName + MessageColor + message1);

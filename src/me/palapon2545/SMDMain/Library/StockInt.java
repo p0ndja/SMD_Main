@@ -14,6 +14,8 @@ public class StockInt {
 	public static boolean LoginFeature = false;
 	public static List<String> blockLogin = new ArrayList<String>();
 	
+	public static String pluginDir = "plugins/SMDMain/";
+	
 	public static Material[] luckyClick_Simple = {Material.DIRT};
 	public static Material[] luckyClick_High = {Material.DIAMOND, Material.COBBLESTONE};
 	public static Material[] luckyClick_Rare = {Material.DIAMOND_BLOCK, Material.EMERALD, };

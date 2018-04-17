@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 1.1_BETA-5a
+version: 1.1_BETA-6a
 description: palapon2545's first java plugin development.
 author: PondJaTH
 softdepend: [BarAPI]
@@ -66,6 +66,9 @@ commands:
   test:
        description: debug command!
        usage: /test
+  god:
+       description: toggle god mode
+       usage: /god
   removehome:
        description: Remove home location
        usage: /removehome [name]
@@ -241,8 +244,12 @@ permissions:
            main.countdown: true
            main.invisible: true
            main.money: true
+           main.god: true
   main.setspawn:
        description: Allow to use /setspawn
+       default: op
+  main.god:
+       description: Allow to use /god
        default: op
   main.warp:
        description: Allow to use /setwarp, /removewarp
