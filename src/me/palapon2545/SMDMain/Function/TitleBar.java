@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class TitleBar extends JavaPlugin implements Listener {
-	public static void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime,
+public class TitleBar extends JavaPlugin {
+	public void sendTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime,
 			ChatColor color) {
 		try {
 			Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class)
@@ -30,7 +30,7 @@ public class TitleBar extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime,
+	public void sendSubTitle(Player player, String text, int fadeInTime, int showTime, int fadeOutTime,
 			ChatColor color) {
 		try {
 			Object chatTitle = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class)
@@ -51,7 +51,7 @@ public class TitleBar extends JavaPlugin implements Listener {
 		}
 	}
 
-	private static void sendPacket(Player player, Object packet) {
+	private void sendPacket(Player player, Object packet) {
 		try {
 			Object handle = player.getClass().getMethod("getHandle").invoke(player);
 			Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
@@ -68,7 +68,7 @@ public class TitleBar extends JavaPlugin implements Listener {
 	 *            Name of the class
 	 * @return Class
 	 */
-	private static Class<?> getNMSClass(String name) {
+	private Class<?> getNMSClass(String name) {
 		try {
 			return Class.forName("net.minecraft.server"
 					+ Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);

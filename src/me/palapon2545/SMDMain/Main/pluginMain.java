@@ -2,6 +2,7 @@ package me.palapon2545.SMDMain.Main;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,7 +58,6 @@ import me.palapon2545.SMDMain.Function.Countdown;
 import me.palapon2545.SMDMain.Function.FreeItem;
 import me.palapon2545.SMDMain.Function.Money;
 import me.palapon2545.SMDMain.Function.Ping;
-import me.palapon2545.SMDMain.Function.TitleBar;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
@@ -2282,16 +2282,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-				if (player.isOp()) {
-					player.performCommand("inst load http://smd36.ga/smdmain.jar");
-				} else {
-					player.sendMessage(Prefix.permission);
-					no(player);
-				}
+				
 			}
 			if (CommandLabel.equalsIgnoreCase("test")) {
-				TitleBar.sendTitle(player, "Hi", 20, 40, 20, ChatColor.RED);
-				TitleBar.sendSubTitle(player, "Hello!", 20, 40, 20, ChatColor.BLUE);
+				
 			}
 			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:pb")
@@ -2651,7 +2645,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Sign s = (Sign) block.getState();
 			if (s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) {
 				String s0 = s.getLine(0).toLowerCase();
-				int sLine_amount = Integer.parseInt(s.getLine(1));
+				String sLine_amount_txt = ChatColor.stripColor(s.getLine(1)); 
+				
+				if (sLine_amount_txt.contains("x")) {
+					sLine_amount_txt.replaceAll("x", "");
+				} else if (sLine_amount_txt.contains("*")) {
+					sLine_amount_txt.replaceAll("*", "");
+				}
+				
+				int sLine_amount = Integer.parseInt(sLine_amount_txt);
 				String s2 = s.getLine(2).toLowerCase();
 				String sLine_item = "";
 				short sLine_data = 0;
