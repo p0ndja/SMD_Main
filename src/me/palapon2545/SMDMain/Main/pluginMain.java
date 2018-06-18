@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -34,6 +35,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EnchantingInventory;
@@ -1303,25 +1305,25 @@ public class pluginMain extends JavaPlugin implements Listener {
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							int countwarn = playerData1.getInt("warn");
+							int cWarn = playerData1.getInt("warn");
 							message = "";
 							for (int i = 1; i != args.length; i++)
 								message += args[i] + " ";
 							message = message.replaceAll("&", Prefix.Ampersand);
-							int countnew = countwarn + 1;
-							if (countnew == 4) {
-								countnew = 3;
+							cWarn += 1;
+							if (cWarn == 4) {
+								cWarn = 3;
 								Bukkit.broadcastMessage(Prefix.server + targetPlayerName + " has been banned");
 								Bukkit.broadcastMessage(Prefix.server + "Reason: " + ChatColor.YELLOW + message);
 								Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
 										"ban " + targetPlayerName + " " + message);
 							} else {
 								Bukkit.broadcastMessage(
-										Prefix.server + targetPlayerName + " has been warned (" + countnew + ")");
+										Prefix.server + targetPlayerName + " has been warned (" + cWarn + ")");
 								Bukkit.broadcastMessage(Prefix.server + "Reason: " + ChatColor.YELLOW + message);
 							}
 							try {
-								playerData1.set("warn", countnew);
+								playerData1.set("warn", cWarn);
 								playerData1.save(f1);
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -2077,30 +2079,30 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("report")) {
 				long a = getConfig().getLong("report_count");
-				long b = a + 1;
+				a += 1;
 				File report = new File(getDataFolder(), File.separator + "ReportDatabase/");
-				File file = new File(report, File.separator + b + ".yml");
+				File file = new File(report, File.separator + a + ".yml");
 				FileConfiguration reportData = YamlConfiguration.loadConfiguration(file);
 
 				if (args.length > 1) {
 					if (Bukkit.getServer().getOfflinePlayer(args[0]) != null) {
 						Player target = (Player) Bukkit.getServer().getOfflinePlayer(args[0]);
-						String c = b + "";
+						String c = a + "";
 						message = "";
 						for (int i = 1; i != args.length; i++)
 							message += args[i] + " ";
 						message = message.replaceAll("&", Prefix.Ampersand);
 						player.sendMessage(Prefix.database + "You " + ChatColor.RED + "report " + ChatColor.LIGHT_PURPLE
 								+ args[0]);
-						player.sendMessage("Report ID: " + ChatColor.LIGHT_PURPLE + b);
+						player.sendMessage("Report ID: " + ChatColor.LIGHT_PURPLE + a);
 						player.sendMessage("Status: " + ChatColor.YELLOW + "Pending");
 						player.sendMessage("Offender: " + ChatColor.AQUA + target.getName());
 						player.sendMessage("Reporter: " + ChatColor.GREEN + playerName);
 						player.sendMessage("Description: " + ChatColor.WHITE + message);
-						getConfig().set("report_count", b);
+						getConfig().set("report_count", a);
 						try {
 							reportData.createSection("Report");
-							reportData.set("Report.ID", b);
+							reportData.set("Report.ID", a);
 							reportData.set("Report.Reporter", playerName);
 							reportData.set("Report.Offender", args[0]);
 							reportData.set("Report.Status", "Pending");
@@ -2282,15 +2284,42 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-				
+
 			}
-			if (CommandLabel.equalsIgnoreCase("test")) {
-				
+			if (CommandLabel.equalsIgnoreCase("afk")) {
+				if (StockInt.afkListName.contains(playerName)) {
+					noLongerAFKLevel(player);
+				} else {
+					setAFK(player);
+				}
+			}
+			if (CommandLabel.equalsIgnoreCase("enderchest") || CommandLabel.equalsIgnoreCase("ec")
+					|| CommandLabel.equalsIgnoreCase("SMDMain:enderchest")
+					|| CommandLabel.equalsIgnoreCase("SMDMain:ec")) {
+				if (player.isOp() || (player.hasPermission("main.ui") || player.hasPermission("main.*"))
+						|| !rank.equalsIgnoreCase("default")) {
+					player.openInventory(player.getEnderChest());
+				} else {
+					player.sendMessage(Prefix.permission);
+					no(player);
+				}
+			}
+			if (CommandLabel.equalsIgnoreCase("workbench") || CommandLabel.equalsIgnoreCase("wb")
+					|| CommandLabel.equalsIgnoreCase("SMDMain:workbench")
+					|| CommandLabel.equalsIgnoreCase("SMDMain:wb")) {
+				if (player.isOp() || (player.hasPermission("main.ui") || player.hasPermission("main.*"))
+						|| !rank.equalsIgnoreCase("default")) {
+					Inventory wb = Bukkit.createInventory(null, InventoryType.WORKBENCH);
+					player.openInventory(wb);
+				} else {
+					player.sendMessage(Prefix.permission);
+					no(player);
+				}
 			}
 			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:pb")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:publish")) {
-				if (player.isOp() || player.hasPermission("main.broadcast")) {
+				if (player.isOp() || (player.hasPermission("main.broadcast") || player.hasPermission("main.*"))) {
 					if (args.length != 0) {
 						message = "";
 						for (int i = 0; i != args.length; i++)
@@ -2526,6 +2555,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 			String rank = playerData.getString("rank");
 			String RankDisplay;
+
 			if (rank.equalsIgnoreCase("default")) {
 				RankDisplay = Rank.Default;
 			} else if (rank.equalsIgnoreCase("staff")) {
@@ -2537,7 +2567,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			} else if (rank.equalsIgnoreCase("admin")) {
 				RankDisplay = Rank.Admin;
 			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Staff;
+				RankDisplay = Rank.Owner;
 			} else if (rank.equalsIgnoreCase("builder")) {
 				RankDisplay = Rank.Builder;
 			} else {
@@ -2577,6 +2607,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			public void run() {
 				Countdown.Countdown();
 				isStandOnPlate();
+				afkLoop();
 			}
 		}, 0L, 20L);
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -2611,9 +2642,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					p.sendMessage(Prefix.type + " - /register [password] [email]");
 					p.sendMessage(Prefix.type + " - /login [password]");
 					p.sendMessage("");
-					int m = o + 1;
+					o += 1;
 					try {
-						playerData.set("login.count", m);
+						playerData.set("login.count", o);
 						playerData.save(f);
 					} catch (IOException e) {
 						Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
@@ -2623,6 +2654,57 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 			}
 		}
+	}
+
+	public void afkLoop() {
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			File tempFile = new File(getDataFolder(), File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			int level = tempData.getInt("afk_level." + p.getName());
+			if (level == 121) {
+				//STOP LOOP
+			} else {
+				level += 1;
+				try {
+					tempData.set("afk_level." + p.getName(), level);
+					tempData.save(tempFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+				}
+			}
+			
+			if (level == 120 || !StockInt.afkListName.contains(p.getName())) {
+				setAFK(p);
+			}
+			if (level == -1) {
+				noLongerAFKLevel(p);
+			}			
+		}
+	}
+
+	public void setAFK(Player p) {
+		Bukkit.broadcastMessage(
+				p.getDisplayName() + ChatColor.WHITE + " is now " + ChatColor.BOLD + "AFK" + ChatColor.RESET + ".");
+		p.setDisplayName("[AFK]" + ChatColor.RESET + p.getDisplayName());
+		p.setPlayerListName(p.getDisplayName());
+		StockInt.afkListName.add(p.getName());
+	}
+
+	public void noLongerAFKLevel(Player p) {
+		StockInt.afkListName.remove(p.getName());
+		p.setDisplayName(p.getDisplayName().replaceAll("[AFK]", ""));
+		File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + p.getName(), 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+		}
+		Bukkit.broadcastMessage(p.getDisplayName() + ChatColor.WHITE + " is no longer " + ChatColor.BOLD + "AFK"
+				+ ChatColor.RESET + ".");
 	}
 
 	@EventHandler
@@ -2645,14 +2727,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Sign s = (Sign) block.getState();
 			if (s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) {
 				String s0 = s.getLine(0).toLowerCase();
-				String sLine_amount_txt = ChatColor.stripColor(s.getLine(1)); 
-				
+				String sLine_amount_txt = ChatColor.stripColor(s.getLine(1));
+
 				if (sLine_amount_txt.contains("x")) {
 					sLine_amount_txt.replaceAll("x", "");
 				} else if (sLine_amount_txt.contains("*")) {
 					sLine_amount_txt.replaceAll("*", "");
 				}
-				
+
 				int sLine_amount = Integer.parseInt(sLine_amount_txt);
 				String s2 = s.getLine(2).toLowerCase();
 				String sLine_item = "";
@@ -2726,15 +2808,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (r == 2) {
 						int r1 = new Random().nextInt(501);
 						String coin = " Coins";
-						
+
 						if (r1 == 0 || r1 == 1) {
 							r1 = 1;
 							coin = " Coin";
 						}
-						
-						player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE
-								+ "You got " + ChatColor.YELLOW + r1 + coin + ChatColor.GRAY + ".");
-						
+
+						player.sendMessage(Prefix.lc + ChatColor.GREEN + "Good Luck! " + ChatColor.WHITE + "You got "
+								+ ChatColor.YELLOW + r1 + coin + ChatColor.GRAY + ".");
+
 						try {
 							playerData.set("money", money + r1);
 							playerData.save(f);
@@ -2781,14 +2863,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 							r1 = 1;
 							coin = " Coin";
 						}
-						
+
 						try {
 							playerData.set("money", money - r1);
 							playerData.save(f);
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
-						
+
 						player.sendMessage(Prefix.lc + ChatColor.RED + "BAD LUCK! " + ChatColor.WHITE + "You got "
 								+ ChatColor.RED + "-" + r1 + coin + ChatColor.GRAY + ".");
 					}
@@ -2993,8 +3075,29 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 				}
 			}
+			
 		} else {
 			return;
+		}
+		if (StockInt.afkListName.contains(playerName)) {
+			File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		}
+		File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 	}
 
@@ -3158,8 +3261,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (homeq <= 1) {
 			place = " place";
 		}
-		f7m.setDisplayName(
-				ChatColor.WHITE + "Maximum Sethome: " + ChatColor.GREEN + ChatColor.BOLD + homeq + place);
+		f7m.setDisplayName(ChatColor.WHITE + "Maximum Sethome: " + ChatColor.GREEN + ChatColor.BOLD + homeq + place);
 		f7.setItemMeta(f7m);
 		inv.setItem(14, f7);
 
@@ -3169,8 +3271,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (lcq <= 1) {
 			lcqq = " quota";
 		}
-		f8m.setDisplayName(
-				ChatColor.WHITE + "LuckyClick Quota: " + ChatColor.GREEN + ChatColor.BOLD + lcq + lcqq);
+		f8m.setDisplayName(ChatColor.WHITE + "LuckyClick Quota: " + ChatColor.GREEN + ChatColor.BOLD + lcq + lcqq);
 		f8.setItemMeta(f8m);
 		inv.setItem(16, f8);
 
@@ -3357,9 +3458,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 				player.sendMessage(Prefix.server + "You got " + ChatColor.GOLD + gotPrice + coin + ChatColor.GRAY
 						+ "from selling " + ChatColor.AQUA + sellCount + "x " + item);
-				
-					player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
-				
+
+				player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+
 			} else {
 				player.sendMessage(Prefix.server + Prefix.notEnoughItem);
 				no(player);
@@ -3495,10 +3596,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 				} else {
 					// NOTHING
 				}
-				int y = w + 1;
-				if (y <= 7) {
+				w += 1;
+				if (w <= 7) {
 					try {
-						playerData.set("WarpState", y);
+						playerData.set("WarpState", w);
 						playerData.save(f);
 					} catch (IOException e) {
 						Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);

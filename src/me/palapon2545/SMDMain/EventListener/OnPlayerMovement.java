@@ -1,7 +1,9 @@
 package me.palapon2545.SMDMain.EventListener;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,6 +19,7 @@ import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.palapon2545.SMDMain.Function.ActionBarAPI;
+import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;
 
@@ -57,6 +60,26 @@ public class OnPlayerMovement implements Listener {
 		if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
 		}
+		if (StockInt.afkListName.contains(playerName)) {
+			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		}
+		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+		}
 	}
 	
 	@EventHandler
@@ -79,6 +102,26 @@ public class OnPlayerMovement implements Listener {
 		if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
 		}
+		if (StockInt.afkListName.contains(playerName)) {
+			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		}
+		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+		}
 	}
 	
 	@EventHandler
@@ -95,6 +138,26 @@ public class OnPlayerMovement implements Listener {
 		if (freeze.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
 			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
+		}
+		if (StockInt.afkListName.contains(playerName)) {
+			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		}
+		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 	}
 

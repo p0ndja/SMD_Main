@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import me.palapon2545.SMDMain.Library.Prefix;
 
 public class AutoSaveWorld {
-	
 	public static boolean save() {
 		int player = Bukkit.getServer().getOnlinePlayers().size();
 		if (player > 0) {

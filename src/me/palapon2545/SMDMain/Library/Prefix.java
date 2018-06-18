@@ -20,7 +20,7 @@ public class Prefix {
 	
 	public static String notEnoughItem = ChatColor.RED + "You don't have enough item.";
 	public static String nom = ChatColor.RED + "You don't have enough money.";
-	public static String non = ChatColor.GRAY + " is not number.";
+	public static String non = ChatColor.GRAY + " is not number." + ChatColor.DARK_GRAY + ChatColor.ITALIC +" [Not support decimal]";
 	public static String database_error = ChatColor.RED + "There are some errors that interrupt database.";
 	
 	public static char Ampersand_UNICODE = 0x00A7;

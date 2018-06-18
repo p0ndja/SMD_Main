@@ -1,6 +1,7 @@
 package me.palapon2545.SMDMain.EventListener;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -77,6 +78,27 @@ public class OnPlayerCommunication implements Listener {
 
 			event.setFormat(RankDisplay + playerName + MessageColor + message1);
 		}
+		
+		if (StockInt.afkListName.contains(playerName)) {
+			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		}
+		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+		}
 	}
 
 	@EventHandler
@@ -100,6 +122,27 @@ public class OnPlayerCommunication implements Listener {
 			} else {
 				event.setCancelled(true);
 			}
+		}
+		
+		if (StockInt.afkListName.contains(playerName)) {
+			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		}
+		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
+		try {
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 	}
 }

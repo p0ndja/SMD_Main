@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 1.1_BETA-6a
+version: 1.2
 description: palapon2545's first java plugin development.
 author: PondJaTH
 softdepend: [BarAPI]
@@ -184,6 +184,17 @@ commands:
        description: Admin chat
        usage: /adminchat [message]
        aliases: [ac]
+  enderchest:
+       description: Open enderchest
+       usage: /enderchest
+       aliases: [ec]
+  afk:
+       description: Toggle AFK Status
+       usage: /afk
+  workbench:
+       description: Open workbench
+       usage: /workbench
+       aliases: [wb]
   ping:
        description: Check player ping
        usage: /ping [player]
@@ -244,6 +255,7 @@ permissions:
            main.countdown: true
            main.invisible: true
            main.money: true
+           main.ui: true
            main.god: true
   main.setspawn:
        description: Allow to use /setspawn
@@ -274,6 +286,9 @@ permissions:
        default: op
   main.climate:
        description: Allow to use /climate
+       default: op
+  main.ui:
+       description: Allow to use /enderchest, /workbench
        default: op
   main.report:
        description: Allow to use /checkreport, /listreport, /closereport

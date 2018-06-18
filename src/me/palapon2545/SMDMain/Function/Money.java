@@ -81,7 +81,7 @@ public class Money extends JavaPlugin {
 					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 				}
 				
-				if (amount == 1) {
+				if (amount == Math.abs(1) || amount == 0) {
 					coin = " Coin ";
 				}
 				

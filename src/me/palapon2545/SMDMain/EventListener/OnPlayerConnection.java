@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
@@ -170,6 +169,15 @@ public class OnPlayerConnection implements Listener{
 		String version = pl.getDescription().getVersion();
 		player.sendMessage(ChatColor.BOLD + "SMDMain's Patch Version: " + version);
 		player.sendMessage("");
+		
+		try {
+			tempData.createSection("afk_level");
+			tempData.set("afk_level." + playerName, 0);
+			tempData.save(tempFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+		}
 
 		String spawn = pl.getConfig().getString("spawn");
 		if (spawn != null) {
@@ -257,6 +265,24 @@ public class OnPlayerConnection implements Listener{
 		if (StockInt.LoginFeature == true) {
 			StockInt.blockLogin.remove(playerName);
 			player.setGameMode(GameMode.SPECTATOR);
+		}
+		
+		if (StockInt.afkListName.contains(playerName)) {
+			try {
+				tempData.set("afk_level." + playerName, -1);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
+		} else {
+			try {
+				tempData.set("afk_level." + playerName, 0);
+				tempData.save(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+			}
 		}
 		
 		int n = Bukkit.getServer().getOnlinePlayers().size();

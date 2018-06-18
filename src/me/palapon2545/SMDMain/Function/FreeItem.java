@@ -12,12 +12,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.palapon2545.SMDMain.Main.pluginMain;
 
 public class FreeItem extends JavaPlugin {
-	
+
 	pluginMain pl;
-	public FreeItem (pluginMain pl) {
+
+	public FreeItem(pluginMain pl) {
 		this.pl = pl;
 	}
-	
+
 	public static void openFreeGUI(Player p) {
 		Inventory inv;
 		inv = Bukkit.createInventory(null, 54, "Free Item");
