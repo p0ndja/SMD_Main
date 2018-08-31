@@ -1,18 +1,21 @@
 package me.palapon2545.SMDMain.Main;
 
+import java.util.*;
+import javax.activation.*;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLSession;
+
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -2283,8 +2286,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					no(player);
 				}
 			}
+			
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-
+				
 			}
 			if (CommandLabel.equalsIgnoreCase("afk")) {
 				if (StockInt.afkListName.contains(playerName)) {
