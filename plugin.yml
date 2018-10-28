@@ -1,7 +1,7 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
 version: 1.2
-description: palapon2545's first java plugin development.
+description: My first java plugin development.
 author: PondJaTH
 softdepend: [BarAPI]
 load: POSTWORLD
