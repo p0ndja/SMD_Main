@@ -1,8 +1,8 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 1.2.1
+version: 2.0
 description: palapon2545's first java plugin development.
-author: PondJaTH
+author: PondJa_KunG
 softdepend: [BarAPI]
 load: POSTWORLD
 website: https://github.com/palapon2545/SMD_Main
@@ -11,6 +11,9 @@ commands:
        description: Set spawn location.
        usage: /setspawn
        permission: main.setspawn
+  item:
+      description: Get Item ID and NAME in player hand
+      usage: /item
   report:
        description: Report abuse player
        usage: /report [player] [reason]
