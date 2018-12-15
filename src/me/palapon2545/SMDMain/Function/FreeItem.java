@@ -22,7 +22,7 @@ public class FreeItem extends JavaPlugin {
 	public static void openFreeGUI(Player p) {
 		Inventory inv;
 		inv = Bukkit.createInventory(null, 54, "Free Item");
-		ItemStack black = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
+		ItemStack black = new ItemStack(Blockto113.STAINED_GLASS_PANE.bukkitblock(), 1);
 		ItemMeta bl = black.getItemMeta();
 		bl.setDisplayName(ChatColor.WHITE + " ");
 		black.setItemMeta(bl);
@@ -32,11 +32,11 @@ public class FreeItem extends JavaPlugin {
 			inv.setItem(x, black);
 		}
 
-		ItemStack wooden_sword = new ItemStack(Material.WOOD_SWORD, 1);
-		ItemStack wooden_axe = new ItemStack(Material.WOOD_AXE, 1);
-		ItemStack wooden_pickaxe = new ItemStack(Material.WOOD_PICKAXE, 1);
-		ItemStack wooden_shovel = new ItemStack(Material.WOOD_SPADE, 1);
-		ItemStack wooden_hoe = new ItemStack(Material.WOOD_HOE, 1);
+		ItemStack wooden_sword = new ItemStack(Blockto113.WOOD_SWORD.bukkitblock(), 1);
+		ItemStack wooden_axe = new ItemStack(Blockto113.WOOD_AXE.bukkitblock(), 1);
+		ItemStack wooden_pickaxe = new ItemStack(Blockto113.WOOD_PICKAXE.bukkitblock(), 1);
+		ItemStack wooden_shovel = new ItemStack(Blockto113.WOOD_SPADE.bukkitblock(), 1);
+		ItemStack wooden_hoe = new ItemStack(Blockto113.WOOD_HOE.bukkitblock(), 1);
 		ItemStack bread = new ItemStack(Material.BREAD, 16);
 		inv.setItem(11, wooden_sword);
 		inv.setItem(12, wooden_axe);
@@ -51,13 +51,13 @@ public class FreeItem extends JavaPlugin {
 		emerald.setItemMeta(em);
 		inv.setItem(21, emerald);
 
-		ItemStack bed = new ItemStack(Material.BED, 3);
+		ItemStack bed = new ItemStack(Blockto113.BED.bukkitblock(), 3);
 		ItemMeta bedm = black.getItemMeta();
 		bedm.setDisplayName(ChatColor.RED + "+ Sethome " + ChatColor.GOLD + ChatColor.BOLD + "3 places");
 		bed.setItemMeta(bedm);
 		inv.setItem(22, bed);
 
-		ItemStack flower = new ItemStack(Material.DOUBLE_PLANT, 15);
+		ItemStack flower = new ItemStack(Blockto113.DOUBLE_PLANT.bukkitblock(), 15);
 		ItemMeta flowerm = black.getItemMeta();
 		flowerm.setDisplayName(
 				ChatColor.LIGHT_PURPLE + "+ LuckyClick Quota " + ChatColor.AQUA + ChatColor.BOLD + "15 quotas");

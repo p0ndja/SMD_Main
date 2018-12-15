@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.world.PortalCreateEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.palapon2545.SMDMain.Function.ActionBarAPI;
 import me.palapon2545.SMDMain.Library.Prefix;

@@ -8,13 +8,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.palapon2545.SMDMain.Library.Prefix;
-import me.palapon2545.SMDMain.Main.pluginMain;
 
 public class Log extends JavaPlugin {
 

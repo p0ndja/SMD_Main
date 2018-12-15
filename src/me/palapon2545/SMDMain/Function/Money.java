@@ -13,7 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
-import me.palapon2545.SMDMain.Main.pluginMain;
 
 public class Money extends JavaPlugin {
 	
@@ -59,11 +58,21 @@ public class Money extends JavaPlugin {
 	}
 	
 	public static void no(Player p) {
-		p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 1, 0);
+		Sound a;
+		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
+			a = Sound18to19.NOTE_BASS.bukkitSound();
+		else
+			a = Sound18to113.NOTE_BASS.bukkitSound();
+		p.playSound(p.getLocation(), a, 1, 0);
 	}
 	
 	public static void yes(Player p) {
-		p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+		Sound a;
+		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
+			a = Sound18to19.LEVEL_UP.bukkitSound();
+		else
+			a = Sound18to113.LEVEL_UP.bukkitSound();
+		p.playSound(p.getLocation(), a, 1, 1);
 	}
 
 	public static void take(Player payer, long amount) {

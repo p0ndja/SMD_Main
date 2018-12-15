@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -14,9 +13,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import me.palapon2545.SMDMain.Function.ActionBarAPI;
+import me.palapon2545.SMDMain.Function.Sound18to113;
+import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
@@ -53,7 +52,12 @@ public class OnPlayerCommunication implements Listener {
 			event.setCancelled(true);
 		} else {
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_EGG, (float) 0.5, 1);
+				Sound a;
+				if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
+					a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
+				else
+					a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
+				p.playSound(p.getLocation(), a, (float) 0.5, 1);
 			}
 			String RankDisplay;
 			ChatColor MessageColor = ChatColor.WHITE;

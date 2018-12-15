@@ -16,7 +16,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+
+import me.palapon2545.SMDMain.Function.Sound18to113;
+import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
@@ -197,7 +199,14 @@ public class OnPlayerConnection implements Listener{
 			loc.setYaw(yaw);
 			player.teleport(loc);
 			player.sendMessage(Prefix.portal + "Teleported to " + ChatColor.YELLOW + "Spawn" + ChatColor.GRAY + ".");
-			player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 10, 0);
+			
+			Sound a;
+			if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
+				a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
+			else
+				a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
+			
+			player.playSound(player.getLocation(), a, 10, 0);
 		} else {
 			player.sendMessage(Prefix.portal + "Spawn location not found! (Not set yet)");
 			pl.no(player);

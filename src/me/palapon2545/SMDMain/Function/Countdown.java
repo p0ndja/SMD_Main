@@ -1,30 +1,19 @@
 package me.palapon2545.SMDMain.Function;
 
-import java.sql.Time;
-
-import javax.management.timer.Timer;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
-import me.palapon2545.SMDMain.Main.pluginMain;
 import me.palapon2545.SMDMain.Function.BossBar;
 
 public class Countdown {
 
 	static boolean CountdownDisplayMessageBoolean = false;
-	
-	public static boolean Countdown() {
+
+	public static boolean run() {
 		long c = StockInt.CountdownLength;
 		long n = c - 1;
-		long value = c;
-		long h = value / 3600;
-		long m = value % 3600;
-		long s = m % 60;
+		long s = (c % 3600) % 60;
 		if (StockInt.CountdownMessage.equalsIgnoreCase("null")) {
 			CalculateTimer();
 		} else {
@@ -58,7 +47,7 @@ public class Countdown {
 		}
 		return false;
 	}
-	
+
 	public static void CalculateTimer() {
 		long c = StockInt.CountdownLength;
 		long w = c / 604800;
@@ -104,7 +93,7 @@ public class Countdown {
 		} else if (m == 1) {
 			minute = m + " minute ";
 		}
-		
+
 		if (s > 1) {
 			second = s + " seconds";
 		} else if (s == 1) {
@@ -124,12 +113,13 @@ public class Countdown {
 		} else if (c == 0) {
 			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
 		} else if (c == -1) {
-			BossBar.removeBarAll();
+			if (StockInt.BarAPIHook == true)
+				BossBar.removeBarAll();
 		} else {
-			//NOTHING
+			// NOTHING
 		}
-		
-		long percent = ((c * 100)/ StockInt.CountdownStartLength);
+
+		long percent = ((c * 100) / StockInt.CountdownStartLength);
 
 		if (c >= 0) {
 			if (StockInt.BarAPIHook == true) {
