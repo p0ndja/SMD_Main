@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -211,6 +212,9 @@ public class OnPlayerConnection implements Listener{
 			player.sendMessage(Prefix.portal + "Spawn location not found! (Not set yet)");
 			pl.no(player);
 		}
+		
+		StockInt.pleaseDropItemBeforeChat.add(playerName);
+		
 	}
 	
 	@EventHandler
@@ -300,6 +304,9 @@ public class OnPlayerConnection implements Listener{
 		} else {
 			return;
 		}
+		
+		if (StockInt.pleaseDropItemBeforeChat.contains(playerName))
+			StockInt.pleaseDropItemBeforeChat.remove(playerName);
 	}
 
 }

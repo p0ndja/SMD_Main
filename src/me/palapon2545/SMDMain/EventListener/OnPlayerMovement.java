@@ -31,9 +31,13 @@ public class OnPlayerMovement implements Listener {
 	
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (StockInt.blockLogin.contains(event.getPlayer().getName())) {
-			event.setCancelled(true);
+		if (StockInt.pleaseDropItemBeforeChat.contains(event.getPlayer().getName())) {
+			event.getPlayer().sendMessage("You're now able to play server!");
+			StockInt.pleaseDropItemBeforeChat.remove(event.getPlayer().getName());
 		}
+		if (StockInt.blockLogin.contains(event.getPlayer().getName())) 
+			event.setCancelled(true);
+		
 	}
 	
 	@EventHandler
@@ -65,6 +69,7 @@ public class OnPlayerMovement implements Listener {
 			try {
 				tempData.set("afk_level." + playerName, -1);
 				tempData.save(tempFile);
+				pl.noLongerAFKLevel(player);
 			} catch (IOException e) {
 				e.printStackTrace();
 				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);

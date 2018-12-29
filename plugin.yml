@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.0
+version: 2.0_01
 description: palapon2545's first java plugin development.
 author: PondJa_KunG
 softdepend: [BarAPI]

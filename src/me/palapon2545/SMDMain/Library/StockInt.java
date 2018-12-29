@@ -16,6 +16,8 @@ public class StockInt {
 	public static List<String> blockLogin = new ArrayList<String>();
 	public static List<String> afkListName = new ArrayList<String>();
 	
+	public static List<String> pleaseDropItemBeforeChat = new ArrayList<String>();
+	
 	public static String pluginDir = "plugins/SMDMain/";
 	
 	public static Material[] luckyClick_Simple = {Material.DIRT};

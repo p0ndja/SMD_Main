@@ -68,6 +68,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 	File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
 	FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 
+	public static int AFKTimerLevel = 120;
+
 	public void regEvents() {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new OnPlayerConnection(this), this);
@@ -213,7 +215,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			a = Sound18to19.NOTE_BASS.bukkitSound();
 		else
 			a = Sound18to113.NOTE_BASS.bukkitSound();
-
 		p.playSound(p.getLocation(), a, 1, 0);
 	}
 
@@ -1764,7 +1765,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 										e.printStackTrace();
 										Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 									}
-									player.sendMessage("" + quotatotal);
 									player.sendMessage(Prefix.database + "You gave " + ChatColor.AQUA + args[2] + "x "
 											+ args[1].toUpperCase() + " Quota " + ChatColor.GRAY + "to "
 											+ ChatColor.YELLOW + targetPlayer.getName());
@@ -1807,8 +1807,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							if (p.isOp() || p.hasPermission("main.*") || p.hasPermission("main.adminchat")
 									|| (getRankPriority(getRank(player)) >= 2)) {
-								p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "[AdminChat] " + ChatColor.WHITE + player.getName() + " "
-										+ ChatColor.YELLOW + message);
+								p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "[AdminChat] " + ChatColor.WHITE
+										+ player.getName() + " " + ChatColor.YELLOW + message);
 								anvil(p);
 							} else {
 
@@ -2405,7 +2405,19 @@ public class pluginMain extends JavaPlugin implements Listener {
 				player.sendMessage("You're holding '" + player.getItemInHand().getType() + "'.");
 
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-
+				long time;
+				if (args.length == 0)
+					time = 30;
+				else time = Long.parseLong(args[0]);
+				setAFK(player);
+				try {
+					tempData.set("afk_level." + playerName, 120);
+					tempData.set("afk_time." + playerName, time);
+					tempData.save(tempFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+				}
 			}
 
 			if (CommandLabel.equalsIgnoreCase("afk")) {
@@ -2414,6 +2426,13 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 				} else {
 					setAFK(player);
+					try {
+						tempData.set("afk_level." + playerName, 120);
+						tempData.save(tempFile);
+					} catch (IOException e) {
+						e.printStackTrace();
+						Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+					}
 				}
 			}
 
@@ -2567,8 +2586,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 									FileDeleteStrategy.FORCE.delete(file);
 								} catch (IOException e) {
 									e.printStackTrace();
-									player.sendMessage(
-											Prefix.database + "There is some error that interrupt deleting database.");
+									Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 								}
 							}
 							targetFolder.delete();
@@ -2664,6 +2682,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 		getConfig().set("countdown_message", StockInt.CountdownMessage);
 		saveConfig();
 
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (StockInt.afkListName.contains(p.getName()))
+				noLongerAFKLevel(p);
+		}
 	}
 
 	public void onEnable() {
@@ -2788,7 +2810,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			P.sendMessage("");
 			P.sendMessage("SMDMain's patch version: " + ChatColor.GREEN + version);
 			P.sendMessage("Developer: " + ChatColor.GOLD + ChatColor.BOLD + "PondJa_KunG");
-			P.sendMessage("");	
+			P.sendMessage("");
 		}
 		VersionJa.main();
 		if (StockInt.ServerVersion == 0) {
@@ -2832,11 +2854,16 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	public void afkLoop() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			File tempFile = new File(getDataFolder(), File.separator + "temp.yml");
-			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 			int level = tempData.getInt("afk_level." + p.getName());
-			if (level == 121) {
-				// STOP LOOP
+			if (level == AFKTimerLevel + 1) {
+				long time = tempData.getLong("afk_time." + p.getName());
+				try {
+					tempData.set("afk_time." + p.getName(), time + 1);
+					tempData.save(tempFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+				}
 			} else {
 				level++;
 				try {
@@ -2847,7 +2874,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 				}
 			}
-			if (level == 120 && !StockInt.afkListName.contains(p.getName()))
+
+			if (level == AFKTimerLevel && !StockInt.afkListName.contains(p.getName()))
 				setAFK(p);
 			if (level == -1)
 				noLongerAFKLevel(p);
@@ -2863,19 +2891,33 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public void noLongerAFKLevel(Player p) {
+		long afktime = tempData.getLong("afk_time." + p.getName());
+		printf(afktime + "");
+		long h = afktime / 3600;
+		long m = (afktime % 3600) / 60;
+		long s = (afktime % 3600) % 60;
+		String sh = h + "h";
+		String sm = m + "m";
+		String ss = s + "s";
+		if (h == 0)
+			sh = "";
+		if (m == 0)
+			sm = "";
+		if (s == 0)
+			ss = "";
+		StockInt.afkListName.remove(p.getName());
 		p.setDisplayName(rankColor(getRank(p)) + p.getName());
 		p.setPlayerListName(p.getDisplayName());
 		try {
 			tempData.set("afk_level." + p.getName(), 0);
+			tempData.set("afk_time." + p.getName(), 0);
 			tempData.save(tempFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 		Bukkit.broadcastMessage(p.getDisplayName() + ChatColor.WHITE + " is no longer " + ChatColor.BOLD + "AFK"
-				+ ChatColor.RESET + ".");
-		StockInt.afkListName.remove(p.getName());
-
+				+ ChatColor.RESET + ". " + ChatColor.YELLOW + ChatColor.ITALIC + "(" + sh + sm + ss + ")");
 	}
 
 	@EventHandler
@@ -2898,36 +2940,28 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Sign s = (Sign) block.getState();
 			if (s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) {
 				String s0 = s.getLine(0).toLowerCase();
-				String sLine_amount_txt = ChatColor.stripColor(s.getLine(1));
+				int s1_amount = Integer.parseInt(ChatColor.stripColor(s.getLine(1)));
+				String s2_item = s.getLine(2).toLowerCase();
+				short s2_item_data = 0;
+				long s3_price = Integer.parseInt(s.getLine(3));
 
-				if (sLine_amount_txt.contains("x")) {
-					sLine_amount_txt.replaceAll("x", "");
-				} else if (sLine_amount_txt.contains("*")) {
-					sLine_amount_txt.replaceAll("*", "");
-				}
+				if (s2_item.contains("x") || s2_item.contains("*"))
+					printf("Yes it has");
 
-				int sLine_amount = Integer.parseInt(sLine_amount_txt);
-				String s2 = s.getLine(2).toLowerCase();
-				String sLine_item = "";
-				short sLine_data = 0;
-				if (!s2.contains(":")) {
-					sLine_item = s.getLine(2);
-				} else {
+				if (!s2_item.contains(":"))
+					s2_item = s.getLine(2);
+				else {
 					String[] line2 = s.getLine(2).split(":");
-					sLine_item = line2[0];
-					sLine_data = (short) Integer.parseInt(line2[1]);
+					s2_item = line2[0];
+					s2_item_data = (short) Integer.parseInt(line2[1]);
 				}
-				long sLine_price = Integer.parseInt(s.getLine(3));
-				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s2.isEmpty() && !s.getLine(3).isEmpty()) {
-					if (s0.endsWith("[sell]")) {
-						sell(player, sLine_item, sLine_amount, sLine_price, sLine_data);
-					}
-					if (s0.endsWith("[buy]")) {
-						buy(player, sLine_item, sLine_amount, sLine_price, sLine_data);
-					}
-				} else {
-					return;
-				}
+
+				if (!s0.isEmpty() && !s.getLine(1).isEmpty() && !s.getLine(2).isEmpty() && !s.getLine(3).isEmpty())
+					if (ChatColor.stripColor(s.getLine(0)).contains("[sell]"))
+						sell(player, s2_item, s1_amount, s3_price, s2_item_data);
+					else if (ChatColor.stripColor(s.getLine(0)).contains("[buy]"))
+						buy(player, s2_item, s1_amount, s3_price, s2_item_data);
+
 			}
 			int lcq = playerData.getInt("Quota.LuckyClick");
 			if (s.getLine(0).equalsIgnoreCase("[luckyclick]")) {
@@ -3119,7 +3153,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					int lcq2 = playerData.getInt("Quota.LuckyClick");
 					egg(player);
 					player.sendMessage(
-							Prefix.server + "You have " + ChatColor.LIGHT_PURPLE + lcq2 + " Lucky Click Quota leff!");
+							Prefix.server + "You have " + ChatColor.LIGHT_PURPLE + lcq2 + " Lucky Click Quota left!");
 				}
 			}
 			if (s.getLine(0).equalsIgnoreCase("[buyquota]")) {
@@ -3595,8 +3629,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Block block2 = loc2.getBlock();
 			if ((block.getType() == Blockto113.GOLD_PLATE.bukkitblock()
 					|| block.getType() == Blockto113.IRON_PLATE.bukkitblock())
-					&& (block2.getType() == Blockto113.SIGN_POST.bukkitblock())
-					|| (block2.getType() == Material.WALL_SIGN)) {
+					&& ((block2.getType() == Blockto113.SIGN_POST.bukkitblock())
+							|| (block2.getType() == Material.WALL_SIGN))) {
 				Sign sign = (Sign) block2.getState();
 				if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 					if (w == 0) {
@@ -3619,13 +3653,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void plateParticle(Player player) {
-		player.playEffect(player.getLocation(), Effect18to113.FIREWORK_SPARK.bukkiteffect(), 10);
-		player.playEffect(player.getLocation(), Effect18to113.FIREWORK_SPARK.bukkiteffect(), 10);
-		player.playEffect(player.getLocation(), Effect18to113.FIREWORK_SPARK.bukkiteffect(), 10);
-		player.playEffect(player.getLocation(), Effect18to113.FIREWORK_SPARK.bukkiteffect(), 10);
-		player.playEffect(player.getLocation(), Effect18to113.FIREWORK_SPARK.bukkiteffect(), 10);
+		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);
+		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);
+		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);
+		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);
+		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);
 	}
 
 	public void teleportPlate(Player p) {
@@ -3726,14 +3759,18 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 		} else {
+			ActionBarAPI.send(p, ChatColor.RED + ">>>>>>>>" + Prefix.tcc + ChatColor.RED + "<<<<<<<<");
+			no(p);
 			try {
 				playerData.set("WarpState", 0);
 				playerData.save(f);
 			} catch (IOException e) {
 				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 			}
-			ActionBarAPI.send(p, ChatColor.RED + ">>>>>>>>" + Prefix.tcc + ChatColor.RED + "<<<<<<<<");
-			no(p);
 		}
+	}
+
+	public void printf(String m) {
+		Bukkit.broadcastMessage(m);
 	}
 }

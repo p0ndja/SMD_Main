@@ -50,6 +50,10 @@ public class OnPlayerCommunication implements Listener {
 			event.setCancelled(true);
 		} else if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
+		} else if (StockInt.pleaseDropItemBeforeChat.contains(playerName)) {
+			player.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.YELLOW + "Please drop an item before chat after joined server.");
+			player.playSound(player.getLocation(), Sound18to113.NOTE_PLING.bukkitSound(), 1, 0);
+			event.setCancelled(true);
 		} else {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				Sound a;
@@ -62,33 +66,33 @@ public class OnPlayerCommunication implements Listener {
 			String RankDisplay;
 			ChatColor MessageColor = ChatColor.WHITE;
 
-			if (rank.equalsIgnoreCase("default")) {
+			if (rank.equalsIgnoreCase("default"))
 				RankDisplay = Rank.Default;
-			} else if (rank.equalsIgnoreCase("staff")) {
+			else if (rank.equalsIgnoreCase("staff"))
 				RankDisplay = Rank.Staff;
-			} else if (rank.equalsIgnoreCase("vip")) {
+			else if (rank.equalsIgnoreCase("vip"))
 				RankDisplay = Rank.Vip;
-			} else if (rank.equalsIgnoreCase("helper")) {
+			else if (rank.equalsIgnoreCase("helper"))
 				RankDisplay = Rank.Helper;
-			} else if (rank.equalsIgnoreCase("admin")) {
+			else if (rank.equalsIgnoreCase("admin"))
 				RankDisplay = Rank.Admin;
-			} else if (rank.equalsIgnoreCase("owner")) {
+			else if (rank.equalsIgnoreCase("owner"))
 				RankDisplay = Rank.Owner;
-			} else if (rank.equalsIgnoreCase("builder")) {
+			else if (rank.equalsIgnoreCase("builder"))
 				RankDisplay = Rank.Builder;
-			} else {
+			else
 				RankDisplay = Rank.Default;
-			}
 
 			event.setFormat(RankDisplay + playerName + MessageColor + message1);
 		}
-		
+
 		if (StockInt.afkListName.contains(playerName)) {
 			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
 			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 			try {
 				tempData.set("afk_level." + playerName, -1);
 				tempData.save(tempFile);
+				pl.noLongerAFKLevel(player);
 			} catch (IOException e) {
 				e.printStackTrace();
 				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
@@ -119,21 +123,21 @@ public class OnPlayerCommunication implements Listener {
 		}
 		String[] i = event.getMessage().split(" ");
 		if (StockInt.blockLogin.contains(playerName)) {
-			if (i[0].equalsIgnoreCase("/qwerty") || i[0].equalsIgnoreCase("/l")
-					|| i[0].equalsIgnoreCase("/login") || i[0].equalsIgnoreCase("/reg")
-					|| i[0].equalsIgnoreCase("/register")) {
-				//NOTHING
+			if (i[0].equalsIgnoreCase("/qwerty") || i[0].equalsIgnoreCase("/l") || i[0].equalsIgnoreCase("/login")
+					|| i[0].equalsIgnoreCase("/reg") || i[0].equalsIgnoreCase("/register")) {
+				// NOTHING
 			} else {
 				event.setCancelled(true);
 			}
 		}
-		
+
 		if (StockInt.afkListName.contains(playerName)) {
 			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
 			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 			try {
 				tempData.set("afk_level." + playerName, -1);
 				tempData.save(tempFile);
+				pl.noLongerAFKLevel(player);
 			} catch (IOException e) {
 				e.printStackTrace();
 				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);

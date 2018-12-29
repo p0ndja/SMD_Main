@@ -3,7 +3,7 @@ package me.palapon2545.SMDMain.Function;
 import org.bukkit.Effect;
 
 public enum Effect18to113 {
-    FIREWORK_SPARK("FIREWORK_SPARK", "FIREWORK_SHOOT");
+    FIREWORKS_SPARK("FIREWORKS_SPARK", "FIREWORK_SHOOT");
 
     private String pre19effect;
     private String to113effect;
