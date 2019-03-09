@@ -32,6 +32,7 @@ public class OnPlayerConnection implements Listener{
 		this.pl = pl;
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();

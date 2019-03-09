@@ -112,6 +112,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		saveConfig();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void buy(Player player, String item, int amount, long price, short data) {
 		String playerName = player.getName();
 		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
@@ -323,6 +324,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		p.playSound(p.getLocation(), a, 1, pitch);
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String CommandLabel, String[] args) {
 		String message = "";
 		if (CommandLabel.equalsIgnoreCase("force") || CommandLabel.equalsIgnoreCase("SMDMain:force")) {
@@ -506,7 +508,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 			File f = new File(userdata, File.separator + "config.yml");
 			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-			String rank = playerData.getString("rank");
 			if (CommandLabel.equalsIgnoreCase("setspawn") || CommandLabel.equalsIgnoreCase("SMDMain:setspawn")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.setspawn")
 						|| getRankPriority(getRank(player)) >= 5) {
@@ -899,12 +900,31 @@ public class pluginMain extends JavaPlugin implements Listener {
 					no(player);
 				}
 			}
+			if (CommandLabel.equalsIgnoreCase("flyspeed") || CommandLabel.equalsIgnoreCase("SMDMain:flyspeed")) {
+				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.fly")
+						|| getRankPriority(getRank(player)) >= 1) {
+					try {
+						float speed = Float.parseFloat(args[0]);
+						player.setFlySpeed(speed);
+						orb(player);
+						player.sendMessage(Prefix.server + "Your flyspeed has been set to " + ChatColor.GREEN + speed
+								+ ChatColor.GRAY + ".");
+					} catch (NumberFormatException e) {
+						player.sendMessage(
+								Prefix.server + "That " + ChatColor.RED + args[0] + ChatColor.GRAY + " is not number.");
+						no(player);
+					}
+				} else {
+					player.sendMessage(Prefix.permission);
+					no(player);
+				}
+			}
 			if (CommandLabel.equalsIgnoreCase("fly") || CommandLabel.equalsIgnoreCase("SMDMain:fly")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.fly")
 						|| getRankPriority(getRank(player)) >= 1) {
 					String target = playerName;
 					if (args.length == 1) {
-						target = playerName;
+						target = args[0];
 					}
 					Player targetPlayer = Bukkit.getPlayer(target);
 					if (targetPlayer != null) {
@@ -2408,7 +2428,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				long time;
 				if (args.length == 0)
 					time = 30;
-				else time = Long.parseLong(args[0]);
+				else
+					time = Long.parseLong(args[0]);
 				setAFK(player);
 				try {
 					tempData.set("afk_level." + playerName, 120);
@@ -3242,6 +3263,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void openDataGUI(Player p, String a) {
 		String name = "";
 		if (Bukkit.getServer().getPlayer(a) != null) {
@@ -3526,6 +3548,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		saveConfig();
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean decreseitem1(Player player, int itemid, int itemdata, boolean forcetruedata) {
 		ItemStack itm = null;
 		int lenl = 0;
@@ -3567,6 +3590,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void sell(Player player, String item, int amount, long price, short data) {
 		String playerName = player.getName();
 		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
@@ -3653,6 +3677,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void plateParticle(Player player) {
 		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);
 		player.playEffect(player.getLocation(), Effect18to113.FIREWORKS_SPARK.bukkiteffect(), 10);

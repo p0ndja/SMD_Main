@@ -22,6 +22,7 @@ import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;
 
+@SuppressWarnings("deprecation")
 public class OnPlayerMovement implements Listener {
 	
 	pluginMain pl;
@@ -40,6 +41,7 @@ public class OnPlayerMovement implements Listener {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
 		if (StockInt.blockLogin.contains(event.getPlayer().getName())) {
