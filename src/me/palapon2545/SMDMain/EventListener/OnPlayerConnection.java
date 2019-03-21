@@ -25,9 +25,10 @@ import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;
 
-public class OnPlayerConnection implements Listener{
-	
+public class OnPlayerConnection implements Listener {
+
 	pluginMain pl;
+
 	public OnPlayerConnection(pluginMain pl) {
 		this.pl = pl;
 	}
@@ -36,6 +37,8 @@ public class OnPlayerConnection implements Listener{
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
+		if (StockInt.privateServerPondJa)
+			player.setMaxHealth(40);
 		String playerName = player.getName();
 		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
@@ -43,10 +46,11 @@ public class OnPlayerConnection implements Listener{
 		if (!f.exists()) {
 			File userfiles;
 			try {
-				userfiles = new File(pl.getDataFolder() + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
-				if (!userfiles.exists()) {
+				userfiles = new File(
+						pl.getDataFolder() + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
+				if (!userfiles.exists())
 					userfiles.mkdirs();
-				}
+
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			}
@@ -67,7 +71,7 @@ public class OnPlayerConnection implements Listener{
 				playerData.createSection("Quota");
 				playerData.set("Quota.TPR", 0);
 				playerData.set("Quota.LuckyClick", 0);
-				playerData.set("Quota.Home", 3);
+				playerData.set("Quota.Home", 0);
 				playerData.createSection("Invisible");
 				playerData.set("Invisible", "false");
 				playerData.createSection("Security");
@@ -114,7 +118,7 @@ public class OnPlayerConnection implements Listener{
 				player.sendMessage(ChatColor.RED + "If you get warned 3 time, You will be " + ChatColor.DARK_RED
 						+ ChatColor.BOLD + "BANNED.");
 			}
-			
+
 			String RankDisplay;
 			if (rank.equalsIgnoreCase("default")) {
 				RankDisplay = Rank.Default;
@@ -136,7 +140,7 @@ public class OnPlayerConnection implements Listener{
 			player.setDisplayName(RankDisplay + playerName);
 			player.setPlayerListName(RankDisplay + playerName);
 			event.setJoinMessage(Prefix.j + RankDisplay + playerName);
-			
+
 		}
 		String evs = pl.getConfig().getString("event.queuelist." + playerName);
 		if (evs == null || evs.isEmpty()) {
@@ -173,7 +177,7 @@ public class OnPlayerConnection implements Listener{
 		String version = pl.getDescription().getVersion();
 		player.sendMessage(ChatColor.BOLD + "SMDMain's Patch Version: " + version);
 		player.sendMessage("");
-		
+
 		try {
 			tempData.createSection("afk_level");
 			tempData.set("afk_level." + playerName, 0);
@@ -184,7 +188,7 @@ public class OnPlayerConnection implements Listener{
 		}
 
 		String spawn = pl.getConfig().getString("spawn");
-		if (spawn != null) {
+		if (spawn != null && StockInt.spawnOnJoin == true) {
 			Double x = pl.getConfig().getDouble("spawn" + "." + "spawn" + ".x");
 			Double y = pl.getConfig().getDouble("spawn" + "." + "spawn" + ".y");
 			Double z = pl.getConfig().getDouble("spawn" + "." + "spawn" + ".z");
@@ -201,23 +205,20 @@ public class OnPlayerConnection implements Listener{
 			loc.setYaw(yaw);
 			player.teleport(loc);
 			player.sendMessage(Prefix.portal + "Teleported to " + ChatColor.YELLOW + "Spawn" + ChatColor.GRAY + ".");
-			
+
 			Sound a;
 			if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
 				a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
 			else
 				a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
-			
+
 			player.playSound(player.getLocation(), a, 10, 0);
-		} else {
-			player.sendMessage(Prefix.portal + "Spawn location not found! (Not set yet)");
-			pl.no(player);
 		}
-		
-		StockInt.pleaseDropItemBeforeChat.add(playerName);
-		
+
+		// StockInt.pleaseDropItemBeforeChat.add(playerName);
+
 	}
-	
+
 	@EventHandler
 	public void onPlayerLeft(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
@@ -248,18 +249,12 @@ public class OnPlayerConnection implements Listener{
 
 		int g = 0;
 		GameMode gm = player.getGameMode();
-		if (gm == GameMode.SURVIVAL) {
-			g = 0;
-		}
-		if (gm == GameMode.CREATIVE) {
+		if (gm == GameMode.CREATIVE)
 			g = 1;
-		}
-		if (gm == GameMode.ADVENTURE) {
+		else if (gm == GameMode.ADVENTURE)
 			g = 2;
-		}
-		if (gm == GameMode.SPECTATOR) {
+		else if (gm == GameMode.SPECTATOR)
 			g = 3;
-		}
 
 		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
 		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
@@ -275,12 +270,12 @@ public class OnPlayerConnection implements Listener{
 		pl.getConfig().set("event.queuelist." + playerName, "false");
 		pl.getConfig().set("gamemode." + playerName, g);
 		pl.saveConfig();
-		
+
 		if (StockInt.LoginFeature == true) {
 			StockInt.blockLogin.remove(playerName);
 			player.setGameMode(GameMode.SPECTATOR);
 		}
-		
+
 		if (StockInt.afkListName.contains(playerName)) {
 			try {
 				tempData.set("afk_level." + playerName, -1);
@@ -298,14 +293,13 @@ public class OnPlayerConnection implements Listener{
 				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 			}
 		}
-		
+
 		int n = Bukkit.getServer().getOnlinePlayers().size();
-		if (n == 0 || n < 0) {
+		if (n == 0 || n < 0)
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
-		} else {
+		else
 			return;
-		}
-		
+
 		if (StockInt.pleaseDropItemBeforeChat.contains(playerName))
 			StockInt.pleaseDropItemBeforeChat.remove(playerName);
 	}

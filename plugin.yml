@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.0_01
+version: 2.1
 description: palapon2545's first java plugin development.
 author: PondJa_KunG
 softdepend: [BarAPI]
@@ -11,9 +11,6 @@ commands:
        description: Set spawn location.
        usage: /setspawn
        permission: main.setspawn
-  item:
-      description: Get Item ID and NAME in player hand
-      usage: /item
   report:
        description: Report abuse player
        usage: /report [player] [reason]
@@ -165,9 +162,11 @@ commands:
   tpaccept:
        description: Accept teleportion request from [player]
        usage: /tpaccept [player]
+       aliases: [tpy,tpyes,tpa]
   tpdeny:
        description: Deny teleportion request from [player]
        usage: /tpdeny [player]
+       aliases: [tpd,tpno,tpn]
   warn:
        description: Warn player (Max 3 times)
        usage: /warn [player] [reason]

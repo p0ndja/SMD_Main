@@ -1,0 +1,333 @@
+name: SMDMain
+main: me.palapon2545.SMDMain.Main.pluginMain
+version: 2.1
+description: palapon2545's first java plugin development.
+author: PondJa_KunG
+softdepend: [BarAPI]
+load: POSTWORLD
+website: https://github.com/palapon2545/SMD_Main
+commands:
+  setspawn:
+       description: Set spawn location.
+       usage: /setspawn
+       permission: main.setspawn
+  report:
+       description: Report abuse player
+       usage: /report [player] [reason]
+  checkreport:
+       description: Check report id
+       usage: /checkreport [id]
+  closereport:
+       description: Close report id
+       usage: /closereport [id]
+  listreport:
+       description: List unread report
+       usage: /listreport
+  register:
+       description: Register your account
+       usage: /register [password] [email]
+       aliases: [reg]
+  changepassword:
+       description: Change your accept password
+       usage: /changepassword [oldPass] [newPass]
+  login:
+       description: Login to your account
+       usage: /login [password]
+       aliases: [l]
+  tell:
+       description: Private message to someone
+       usage: /tell [player] [message]
+       aliases: [whisper, t, w, pm, privatemessage]
+  reply:
+       description: quick reply to your last private message
+       usage: /reply [message]
+       aliases: [r]
+  changeplayerdatabase:
+       description: Change playername in database folder
+       usage: /changeplayerdatabase [oldName] [newName]
+  resetplayerdatabase:
+       description: Reset player SMDMain data
+       usage: /resetplayerdatabase [playerName]
+  spawn:
+       description: Teleport to spawn location.
+       usage: /spawn
+       aliases: [ts]
+  sethome:
+       description: Set your home Location.
+       usage: /sethome [name]
+       aliases: [sh]
+  home:
+       description: Teleport to your home location.
+       usage: /home [name]
+       aliases: [h]
+  qwerty:
+       description: qwertyuiop!
+       usage: /qwerty
+  test:
+       description: debug command!
+       usage: /test
+  god:
+       description: toggle god mode
+       usage: /god
+  removehome:
+       description: Remove home location
+       usage: /removehome [name]
+       aliases: [rh]
+  listhome:
+       description: Show information of your sethome
+       usage: /listhome
+       aliases: [lh]
+  gamemode:
+       description: Change your gamemode
+       usage: /gamemode to see more information
+       aliases: [gm]
+  countdown:
+       description: Countdown management
+       usage: /countdown [start/stop] [args]
+       aliases: [cd]
+  heal:
+       description: heal your heart and clear effect.
+       usage: /heal [player|all]
+  fly:
+       description: toggle flying.
+       usage: /fly [player]
+  givequota:
+       description: give quota
+       usage: /givequota [player] [luckyclick|tpr|home] [amount]
+  free:
+       description: Get your free item
+       usage: /free
+  resetfree:
+       description: Reset freeitem quota
+       usage: /resetfree
+  freeze:
+       description: Freeze
+       usage: /freeze [player]
+  redeem:
+       description: redeem code
+       usage: /redeem [code]
+  resetredeem:
+       description: reset redeem quota
+       usage: /resetredeem
+  setredeem:
+       description: Set redeem code
+       usage: /setredeem [code|reward] [arg]
+  stuck:
+       description: helping from stucking
+       usage: /stuck
+  invisible:
+       description: invisible!
+       usage: /invisible
+  sun:
+       description: change weather to sun
+       usage: /sun
+  storm:
+       description: change weather to storm
+       usage: /storm
+  rain:
+       description: change weather to rain
+       usage: /rain
+  day:
+       description: change time to day (1000 tick)
+       usage: /day
+  midday:
+       description: change time to midday (6000 tick)
+       usage: /midday
+  night:
+       description: change time to night (13000 tick)
+       usage: /night
+  midnight:
+       description: change time to midnight (18000 tick)
+       usage: /midnight
+  broadcast:
+       description: Broadcast message
+       usage: /broadcast [text]
+       aliases: [bc]
+  publish:
+       description: Publish message
+       usage: /publish [text]
+       aliases: [pb]
+  rank:
+       description: Rank
+       usage: /rank [member|vip|helper|staff|builder|admin|owner] [player]
+  force:
+       description: Force [player|console|all] to chat [message]
+       usage: /force [player|console|all] [message]
+  tpr:
+       description: Sent teleportion request to [player]
+       usage: /tpr [player]
+  tprequest:
+       description: Sent teleportion request to [player]
+       usage: /tprequest [player]
+  tpaccept:
+       description: Accept teleportion request from [player]
+       usage: /tpaccept [player]
+       aliases: [tpy,tpyes,tpa]
+  tpdeny:
+       description: Deny teleportion request from [player]
+       usage: /tpdeny [player]
+       aliases: [tpd,tpno,tpn]
+  warn:
+       description: Warn player (Max 3 times)
+       usage: /warn [player] [reason]
+  resetwarn:
+       description: Reset player warn
+       usage: /resetwarn [player]
+  data:
+       description: Check player data
+       usage: /data
+  mute:
+       description: Grant or Revoke player chatting ability 
+       usage: /mute [player] [reason]
+  clearchat:
+       description: clear all online player chat
+       usage: /clearchat
+  adminchat:
+       description: Admin chat
+       usage: /adminchat [message]
+       aliases: [ac]
+  enderchest:
+       description: Open enderchest
+       usage: /enderchest
+       aliases: [ec]
+  afk:
+       description: Toggle AFK Status
+       usage: /afk
+  workbench:
+       description: Open workbench
+       usage: /workbench
+       aliases: [wb]
+  ping:
+       description: Check player ping
+       usage: /ping [player]
+  world:
+       description: teleport to normal world - nether - the end
+       usage: /world [world] [player]
+  wiki:
+       description: Wiki - The Information Center
+       usage: /wiki [topic]
+  money:
+       description: Check your currently money
+       usage: /money
+  paymoney:
+       description: pay money to other player
+       usage: /paymoney [player] [amount]
+  givemoney:
+       description: give money to other player
+       usage: /givemoney [player] [amount]
+  takemoney:
+       description: take money from other player
+       usage: /takemoney [player] [amount]
+  warp:
+       description: warp to server warp location.
+       usage: /warp [warpname]
+  setwarp:
+       description: create warp
+       usage: /setwarp [warpname]
+  removewarp:
+       description: remove warp
+       usage: /removewarp [warp]
+  buyquota:
+       description: Buy Quota
+       usage: /buyquota [arg]
+
+permissions:
+  main.*:
+       description: Gives access to all SMDMain commands
+       children:
+           main.setspawn: true
+           main.warp: true
+           main.gamemode: true
+           main.heal: true
+           main.fly: true
+           main.freeze: true
+           main.resetredeem: true
+           main.report: true
+           main.climate: true
+           main.time: true
+           main.broadcast: true
+           main.rank: true
+           main.force: true
+           main.warn: true
+           main.mute: true
+           main.world: true
+           main.sign: true
+           main.adminchat: true
+           main.clearchat: true
+           main.countdown: true
+           main.invisible: true
+           main.money: true
+           main.ui: true
+           main.god: true
+  main.setspawn:
+       description: Allow to use /setspawn
+       default: op
+  main.god:
+       description: Allow to use /god
+       default: op
+  main.warp:
+       description: Allow to use /setwarp, /removewarp
+       default: op
+  main.gamemode:
+       description: Allow to use /gamemode, /gm
+       default: op
+  main.heal:
+       description: Allow to use /heal
+       default: op
+  main.money:
+       description: Allow to use /givemoney, /takemoney
+       default: op
+  main.fly:
+       description: Allow to use /fly
+       default: op
+  main.freeze:
+       description: Allow to use /freeze
+       default: op
+  main.resetredeem:
+       description: Allow to use /resetredeem
+       default: op
+  main.climate:
+       description: Allow to use /climate
+       default: op
+  main.ui:
+       description: Allow to use /enderchest, /workbench
+       default: op
+  main.report:
+       description: Allow to use /checkreport, /listreport, /closereport
+       default: op
+  main.time:
+       description: Allow to use /day, /midday, /night, /midnight
+       default: op
+  main.broadcast:
+       description: Allow to use /broadcast, /bc
+       default: op
+  main.rank:
+       description: Allow to use /rank
+       default: op
+  main.force:
+       description: Allow to use /force
+       default: op
+  main.warn:
+       description: Allow to use /warn, /resetwarn
+       default: op
+  main.mute:
+       description: Allow to use /mute
+       default: op
+  main.world:
+       description: Allow to use /world
+       default: op
+  main.sign:
+       description: Allow to create sign with first line is [cmd] [server] [tp] [world]
+       default: op
+  main.countdown:
+       description: Allow to use /countdown
+       default: op
+  main.clearchat:
+       description: Allow to use /clearchat
+       default: op
+  main.invisible:
+       description: Allow to use /invisible
+       default: op
+  main.adminchat:
+       description: Allow to use /adminchat and received admin chat message
+       default: op

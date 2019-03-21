@@ -113,8 +113,14 @@ public class Countdown {
 		} else if (c == 0) {
 			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
 		} else if (c == -1) {
-			if (StockInt.BarAPIHook == true)
+			if (StockInt.BarAPIHook == true) {
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				BossBar.removeBarAll();
+			}
 		} else {
 			// NOTHING
 		}
@@ -122,11 +128,14 @@ public class Countdown {
 		long percent = ((c * 100) / StockInt.CountdownStartLength);
 
 		if (c >= 0) {
-			if (StockInt.BarAPIHook == true) {
+			if (c%30 == 0 || c < 10)
+				System.out.println(ChatColor.stripColor(("[COUNTDOWN] " + week + day + hour + minute + second)));
+			
+			if (StockInt.BarAPIHook == true)
 				BossBar.sendBarAll(Prefix.cd + week + day + hour + minute + second, (float) percent);
-			} else {
+			else 
 				ActionBarAPI.sendToAll(Prefix.cd + week + day + hour + minute + second);
-			}
+			
 		}
 
 	}

@@ -12,6 +12,8 @@ public class StockInt {
 	public static boolean BarAPIHook = false;
 	public static boolean BossBarAPIHook = false;
 	public static boolean LoginFeature = false;
+	public static boolean spawnOnJoin = false;
+	public static boolean privateServerPondJa = false;
 	public static int ServerVersion = 0;
 	public static List<String> blockLogin = new ArrayList<String>();
 	public static List<String> afkListName = new ArrayList<String>();
