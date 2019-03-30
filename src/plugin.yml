@@ -1,11 +1,11 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
 version: 2.1
-description: palapon2545's first java plugin development.
-author: PondJa_KunG
+description: "PondJaTH's first java bukkit plugin development."
+author: "PondJaTH"
 softdepend: [BarAPI]
 load: POSTWORLD
-website: https://github.com/palapon2545/SMD_Main
+website: https://github.com/p0ndja/SMD_Main
 commands:
   setspawn:
        description: Set spawn location.
@@ -140,62 +140,62 @@ commands:
        description: change time to midnight (18000 tick)
        usage: /midnight
   broadcast:
-       description: Broadcast message
-       usage: /broadcast [text]
+       description: "Broadcast message"
+       usage: "/broadcast [text]"
        aliases: [bc]
   publish:
-       description: Publish message
-       usage: /publish [text]
+       description: "Publish message"
+       usage: "/publish [text]"
        aliases: [pb]
   rank:
-       description: Rank
-       usage: /rank [member|vip|helper|staff|builder|admin|owner] [player]
+       description: "Rank"
+       usage: "/rank [member|vip|helper|staff|builder|admin|owner] [player]
   force:
-       description: Force [player|console|all] to chat [message]
-       usage: /force [player|console|all] [message]
+       description: "Force [player|console|all] to chat [message]"
+       usage: "/force [player|console|all] [message]"
   tpr:
-       description: Sent teleportion request to [player]
-       usage: /tpr [player]
+       description: "Sent teleportion request to [player]"
+       usage: "/tpr [player]"
   tprequest:
-       description: Sent teleportion request to [player]
-       usage: /tprequest [player]
+       description: "Sent teleportion request to [player]"
+       usage: "/tprequest [player]"
   tpaccept:
-       description: Accept teleportion request from [player]
-       usage: /tpaccept [player]
+       description: "Accept teleportion request from [player]"
+       usage: "/tpaccept [player]"
        aliases: [tpy,tpyes,tpa]
   tpdeny:
-       description: Deny teleportion request from [player]
-       usage: /tpdeny [player]
+       description: "Deny teleportion request from [player]"
+       usage: "/tpdeny [player]"
        aliases: [tpd,tpno,tpn]
   warn:
-       description: Warn player (Max 3 times)
-       usage: /warn [player] [reason]
+       description: "Warn player (Max 3 times)"
+       usage: "/warn [player] [reason]"
   resetwarn:
-       description: Reset player warn
-       usage: /resetwarn [player]
+       description: "Reset player warn"
+       usage: "/resetwarn [player]"
   data:
-       description: Check player data
-       usage: /data
+       description: "Check player data"
+       usage: "/data"
   mute:
-       description: Grant or Revoke player chatting ability 
-       usage: /mute [player] [reason]
+       description: "Grant or Revoke player chatting ability" 
+       usage: "/mute [player] [reason]"
   clearchat:
-       description: clear all online player chat
-       usage: /clearchat
+       description: "clear all online player chat"
+       usage: "/clearchat"
   adminchat:
-       description: Admin chat
-       usage: /adminchat [message]
+       description: "Admin chat"
+       usage: "/adminchat [message]"
        aliases: [ac]
   enderchest:
-       description: Open enderchest
-       usage: /enderchest
+       description: "Open enderchest"
+       usage: "/enderchest"
        aliases: [ec]
   afk:
-       description: Toggle AFK Status
-       usage: /afk
+       description: "Toggle AFK Status"
+       usage: "/afk"
   workbench:
-       description: Open workbench
-       usage: /workbench
+       description: "Open workbench"
+       usage: "/workbench"
        aliases: [wb]
   ping:
        description: Check player ping
