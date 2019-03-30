@@ -8,7 +8,7 @@ import me.palapon2545.SMDMain.Function.BossBar;
 
 public class Countdown {
 
-	static boolean CountdownDisplayMessageBoolean = false;
+	private static boolean CountdownDisplayMessageBoolean = false;
 
 	public static boolean run() {
 		long c = StockInt.CountdownLength;
@@ -21,11 +21,10 @@ public class Countdown {
 				if (c < 11) {
 					CountdownDisplayMessageBoolean = false;
 				} else {
-					if (CountdownDisplayMessageBoolean == true) {
+					if (CountdownDisplayMessageBoolean == true)
 						CountdownDisplayMessageBoolean = false;
-					} else {
+					else
 						CountdownDisplayMessageBoolean = true;
-					}
 				}
 			}
 			if (CountdownDisplayMessageBoolean == true) {
@@ -128,14 +127,14 @@ public class Countdown {
 		long percent = ((c * 100) / StockInt.CountdownStartLength);
 
 		if (c >= 0) {
-			if (c%30 == 0 || c < 10)
+			if (c % 30 == 0 || c < 10)
 				System.out.println(ChatColor.stripColor(("[COUNTDOWN] " + week + day + hour + minute + second)));
-			
+
 			if (StockInt.BarAPIHook == true)
 				BossBar.sendBarAll(Prefix.cd + week + day + hour + minute + second, (float) percent);
-			else 
+			else
 				ActionBarAPI.sendToAll(Prefix.cd + week + day + hour + minute + second);
-			
+
 		}
 
 	}

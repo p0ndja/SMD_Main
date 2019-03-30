@@ -81,31 +81,23 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public static boolean isNumeric(String str) {
-		if (str == null) {
+		if (str == null)
 			return false;
-		}
-		int sz = str.length();
-		for (int i = 0; i < sz; i++) {
-			if (Character.isDigit(str.charAt(i)) == false) {
+
+		for (int i = 0; i < str.length(); i++)
+			if (Character.isDigit(str.charAt(i)) == false)
 				return false;
-			}
-		}
+
 		return true;
 	}
 
 	public String makeFirstCapital(String original) {
-		if (original == null || original.length() == 0) {
+		if (original == null || original.length() == 0)
 			return original;
-		}
 		return original.substring(0, 1).toUpperCase() + original.substring(1);
 	}
 
-	public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 	public final Logger logger = Logger.getLogger("Minecraft");
-	public Countdown cd;
-	public static AutoSaveWorld sw;
-
-	LinkedList<String> badWord = new LinkedList<String>();
 
 	public void addList(String key, String... element) {
 		List<String> list = getConfig().getStringList(key);
@@ -116,30 +108,16 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public void buy(Player player, String item, int amount, long price, short data) {
-		String playerName = player.getName();
-		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
-		File f = new File(userdata, File.separator + "config.yml");
-		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		long money = Money.get(player);
+		item = makeFirstCapital(item);
 		Material l = Material.getMaterial(item.toUpperCase());
 		if (l != null) {
 			Inventory inv = player.getInventory();
-			long money = playerData.getLong("money");
 			ItemStack c = new ItemStack(l);
 			c.getData().setData((byte) data);
 			if (money >= price) {
 				inv.addItem(new ItemStack(l, amount, data));
-				try {
-					playerData.set("money", money - price);
-					playerData.save(f);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				String coin = " Coins ";
-				if (price <= 1)
-					coin = " Coin ";
-
-				player.sendMessage(Prefix.server + "You paid " + ChatColor.GOLD + price + coin + ChatColor.GRAY
-						+ "from buying " + ChatColor.AQUA + amount + "x " + item);
+				Money.take(player, price, ChatColor.GRAY + "from buying " + ChatColor.AQUA + amount + "x " + item);
 				egg(player);
 			} else {
 				player.sendMessage(Prefix.server + Prefix.nom);
@@ -154,9 +132,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 	@EventHandler
 	public void InventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
-		if (e.getInventory().getTitle().contains("'s data")) {
+		if (e.getInventory().getTitle().contains("'s data"))
 			e.setCancelled(true);
-		} else if (e.getInventory().getTitle().contains("Free")) {
+
+		if (e.getInventory().getTitle().contains("Free")) {
 			if (e.getCurrentItem().getType() == Material.EMERALD_BLOCK) {
 
 				p.getInventory().addItem(new ItemStack(Blockto113.WOOD_SWORD.bukkitblock(), 1));
@@ -185,7 +164,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					e1.printStackTrace();
 				}
 				p.closeInventory();
-				getConfig().set("free_item." + playerName, "true");
+				getConfig().set("free_item." + playerName, true);
 				saveConfig();
 				p.sendMessage(
 						Prefix.server + "You recived " + ChatColor.GREEN + "1x Starter Kit" + ChatColor.GRAY + ".");
@@ -205,14 +184,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 			} else {
 				e.setCancelled(true);
 			}
-		} else if (e.getInventory() instanceof EnchantingInventory) {
+		}
 
+		if (e.getInventory() instanceof EnchantingInventory) {
 			Dye d = new Dye();
 			d.setColor(DyeColor.BLUE);
 			ItemStack i = d.toItemStack();
-			if (e.getCurrentItem().getType() == i.getType()) {
+			if (e.getCurrentItem().getType() == i.getType())
 				e.setCancelled(true);
-			}
 		}
 	}
 
@@ -1389,8 +1368,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							String muteis = playerData1.getString("mute.is");
-							if (muteis.equalsIgnoreCase("false")) {
+							Boolean muteis = playerData1.getBoolean("mute.is");
+							if (muteis == false) {
 								message = "";
 								for (int i = 1; i != args.length; i++)
 									message += args[i] + " ";
@@ -1403,14 +1382,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 								targetPlayer.sendMessage(Prefix.server + "You have been muted.");
 								orb(targetPlayer);
 								try {
-									playerData1.set("mute.is", "true");
+									playerData1.set("mute.is", true);
 									playerData1.set("mute.reason", message);
 									playerData1.save(f1);
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
 							}
-							if (muteis.equalsIgnoreCase("true")) {
+							if (muteis == true) {
 								Bukkit.broadcastMessage(ChatColor.BLUE + "Chat> " + ChatColor.GRAY + "Player "
 										+ ChatColor.YELLOW + playerName + ChatColor.GREEN + " grant " + ChatColor.YELLOW
 										+ targetPlayerName + "'s ability " + ChatColor.GRAY + "to chat. ");
@@ -1420,7 +1399,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 								targetPlayer.sendMessage(Prefix.server + "You have been unmuted.");
 								orb(targetPlayer);
 								try {
-									playerData1.set("mute.is", "false");
+									playerData1.set("mute.is", false);
 									playerData1.set("mute.reason", "none");
 									playerData1.save(f1);
 								} catch (IOException e) {
@@ -1740,10 +1719,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("invisible")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.invisible")
 						|| getRankPriority(getRank(player)) >= 2) {
-					String invi = playerData.getString("Invisible");
-					if (invi.equalsIgnoreCase("false")) {
+					Boolean invi = playerData.getBoolean("Invisible");
+					if (invi == false) {
 						try {
-							playerData.set("Invisible", "true");
+							playerData.set("Invisible", true);
 							playerData.save(f);
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -1757,10 +1736,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 								p.hidePlayer(player);
 
 						}
-					}
-					if (invi.equalsIgnoreCase("true")) {
+					} else {
 						try {
-							playerData.set("Invisible", "false");
+							playerData.set("Invisible", false);
 							playerData.save(f);
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -1874,11 +1852,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							String freeze = playerData1.getString("freeze");
-							if (freeze.equalsIgnoreCase("true")) {
+							Boolean freeze = playerData1.getBoolean("freeze");
+							if (freeze == true) {
 								player.setAllowFlight(false);
 								try {
-									playerData1.set("freeze", "false");
+									playerData1.set("freeze", false);
 									playerData1.save(f1);
 								} catch (IOException e) {
 									e.printStackTrace();
@@ -1888,11 +1866,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 								player.sendMessage(
 										Prefix.server + "You " + ChatColor.GREEN + "grant " + ChatColor.YELLOW
 												+ targetPlayerName + "'s ability " + ChatColor.GRAY + "to move.");
-							}
-							if (freeze.equalsIgnoreCase("false")) {
+							} else {
 								player.setAllowFlight(true);
 								try {
-									playerData1.set("freeze", "true");
+									playerData1.set("freeze", true);
 									playerData1.save(f1);
 								} catch (IOException e) {
 									e.printStackTrace();
@@ -2010,7 +1987,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					String reward = getConfig().getString("redeem.reward");
 					if (args[0].equalsIgnoreCase(code) && !code.equalsIgnoreCase("none") && reward != null) {
 						if (getConfig().getString("redeem.player." + playerName) == null
-								|| getConfig().getString("redeem.player." + playerName).equalsIgnoreCase("false")) {
+								|| getConfig().getBoolean("redeem.player." + playerName) == false) {
 
 							String[] item = reward.split(" ");
 							player.sendMessage(Prefix.database + "Here is your reward!");
@@ -2035,7 +2012,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							}
 
 							yes(player);
-							getConfig().set("redeem.player." + playerName, "true");
+							getConfig().set("redeem.player." + playerName, true);
 							saveConfig();
 						} else {
 							player.sendMessage(Prefix.database + "You already earn reward from this code. "
@@ -2512,15 +2489,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
-				String v = getConfig().getString("free_item." + playerName);
-				if (v == null) {
-					v = "false";
-				}
-				if (v.equalsIgnoreCase("false")) {
+				Boolean v = getConfig().getBoolean("free_item." + playerName);
+				if (v == null)
+					v = false;
+
+				if (v == false)
 					FreeItem.openFreeGUI(player);
-				} else {
+				else
 					player.sendMessage(Prefix.server + "You're already redeem free item.");
-				}
 			}
 			if (CommandLabel.equalsIgnoreCase("changeplayerdatabase")
 					|| CommandLabel.equalsIgnoreCase("SMDMain:changeplayerdatabase")) {
@@ -2635,7 +2611,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (args.length == 1) {
 						if (Bukkit.getPlayer(args[0]) != null) {
 							Player targetPlayer = Bukkit.getPlayer(args[0]);
-							getConfig().set("free_item." + targetPlayer.getName(), "false");
+							getConfig().set("free_item." + targetPlayer.getName(), false);
 							saveConfig();
 							player.sendMessage(Prefix.database + "Reset Free Item redeeming for player "
 									+ ChatColor.GREEN + targetPlayer.getName() + ChatColor.GRAY + ".");
@@ -2745,28 +2721,21 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 		getConfig().options().copyDefaults(true);
 		getConfig().set("warp", null);
-		getConfig().set("event.warpstatus", "false");
+		getConfig().set("event.warpstatus", false);
 		getConfig().set("event.name", "none");
-		getConfig().set("event.join", "false");
+		getConfig().set("event.join", false);
 		getConfig().set("event.queuelist", null);
 
 		if (getConfig().getString("redeem.code") == null)
 			getConfig().set("redeem.code", "none");
 
-		if (getConfig().getString("enable_private_server_model_for_developer_server_only") == null)
-			getConfig().set("enable_private_server_model_for_developer_server_only", "false");
-		else if (getConfig().getString("enable_private_server_model_for_developer_server_only")
-				.equalsIgnoreCase("true"))
+		if (getConfig().getBoolean("enable_private_server_model_for_developer_server_only") == true)
 			StockInt.privateServerPondJa = true;
 
-		if (getConfig().getString("spawn_on_join") == null)
-			getConfig().set("spawn_on_join", "false");
-		else if (getConfig().getString("spawn_on_join").equalsIgnoreCase("true"))
+		if (getConfig().getBoolean("spawn_on_join") == true)
 			StockInt.spawnOnJoin = true;
 
-		if (getConfig().getString("login_feature") == null)
-			getConfig().set("login_feature", "false");
-		else if (getConfig().getString("login_feature").equalsIgnoreCase("true"))
+		if (getConfig().getBoolean("login_feature") == true)
 			StockInt.LoginFeature = true;
 
 		for (Player player1 : Bukkit.getOnlinePlayers()) {
@@ -2778,43 +2747,36 @@ public class pluginMain extends JavaPlugin implements Listener {
 			String rank = playerData.getString("rank");
 			String RankDisplay;
 
-			if (rank.equalsIgnoreCase("default")) {
+			if (rank.equalsIgnoreCase("default"))
 				RankDisplay = Rank.Default;
-			} else if (rank.equalsIgnoreCase("staff")) {
+			else if (rank.equalsIgnoreCase("staff"))
 				RankDisplay = Rank.Staff;
-			} else if (rank.equalsIgnoreCase("vip")) {
+			else if (rank.equalsIgnoreCase("vip"))
 				RankDisplay = Rank.Vip;
-			} else if (rank.equalsIgnoreCase("helper")) {
+			else if (rank.equalsIgnoreCase("helper"))
 				RankDisplay = Rank.Helper;
-			} else if (rank.equalsIgnoreCase("admin")) {
+			else if (rank.equalsIgnoreCase("admin"))
 				RankDisplay = Rank.Admin;
-			} else if (rank.equalsIgnoreCase("owner")) {
+			else if (rank.equalsIgnoreCase("owner"))
 				RankDisplay = Rank.Owner;
-			} else if (rank.equalsIgnoreCase("builder")) {
+			else if (rank.equalsIgnoreCase("builder"))
 				RankDisplay = Rank.Builder;
-			} else {
+			else
 				RankDisplay = Rank.Default;
-			}
+
 			player1.setDisplayName(RankDisplay + playerName);
 			player1.setPlayerListName(RankDisplay + playerName);
 		}
 		long c = getConfig().getLong("countdown");
 		long cs = getConfig().getLong("countdown_startLength");
 
-		if (cs == 0)
-			cs = -2;
-		if (c == 0)
-			c = -2;
-		StockInt.CountdownLength = c;
+		if (cs == 0) cs = -2;
 		StockInt.CountdownStartLength = cs;
+		if (c == 0) c = -2;
+		StockInt.CountdownLength = c;
 
-		String ms = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
-		if (ms == null)
-			StockInt.CountdownMessage = "null";
-		else
-			StockInt.CountdownMessage = ms;
+		StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
 
-		getConfig().set("countdown_message", ms);
 		regEvents();
 		saveConfig();
 
@@ -3001,7 +2963,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				long s3_price = Integer.parseInt(s.getLine(3));
 
 				if (s2_item.contains("x") || s2_item.contains("*")) {
-					//printf("Yes it has");	
+					// printf("Yes it has");
 				}
 
 				if (!s2_item.contains(":"))
@@ -3368,64 +3330,62 @@ public class pluginMain extends JavaPlugin implements Listener {
 			inv.setItem(2, f2);
 		}
 
-		String muteis = playerData.getString("mute.is");
+		Boolean muteis = playerData.getBoolean("mute.is");
 		String mutere = playerData.getString("mute.reason");
-		String freeze = playerData.getString("freeze");
+		Boolean freeze = playerData.getBoolean("freeze");
 		int countwarn = playerData.getInt("warn");
 		int tprq = playerData.getInt("Quota.TPR");
 		int lcq = playerData.getInt("Quota.LuckyClick");
 		int homeq = playerData.getInt("Quota.Home");
-		if (muteis.equalsIgnoreCase("true")) {
+		if (muteis == true) {
 			ItemStack f3 = new ItemStack(Material.PAINTING, 1);
 			ItemMeta f3m = f3.getItemMeta();
 			f3m.setDisplayName(ChatColor.WHITE + "Mute: " + ChatColor.RED + "Yes. " + ChatColor.RED + ChatColor.ITALIC
 					+ "Reason: " + mutere);
 			f3.setItemMeta(f3m);
 			inv.setItem(4, f3);
-		}
-		if (muteis.equalsIgnoreCase("false")) {
+		} else {
 			ItemStack f3 = new ItemStack(Material.SIGN, 1);
 			ItemMeta f3m = f3.getItemMeta();
 			f3m.setDisplayName(ChatColor.WHITE + "Mute: " + ChatColor.GREEN + "No");
 			f3.setItemMeta(f3m);
 			inv.setItem(4, f3);
 		}
-		if (countwarn == 0) {
-			ItemStack f3 = new ItemStack(Material.GLASS, 1);
-			ItemMeta f3m = f3.getItemMeta();
-			f3m.setDisplayName(ChatColor.WHITE + "Warn: " + ChatColor.AQUA + "No-Warn :)" + ChatColor.WHITE + " [0]");
-			f3.setItemMeta(f3m);
-			inv.setItem(6, f3);
-		}
+
 		if (countwarn == 1) {
 			ItemStack f3 = new ItemStack(Material.STONE, 1);
 			ItemMeta f3m = f3.getItemMeta();
 			f3m.setDisplayName(ChatColor.WHITE + "Warn: " + ChatColor.YELLOW + "1 time, Don't break rules!");
 			f3.setItemMeta(f3m);
 			inv.setItem(6, f3);
-		}
-		if (countwarn == 2) {
+		} else if (countwarn == 2) {
 			ItemStack f3 = new ItemStack(Material.COBBLESTONE, 1);
 			ItemMeta f3m = f3.getItemMeta();
 			f3m.setDisplayName(ChatColor.WHITE + "Warn: " + ChatColor.GOLD + "2 times, WTF are you doing?");
 			f3.setItemMeta(f3m);
 			inv.setItem(6, f3);
-		}
-		if (countwarn == 3) {
+		} else if (countwarn == 3) {
 			ItemStack f3 = new ItemStack(Material.BEDROCK, 1);
 			ItemMeta f3m = f3.getItemMeta();
 			f3m.setDisplayName(ChatColor.WHITE + "Warn: " + ChatColor.RED + "3 times, You will be banned.");
 			f3.setItemMeta(f3m);
 			inv.setItem(6, f3);
+		} else {
+			ItemStack f3 = new ItemStack(Material.GLASS, 1);
+			ItemMeta f3m = f3.getItemMeta();
+			f3m.setDisplayName(ChatColor.WHITE + "Warn: " + ChatColor.AQUA + "No-Warn :)" + ChatColor.WHITE + " [0]");
+			f3.setItemMeta(f3m);
+			inv.setItem(6, f3);
 		}
-		if (freeze.equalsIgnoreCase("true")) {
+
+		if (freeze == true) {
 			ItemStack f4 = new ItemStack(Material.ICE, 1);
 			ItemMeta f4m = f4.getItemMeta();
 			f4m.setDisplayName(ChatColor.WHITE + "Freeze: " + ChatColor.RED + ChatColor.BOLD + "Yes");
 			f4.setItemMeta(f4m);
 			inv.setItem(8, f4);
 		}
-		if (freeze.equalsIgnoreCase("false")) {
+		if (freeze == false) {
 			ItemStack f4 = new ItemStack(Material.ICE, 1);
 			ItemMeta f4m = f4.getItemMeta();
 			f4m.setDisplayName(ChatColor.WHITE + "Freeze: " + ChatColor.GREEN + ChatColor.BOLD + "No");
@@ -3627,6 +3587,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public void sell(Player player, String item, int amount, long price, short data) {
+
+		item = makeFirstCapital(item);
+
 		String playerName = player.getName();
 		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");

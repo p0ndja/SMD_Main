@@ -11,6 +11,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.primitives.Longs;
+
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 
@@ -105,6 +107,47 @@ public class Money extends JavaPlugin {
 			payer.sendMessage(Prefix.server + "Payment need to more than " + ChatColor.YELLOW + "0" + ChatColor.GRAY + ".");
 			no(payer);
 		}
+	}
+	
+	public static void take(Player payer, long amount, String a) {
+		String payerName = payer.getName();
+		File payerLocate = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + payerName);
+		File payerFile = new File(payerLocate, File.separator + "config.yml");
+		FileConfiguration payerData = YamlConfiguration.loadConfiguration(payerFile);
+		long payerMoney = payerData.getLong("money");
+		if (amount >= 0) {
+			if (payerMoney - amount > 0) {
+				try {
+					payerData.set("money", payerMoney - amount);
+					payerData.save(payerFile);
+				} catch (IOException e) {
+					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+				}
+				
+				if (amount == Math.abs(1) || amount == 0) {
+					coin = " Coin ";
+				}
+				
+				payer.sendMessage(Prefix.server + ChatColor.GRAY + "You paid " + ChatColor.GREEN + amount + coin + a);
+				
+			} else {
+				payer.sendMessage(Prefix.server + Prefix.nom);
+				no(payer);
+			}
+		} else {
+			payer.sendMessage(Prefix.server + "Payment need to more than " + ChatColor.YELLOW + "0" + ChatColor.GRAY + ".");
+			no(payer);
+		}
+	}
+	
+	public static Long get(Player caller) {
+		String playerName = caller.getName();
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
+		File f = new File(userdata, File.separator + "config.yml");
+		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		
+		return playerData.getLong("money");
+		
 	}
 
 	public static void give(Player receiver, long amount) {
