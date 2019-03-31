@@ -2,6 +2,7 @@ package me.palapon2545.SMDMain.EventListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import me.palapon2545.SMDMain.Function.ActionBarAPI;
+import me.palapon2545.SMDMain.Function.Function;
 import me.palapon2545.SMDMain.Function.Sound18to113;
 import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Library.Prefix;
@@ -46,7 +48,7 @@ public class OnPlayerCommunication implements Listener {
 		if (muteis.equalsIgnoreCase("true")) {
 			player.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.GRAY + "You have been muted.");
 			player.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.YELLOW + "Reason: " + ChatColor.GRAY + mutere);
-			pl.no(player);
+			Function.no(player);
 			event.setCancelled(true);
 		} else if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);

@@ -16,7 +16,6 @@ public enum Effect18to113 {
 
     public Effect bukkiteffect() {
         if (resolvedeffect != null) return resolvedeffect;
-        
         try {
             return resolvedeffect = Effect.valueOf(to113effect);
         } catch (IllegalArgumentException e) {

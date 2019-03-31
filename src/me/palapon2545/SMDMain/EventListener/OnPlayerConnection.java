@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import me.palapon2545.SMDMain.Function.Function;
 import me.palapon2545.SMDMain.Function.Sound18to113;
 import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Library.Prefix;
@@ -37,17 +38,18 @@ public class OnPlayerConnection implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (StockInt.privateServerPondJa)
-			player.setMaxHealth(40);
+		
+		if (StockInt.privateServerPondJa) player.setMaxHealth(40);
+		
 		String playerName = player.getName();
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-		if (!f.exists()) {
+		if (!f.exists() || !player.hasPlayedBefore()) {
 			File userfiles;
 			try {
 				userfiles = new File(
-						pl.getDataFolder() + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
+						StockInt.pluginDir + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
 				if (!userfiles.exists())
 					userfiles.mkdirs();
 
@@ -142,6 +144,7 @@ public class OnPlayerConnection implements Listener {
 			event.setJoinMessage(Prefix.j + RankDisplay + playerName);
 
 		}
+		
 		String evs = pl.getConfig().getString("event.queuelist." + playerName);
 		if (evs == null || evs.isEmpty()) {
 			pl.getConfig().set("event.queuelist." + playerName, "false");
@@ -162,7 +165,7 @@ public class OnPlayerConnection implements Listener {
 			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 
-		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		File tempFile = new File(StockInt.pluginDir + File.separator + "temp.yml");
 		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 		try {
 			tempData.set("chat_last_send." + playerName, null);
@@ -198,7 +201,7 @@ public class OnPlayerConnection implements Listener {
 			World p = Bukkit.getWorld(world);
 			if (p == null) {
 				player.sendMessage(Prefix.portal + "Spawn location not found! (Wrong world)");
-				pl.no(player);
+				Function.no(player);
 			}
 			Location loc = new Location(p, x, y, z);
 			loc.setPitch(pitch);
@@ -206,16 +209,10 @@ public class OnPlayerConnection implements Listener {
 			player.teleport(loc);
 			player.sendMessage(Prefix.portal + "Teleported to " + ChatColor.YELLOW + "Spawn" + ChatColor.GRAY + ".");
 
-			Sound a;
-			if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-				a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
-			else
-				a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
-
-			player.playSound(player.getLocation(), a, 10, 0);
+			Function.egg(player, 0);
 		}
 
-		// StockInt.pleaseDropItemBeforeChat.add(playerName);
+		StockInt.pleaseDropItemBeforeChat.add(playerName);
 
 	}
 
@@ -223,7 +220,7 @@ public class OnPlayerConnection implements Listener {
 	public void onPlayerLeft(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String rank = playerData.getString("rank");
@@ -256,7 +253,7 @@ public class OnPlayerConnection implements Listener {
 		else if (gm == GameMode.SPECTATOR)
 			g = 3;
 
-		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
+		File tempFile = new File(StockInt.pluginDir + File.separator + "temp.yml");
 		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
 		try {
 			tempData.set("chat_last_send." + playerName, null);
