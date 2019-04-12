@@ -1,6 +1,6 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.1
+version: 2.1.1
 description: "PondJaTH's first java bukkit plugin development."
 author: PondJaTH
 softdepend: [BarAPI]
@@ -11,6 +11,12 @@ commands:
     description: Set spawn location.
     usage: /setspawn
     permission: main.setspawn
+ unloadchunk:
+    description: EiEi
+    usage: /<command>
+ pondjaprivateserver:
+    description: EiEi
+    usage: /pondjaprivateserver
  report:
     description: Report abuse player
     usage: /report [player] [reason]

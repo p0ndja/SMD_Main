@@ -22,6 +22,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import me.palapon2545.SMDMain.Function.ActionBarAPI;
@@ -74,9 +75,6 @@ public class OnPlayerMovement implements Listener {
 		if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
 		}
-
-		String[] a = { "a", "b", "c" };
-		String b = a.toString();
 
 		if (StockInt.afkListName.contains(playerName)) {
 			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");

@@ -47,6 +47,7 @@ public class Shop {
 		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		
 		Material l = Material.getMaterial(item.toUpperCase());
 
 		if (l != null) {
@@ -62,7 +63,7 @@ public class Shop {
 
 			// can sell
 			if (sellCount > 0) {
-				double gotPrice = ((double) price / (double) amount) * sellCount;
+				long gotPrice = (long) (((double) price / (double) amount) * sellCount);
 				try {
 					playerData.set("money", money + gotPrice);
 					playerData.save(f);

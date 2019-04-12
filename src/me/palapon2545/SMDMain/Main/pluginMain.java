@@ -9,6 +9,7 @@ import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -54,12 +55,12 @@ import me.palapon2545.SMDMain.Function.AutoSaveWorld;
 import me.palapon2545.SMDMain.Function.Blockto113;
 import me.palapon2545.SMDMain.Function.BossBar;
 import me.palapon2545.SMDMain.Function.Countdown;
-import me.palapon2545.SMDMain.Function.Effect18to113;
 import me.palapon2545.SMDMain.Function.FreeItem;
 import me.palapon2545.SMDMain.Function.Function;
 import me.palapon2545.SMDMain.Function.Money;
 import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Function.Shop;
+import me.palapon2545.SMDMain.Function.Effect18to113;
 import me.palapon2545.SMDMain.Function.Sound18to113;
 import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Function.VersionJa;
@@ -430,7 +431,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					getConfig().set("spawn" + "." + "spawn" + ".yaw", plyaw);
 					getConfig().set("spawn" + "." + "spawn" + ".pitch", plpitch);
 					saveConfig();
-					player.sendMessage(ChatColor.BLUE + "Portal>" + ChatColor.GRAY + " Setspawn Complete!");
+					player.sendMessage(Prefix.portal + " Setspawn Complete!");
 					Function.yes(player);
 				} else {
 					player.sendMessage(Prefix.permission);
@@ -511,10 +512,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						player.sendMessage(
-								Prefix.portal + "Set home " + ChatColor.YELLOW + name + ChatColor.GRAY + " complete.");
-						player.sendMessage(Prefix.portal + "At location " + ChatColor.YELLOW + x + ", " + y + ", " + z
-								+ ChatColor.LIGHT_PURPLE + " at World " + ChatColor.GOLD + plw);
+						player.sendMessage(Prefix.portal + ChatColor.GRAY + "Set " + ChatColor.YELLOW + name + "'" + "'"
+								+ ChatColor.DARK_GRAY + "(X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + plw + ")"
+								+ ChatColor.GRAY + " as your new home location.");
+						player.sendMessage(Prefix.portal + Prefix.type + "'/home " + name + "'" + ChatColor.GRAY
+								+ " to get back here.");
+						player.sendMessage(Prefix.portal + "");
 						Function.yes(player);
 					} else {
 						player.sendMessage(Prefix.portal + "Home " + ChatColor.YELLOW + name + ChatColor.GRAY
@@ -2278,9 +2281,38 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-
+			
+			if (CommandLabel.equalsIgnoreCase("pondjaprivateserver")) {
+				if (player.getUniqueId().toString().equalsIgnoreCase("36827ea4-37ac-4907-add3-01d9ba091ef9")) {
+					player.sendMessage("now " + !StockInt.privateServerPondJa);
+					if (!StockInt.privateServerPondJa) {
+						StockInt.privateServerPondJa = true;
+						getConfig().set("enable_private_server_model_for_developer_server_only", true);
+						saveConfig();
+					} else {
+						StockInt.privateServerPondJa = false;
+						getConfig().set("enable_private_server_model_for_developer_server_only", false);
+						saveConfig();
+					}
+				}
+			}
+			
 			if (CommandLabel.equalsIgnoreCase("test")) {
+				
+			}
 
+			if (CommandLabel.equalsIgnoreCase("unloadchunk")) {
+				for (World w : Bukkit.getWorlds()) {
+					Chunk[] a = w.getLoadedChunks();
+					for (Chunk c : w.getLoadedChunks()) {
+						c.unload();
+						if (c.isLoaded() == false) {
+							Bukkit.broadcastMessage("unloaded chunk at " + c.getX() + "," + c.getZ() + "," + c.getWorld().getName());
+						}
+					}
+					Chunk[] b = w.getLoadedChunks();
+					Bukkit.broadcastMessage(w.getName() + ": " + a.length + " -> " + b.length);
+				}
 			}
 
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
@@ -2349,11 +2381,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
 				Boolean v = getConfig().getBoolean("free_item." + playerName);
-				if (v == null)
-					v = false;
-
-				if (v == false)
-					FreeItem.openFreeGUI(player);
+				if (v == false) FreeItem.openFreeGUI(player);
 				else
 					player.sendMessage(Prefix.server + "You're already redeem free item.");
 			}
@@ -2532,27 +2560,27 @@ public class pluginMain extends JavaPlugin implements Listener {
 		else
 			return 0;
 	}
-	
+
 	public static int itemsInInventory(Inventory inventory) {
 		int i = 0;
-		for (ItemStack is:inventory.getContents()) {
+		for (ItemStack is : inventory.getContents()) {
 			if (is != null && is.getType() == Material.GOLD_BLOCK) {
 				i += is.getAmount();
 			}
 		}
 		return i;
 	}
-	
+
 	public void openGUI(Player P) {
-		
+
 		Inventory a = Bukkit.createInventory(null, 54);
-		
+
 		ItemStack item_1 = new ItemStack(Material.GOLD_BLOCK);
 		ItemMeta itemm = item_1.getItemMeta();
 		ArrayList<String> item_lore = new ArrayList<String>();
 		item_lore.add("You have " + itemsInInventory(P.getInventory()));
 		itemm.setLore(item_lore);
-		
+
 		P.openInventory(a);
 	}
 
@@ -2573,13 +2601,13 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (StockInt.afkListName.contains(p.getName()))
 				noLongerAFKLevel(p);
 		}
-		
-		
-		
+
 	}
 
 	public void onEnable() {
+
 		ActionBarAPI.run();
+
 		File warpFolder = new File(getDataFolder() + File.separator + "/WarpDatabase/");
 		File privateWarpFolder = new File(getDataFolder() + File.separator + "/PrivateWarpDatabase/");
 		File reportFolder = new File(getDataFolder() + File.separator + "/ReportDatabase/");
@@ -2700,13 +2728,31 @@ public class pluginMain extends JavaPlugin implements Listener {
 						}
 					}
 				}
-				// afkLoop();
+				//afkLoop();
 			}
 		}, 0L, 20L);
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
 				onPlayerLogin();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					int ping = Ping.get(p);
+					ChatColor color = ChatColor.WHITE;
+					if (ping < 31) {
+						color = ChatColor.AQUA;
+					} else if (ping > 30 && ping < 81) {
+						color = ChatColor.GREEN;
+					} else if (ping > 80 && ping < 151) {
+						color = ChatColor.GOLD;
+					} else if (ping > 150 && ping < 501) {
+						color = ChatColor.RED;
+					} else if (ping > 500) {
+						color = ChatColor.DARK_RED;
+					} else {
+						color = ChatColor.WHITE;
+					}
+					p.setPlayerListName(p.getDisplayName() + ChatColor.WHITE + " [" + color + ping + ChatColor.WHITE + "]");
+				}
 			}
 		}, 0L, 60L);
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -2766,6 +2812,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	public void afkLoop() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			int level = tempData.getInt("afk_level." + p.getName());
+			Bukkit.broadcastMessage(p.getName() + " = " + level);
 			if (level == AFKTimerLevel + 1) {
 				long time = tempData.getLong("afk_time." + p.getName());
 				try {
@@ -2786,11 +2833,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (level == AFKTimerLevel && !StockInt.afkListName.contains(p.getName()))
+			if (level >= AFKTimerLevel && !StockInt.afkListName.contains(p.getName()))
 				setAFK(p);
 			if (level == -1)
 				noLongerAFKLevel(p);
 		}
+		Bukkit.broadcastMessage("---------");
 	}
 
 	public void setAFK(Player p) {
@@ -2849,7 +2897,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 		long money = playerData.getLong("money");
 		if (block.getType() == Material.WALL_SIGN || block.getType() == Blockto113.SIGN_POST.bukkitblock()) {
 			Sign s = (Sign) block.getState();
-			if (s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) {
+			if ((s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) && isNumeric(s.getLine(3))
+					&& isNumeric(s.getLine(1)) && !isNumeric(s.getLine(2))) {
+
+				// Format
+				// [sell] / [buy]
+				// amount
+				// material (in name)
+				// price
+
 				String s0 = s.getLine(0).toLowerCase();
 				int s1_amount = Integer.parseInt(ChatColor.stripColor(s.getLine(1)));
 				String s2_item = s.getLine(2).toLowerCase();
@@ -3458,7 +3514,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (w == 0) {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
 						ActionBarAPI.send(p,
-								ChatColor.RESET + ">>>>>>>>" + ChatColor.YELLOW + "" + ChatColor.BOLD + " Hold "
+								ChatColor.RESET + ">>>>>>>>" + ChatColor.YELLOW + "" + ChatColor.BOLD + " Press "
 										+ ChatColor.GREEN + ChatColor.BOLD + ChatColor.UNDERLINE + "Shift"
 										+ ChatColor.AQUA + " to teleport " + ChatColor.RESET + "<<<<<<<<");
 					}
@@ -3466,7 +3522,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (sign.getLine(0).equalsIgnoreCase("[cmd]")) {
 					p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
 					ActionBarAPI.send(p,
-							ChatColor.RESET + ">>>>>>>>" + ChatColor.YELLOW + "" + ChatColor.BOLD + " Hold "
+							ChatColor.RESET + ">>>>>>>>" + ChatColor.YELLOW + "" + ChatColor.BOLD + " Press "
 									+ ChatColor.GREEN + ChatColor.BOLD + ChatColor.UNDERLINE + "Shift" + ChatColor.AQUA
 									+ " to perform command " + ChatColor.RESET + "<<<<<<<<");
 				}
@@ -3503,7 +3559,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if ((block_plate.getType() == Blockto113.GOLD_PLATE.bukkitblock()
 				|| block_plate.getType() == Blockto113.IRON_PLATE.bukkitblock())
 				&& (block_sign.getType() == Blockto113.SIGN_POST.bukkitblock()
-						|| block_sign.getType() == Material.WALL_SIGN)) {
+						|| block_sign.getType() == Material.WALL_SIGN )) {
 			Sign sign = (Sign) block_sign.getState();
 			if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 				plateParticle(p);

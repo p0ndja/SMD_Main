@@ -72,7 +72,8 @@ public class FreeItem extends JavaPlugin {
 
 		ItemStack yes = new ItemStack(Material.EMERALD_BLOCK, 1);
 		ItemMeta yesm = black.getItemMeta();
-		yesm.setDisplayName(ChatColor.GREEN + "Get all of them");
+		yesm.setDisplayName(ChatColor.GREEN + "" + ChatColor.BOLD + "Get all of them");
+		yes.setItemMeta(yesm);
 		inv.setItem(37, yes);
 		inv.setItem(38, yes);
 		inv.setItem(46, yes);
@@ -80,7 +81,8 @@ public class FreeItem extends JavaPlugin {
 
 		ItemStack no = new ItemStack(Material.REDSTONE_BLOCK, 1);
 		ItemMeta nom = black.getItemMeta();
-		nom.setDisplayName(ChatColor.GREEN + "I don't want them");
+		nom.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "I don't want them");
+		no.setItemMeta(nom);
 		inv.setItem(42, no);
 		inv.setItem(43, no);
 		inv.setItem(51, no);

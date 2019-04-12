@@ -38,21 +38,16 @@ public class OnPlayerConnection implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		
-		if (StockInt.privateServerPondJa) player.setMaxHealth(40);
-		
 		String playerName = player.getName();
 		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		if (!f.exists() || !player.hasPlayedBefore()) {
-			File userfiles;
 			try {
-				userfiles = new File(
-						StockInt.pluginDir + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
-				if (!userfiles.exists())
+				File userfiles = new File(StockInt.pluginDir + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
+				if (!userfiles.exists()) {
 					userfiles.mkdirs();
-
+				}
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			}
@@ -212,7 +207,7 @@ public class OnPlayerConnection implements Listener {
 			Function.egg(player, 0);
 		}
 
-		StockInt.pleaseDropItemBeforeChat.add(playerName);
+		//StockInt.pleaseDropItemBeforeChat.add(playerName);
 
 	}
 
