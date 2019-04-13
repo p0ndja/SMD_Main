@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
@@ -2299,7 +2300,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (CommandLabel.equalsIgnoreCase("test")) {
+			if (CommandLabel.equalsIgnoreCase("testinvert")) {
+				final long start = System.nanoTime();
 				double x = player.getLocation().getChunk().getX() * 16;
 				double z = player.getLocation().getChunk().getZ() * 16;
 				for (double o = x; o < x + 16; o++) {
@@ -2317,11 +2319,79 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 							topN.setType(bottom);
 							bottomN.setType(top);
-							
-							ActionBarAPI.sendToAll(bottom.toString() + " " + o + "," + i + "," + p + " || " + o + "," + (255-i) + "," + p + " " + top.toString());
+
+							// ActionBarAPI.sendToAll(bottom.toString() + " " + o + "," + i + "," + p + " ||
+							// " + o + "," + (255-i) + "," + p + " " + top.toString());
 						}
 					}
 				}
+				final long end = System.nanoTime();
+				Bukkit.broadcastMessage("Took: " + (end - start) / 1000000000 + " seconds" + " ("
+						+ ((end - start) / 1000000) + "ms" + ")");
+				Bukkit.dispatchCommand(getServer().getConsoleSender(), "title @a title {\"text\":\"Task Completed\",\"color\":\"green\"}");
+				Bukkit.dispatchCommand(getServer().getConsoleSender(), "title @a subtitle {\"text\":\"Took " + (end - start) / 1000000000 + " seconds" + " ("
+						+ ((end - start) / 1000000) + "ms" + ")" + "\"};");
+			}
+
+			if (CommandLabel.equalsIgnoreCase("test")) {
+				if (args[0].isEmpty())
+					args[0] = "3";
+				int count = Integer.parseInt(args[0]);
+
+				final long start = System.nanoTime();
+				double x = player.getLocation().getChunk().getX() * 16;
+				double z = player.getLocation().getChunk().getZ() * 16;
+				double zzz = 0;
+				for (double o = x; o < x + (16); o++) {
+					for (double p = z; p < z + (16); p++) {
+						for (int i = 0; i < 128; i++) {
+							zzz++;
+							ArrayList<Material> a = new ArrayList<Material>();
+							a.add(Material.COAL_ORE);
+							a.add(Material.DIAMOND_ORE);
+							a.add(Material.EMERALD_ORE);
+							a.add(Material.GOLD_ORE);
+							a.add(Material.IRON_ORE);
+							a.add(Material.LAPIS_ORE);
+							a.add(Material.QUARTZ_ORE);
+							a.add(Material.REDSTONE_ORE);
+							a.add(Material.MOB_SPAWNER);
+
+							for (int r = 0; r < count; r++) {
+								for (int l = 0; l < count; l++) {
+									Block bottomN = Bukkit.getWorld(player.getWorld().getName())
+											.getBlockAt(new Location(player.getWorld(), o + (16 * r), i, p + (16 * l)));
+									if (!a.contains(bottomN.getType()))
+										bottomN.setType(Material.AIR);
+								}
+							}
+
+							/*
+							 * Material bottom = Bukkit.getWorld(player.getWorld().getName())
+							 * .getBlockAt(new Location(player.getWorld(), o, i, p)).getType(); BlockState
+							 * bottomB = Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
+							 * Location(player.getWorld(), o, i, p)).getState(); Material top =
+							 * Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
+							 * Location(player.getWorld(), o, 255 - i, p)).getType(); BlockState topB =
+							 * Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
+							 * Location(player.getWorld(), o, 255 - i, p)).getState();
+							 * 
+							 * 
+							 * Block topN = Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
+							 * Location(player.getWorld(), o, 255 - i, p));
+							 * 
+							 * topN.setType(bottom); for (Metadata a : bottomB.getMetadata(playerName));
+							 * topN.setMetadata(arg0, arg1); bottomB. bottomN.setType(top);
+							 */
+							int percent = (int) (zzz * 100 / (16 * 16 * 128));
+							// ActionBarAPI.sendToAll(percent + "%");
+						}
+					}
+				}
+				final long end = System.nanoTime();
+				Bukkit.broadcastMessage("N*N Chunk: " + count + "*" + count);
+				Bukkit.broadcastMessage("Took: " + (end - start) / 1000000000 + " seconds" + " ("
+						+ ((end - start) / 1000000) + "ms" + ")");
 			}
 
 			if (CommandLabel.equalsIgnoreCase("god") || CommandLabel.equalsIgnoreCase("SMDMain:god")) {

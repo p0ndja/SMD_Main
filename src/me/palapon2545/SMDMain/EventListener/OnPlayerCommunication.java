@@ -116,6 +116,10 @@ public class OnPlayerCommunication implements Listener {
 	public void playerPerformedCommand(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
+		Bukkit.broadcastMessage(" " + playerName + " run_command " + event.getMessage());
+		
+		
+		
 		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);

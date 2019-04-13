@@ -76,6 +76,9 @@ commands:
  test:
     description: debug command!
     usage: /test
+ testinvert:
+    description: debug command!
+    usage: /testinvert
  god:
     description: toggle god mode
     usage: /god
