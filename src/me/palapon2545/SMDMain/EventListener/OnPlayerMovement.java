@@ -25,8 +25,8 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
-import me.palapon2545.SMDMain.Function.ActionBarAPI;
 import me.palapon2545.SMDMain.Function.Blockto113;
+import me.palapon2545.SMDMain.Function.API.ActionBarAPI.ActionBarAPI;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;

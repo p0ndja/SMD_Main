@@ -12,8 +12,12 @@ commands:
     usage: /setspawn
     permission: main.setspawn
  unloadchunk:
-    description: EiEi
-    usage: /<command>
+    description: Unload all no-player-inside chunk.
+    usage: /unloadchunk
+ top:
+    description: Teleport you to top surface
+    usage: /top
+    permission: main.teleport
  pondjaprivateserver:
     description: EiEi
     usage: /pondjaprivateserver
@@ -241,7 +245,6 @@ permissions:
  main.*:
     description: Gives access to all SMDMain commands
     children:
-        main.setspawn: true
         main.warp: true
         main.gamemode: true
         main.heal: true
@@ -256,7 +259,7 @@ permissions:
         main.force: true
         main.warn: true
         main.mute: true
-        main.world: true
+        main.teleport: true
         main.sign: true
         main.adminchat: true
         main.clearchat: true
@@ -265,14 +268,11 @@ permissions:
         main.money: true
         main.ui: true
         main.god: true
- main.setspawn:
-    description: Allow to use /setspawn
+ main.warp:
+    description: Allow to use /setspawn, /setwarp, /removewarp
     default: op
  main.god:
     description: Allow to use /god
-    default: op
- main.warp:
-    description: Allow to use /setwarp, /removewarp
     default: op
  main.gamemode:
     description: Allow to use /gamemode, /gm
@@ -319,8 +319,8 @@ permissions:
  main.mute:
     description: Allow to use /mute
     default: op
- main.world:
-    description: Allow to use /world
+ main.teleport:
+    description: Allow to use /world, /top
     default: op
  main.sign:
     description: Allow to create sign with first line is [cmd] [server] [tp] [world]

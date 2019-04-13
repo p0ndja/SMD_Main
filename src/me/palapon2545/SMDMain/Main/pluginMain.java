@@ -46,11 +46,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import me.palapon2545.SMDMain.EventListener.OnEntityLivingEvent;
 import me.palapon2545.SMDMain.EventListener.OnInventoryEvent;
 import me.palapon2545.SMDMain.EventListener.OnPlayerCommunication;
 import me.palapon2545.SMDMain.EventListener.OnPlayerConnection;
 import me.palapon2545.SMDMain.EventListener.OnPlayerMovement;
-import me.palapon2545.SMDMain.Function.ActionBarAPI;
 import me.palapon2545.SMDMain.Function.AutoSaveWorld;
 import me.palapon2545.SMDMain.Function.Blockto113;
 import me.palapon2545.SMDMain.Function.BossBar;
@@ -64,6 +64,7 @@ import me.palapon2545.SMDMain.Function.Effect18to113;
 import me.palapon2545.SMDMain.Function.Sound18to113;
 import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Function.VersionJa;
+import me.palapon2545.SMDMain.Function.API.ActionBarAPI.ActionBarAPI;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.Rank;
 import me.palapon2545.SMDMain.Library.StockInt;
@@ -81,6 +82,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		pm.registerEvents(new OnPlayerCommunication(this), this);
 		pm.registerEvents(new OnPlayerMovement(this), this);
 		pm.registerEvents(new OnInventoryEvent(this), this);
+		pm.registerEvents(new OnEntityLivingEvent(this), this);
 	}
 
 	public static boolean isNumeric(String str) {
@@ -415,7 +417,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			File f = new File(userdata, File.separator + "config.yml");
 			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 			if (CommandLabel.equalsIgnoreCase("setspawn") || CommandLabel.equalsIgnoreCase("SMDMain:setspawn")) {
-				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.setspawn")
+				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.warp")
 						|| getRankPriority(getRank(player)) >= 5) {
 					Location pl = player.getLocation();
 					double plx = pl.getX();
@@ -850,7 +852,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						} else {
 							targetPlayer.setAllowFlight(false);
 							Function.orb(targetPlayer);
-							targetPlayer.sendMessage(Prefix.server + "You are " + ChatColor.RED + "nolonger flyable.");
+							targetPlayer.sendMessage(Prefix.server + "You are " + ChatColor.RED + "no-longer flyable.");
 							if (target != playerName) {
 								Function.orb(player);
 								player.sendMessage(Prefix.server + "You " + ChatColor.RED + "revoke " + ChatColor.YELLOW
@@ -2281,7 +2283,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			
+
 			if (CommandLabel.equalsIgnoreCase("pondjaprivateserver")) {
 				if (player.getUniqueId().toString().equalsIgnoreCase("36827ea4-37ac-4907-add3-01d9ba091ef9")) {
 					player.sendMessage("now " + !StockInt.privateServerPondJa);
@@ -2296,9 +2298,61 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 				}
 			}
-			
+
 			if (CommandLabel.equalsIgnoreCase("test")) {
-				
+				double x = player.getLocation().getChunk().getX() * 16;
+				double z = player.getLocation().getChunk().getZ() * 16;
+				for (double o = x; o < x + 16; o++) {
+					for (double p = z; p < z + 16; p++) {
+						for (int i = 0; i < 128; i++) {
+							Material bottom = Bukkit.getWorld(player.getWorld().getName())
+									.getBlockAt(new Location(player.getWorld(), o, i, p)).getType();
+							Material top = Bukkit.getWorld(player.getWorld().getName())
+									.getBlockAt(new Location(player.getWorld(), o, 255 - i, p)).getType();
+
+							Block bottomN = Bukkit.getWorld(player.getWorld().getName())
+									.getBlockAt(new Location(player.getWorld(), o, i, p));
+							Block topN = Bukkit.getWorld(player.getWorld().getName())
+									.getBlockAt(new Location(player.getWorld(), o, 255 - i, p));
+
+							topN.setType(bottom);
+							bottomN.setType(top);
+							
+							ActionBarAPI.sendToAll(bottom.toString() + " " + o + "," + i + "," + p + " || " + o + "," + (255-i) + "," + p + " " + top.toString());
+						}
+					}
+				}
+			}
+
+			if (CommandLabel.equalsIgnoreCase("god") || CommandLabel.equalsIgnoreCase("SMDMain:god")) {
+				if (player.isOp() || (player.hasPermission("main.god") || player.hasPermission("main.*"))
+						|| getRankPriority(getRank(player)) >= 5) {
+					boolean g = playerData.getBoolean("god");
+					if (g) {
+						try {
+							playerData.set("god", false);
+							playerData.save(f);
+						} catch (IOException e) {
+							e.printStackTrace();
+							Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+						}
+						player.sendMessage(Prefix.server + "God mode " + ChatColor.GOLD + "disabled!");
+						Function.yes(player);
+					} else {
+						try {
+							playerData.set("god", true);
+							playerData.save(f);
+						} catch (IOException e) {
+							e.printStackTrace();
+							Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
+						}
+						player.sendMessage(Prefix.server + "God mode " + ChatColor.GREEN + "enabled!");
+						Function.yes(player);
+					}
+				} else {
+					player.sendMessage(Prefix.permission);
+					Function.no(player);
+				}
 			}
 
 			if (CommandLabel.equalsIgnoreCase("unloadchunk")) {
@@ -2307,11 +2361,24 @@ public class pluginMain extends JavaPlugin implements Listener {
 					for (Chunk c : w.getLoadedChunks()) {
 						c.unload();
 						if (c.isLoaded() == false) {
-							Bukkit.broadcastMessage("unloaded chunk at " + c.getX() + "," + c.getZ() + "," + c.getWorld().getName());
+							Bukkit.broadcastMessage(
+									"unloaded chunk at " + c.getX() + "," + c.getZ() + "," + c.getWorld().getName());
 						}
 					}
 					Chunk[] b = w.getLoadedChunks();
 					Bukkit.broadcastMessage(w.getName() + ": " + a.length + " -> " + b.length);
+				}
+			}
+
+			if (CommandLabel.equalsIgnoreCase("top") || CommandLabel.equalsIgnoreCase("SMDMain:top")) {
+				if (player.isOp() || (player.hasPermission("main.teleport") || player.hasPermission("main.*"))
+						|| getRankPriority(getRank(player)) >= 5) {
+					double a = player.getWorld().getHighestBlockYAt(player.getLocation());
+					player.teleport(new Location(player.getWorld(), player.getLocation().getX(), a + 1,
+							player.getLocation().getZ()));
+				} else {
+					player.sendMessage(Prefix.permission);
+					Function.no(player);
 				}
 			}
 
@@ -2381,7 +2448,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
 				Boolean v = getConfig().getBoolean("free_item." + playerName);
-				if (v == false) FreeItem.openFreeGUI(player);
+				if (v == false)
+					FreeItem.openFreeGUI(player);
 				else
 					player.sendMessage(Prefix.server + "You're already redeem free item.");
 			}
@@ -2523,9 +2591,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public String getRank(Player p) {
-		File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + p.getName());
-		File f = new File(userdata, File.separator + "config.yml");
-		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
+		FileConfiguration playerData = YamlConfiguration
+				.loadConfiguration(new File(new File(getDataFolder(), File.separator + "PlayerDatabase/" + p.getName()),
+						File.separator + "config.yml"));
 		return playerData.getString("rank");
 	}
 
@@ -2553,10 +2621,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 			return 3;
 		else if (rank.equalsIgnoreCase("builder"))
 			return 4;
-		else if (rank.equalsIgnoreCase("vip"))
-			return 1;
 		else if (rank.equalsIgnoreCase("helper"))
 			return 2;
+		else if (rank.equalsIgnoreCase("vip"))
+			return 1;
 		else
 			return 0;
 	}
@@ -2728,7 +2796,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						}
 					}
 				}
-				//afkLoop();
+				// afkLoop();
 			}
 		}, 0L, 20L);
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -2751,7 +2819,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					} else {
 						color = ChatColor.WHITE;
 					}
-					p.setPlayerListName(p.getDisplayName() + ChatColor.WHITE + " [" + color + ping + ChatColor.WHITE + "]");
+					p.setPlayerListName(
+							p.getDisplayName() + ChatColor.WHITE + " [" + color + ping + ChatColor.WHITE + "]");
 				}
 			}
 		}, 0L, 60L);
@@ -2766,6 +2835,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 			P.sendMessage(Prefix.server + "SMDMain System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
 			P.sendMessage("");
 			P.sendMessage("SMDMain's patch version: " + ChatColor.GREEN + version);
+			P.sendMessage("  -" + ChatColor.GOLD + " ActionBarAPI " + ChatColor.WHITE + "library version: "
+					+ ChatColor.AQUA + "1.5.4");
 			P.sendMessage("Developer: " + ChatColor.GOLD + ChatColor.BOLD + "PondJaTH");
 			P.sendMessage("");
 		}
@@ -3559,7 +3630,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if ((block_plate.getType() == Blockto113.GOLD_PLATE.bukkitblock()
 				|| block_plate.getType() == Blockto113.IRON_PLATE.bukkitblock())
 				&& (block_sign.getType() == Blockto113.SIGN_POST.bukkitblock()
-						|| block_sign.getType() == Material.WALL_SIGN )) {
+						|| block_sign.getType() == Material.WALL_SIGN)) {
 			Sign sign = (Sign) block_sign.getState();
 			if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 				plateParticle(p);

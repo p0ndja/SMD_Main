@@ -57,10 +57,10 @@ public class OnPlayerConnection implements Listener {
 				playerData.createSection("warn");
 				playerData.set("warn", 0);
 				playerData.createSection("mute");
-				playerData.set("mute.is", "false");
+				playerData.set("mute.is", false);
 				playerData.set("mute.reason", "none");
 				playerData.createSection("freeze");
-				playerData.set("freeze", "false");
+				playerData.set("freeze", false);
 				playerData.createSection("uuid");
 				playerData.set("uuid", player.getUniqueId().toString());
 				playerData.createSection("money");
@@ -70,17 +70,17 @@ public class OnPlayerConnection implements Listener {
 				playerData.set("Quota.LuckyClick", 0);
 				playerData.set("Quota.Home", 0);
 				playerData.createSection("Invisible");
-				playerData.set("Invisible", "false");
+				playerData.set("Invisible", false);
 				playerData.createSection("Security");
 				playerData.set("Security.password", "none");
 				playerData.set("Security.email", "none");
 				playerData.createSection("gamemode");
 				playerData.set("gamemode", 0);
 				playerData.createSection("god");
-				playerData.set("god", "false");
-				pl.getConfig().set("redeem.player." + playerName, "false");
-				pl.getConfig().set("free_item." + playerName, "false");
-				pl.getConfig().set("event.queuelist." + playerName, "false");
+				playerData.set("god", false);
+				pl.getConfig().set("redeem.player." + playerName, false);
+				pl.getConfig().set("free_item." + playerName, false);
+				pl.getConfig().set("event.queuelist." + playerName, false);
 				pl.saveConfig();
 				playerData.save(f);
 			} catch (IOException e) {
@@ -88,8 +88,8 @@ public class OnPlayerConnection implements Listener {
 			}
 		}
 		if (f.exists()) {
-			String invi = playerData.getString("Invisible");
-			if (invi.equalsIgnoreCase("true")) {
+			Boolean invi = playerData.getBoolean("Invisible");
+			if (invi) {
 				player.sendMessage(Prefix.server + "You're now " + ChatColor.AQUA + "invisible.");
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.hasPermission("main.seeinvisible") || p.isOp() || p.hasPermission("main.*")) {
@@ -102,7 +102,7 @@ public class OnPlayerConnection implements Listener {
 			try {
 				playerData.createSection("uuid");
 				playerData.set("uuid", player.getUniqueId().toString());
-				playerData.set("Security.freeze", "true");
+				playerData.set("Security.freeze", true);
 				playerData.save(f);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -142,7 +142,7 @@ public class OnPlayerConnection implements Listener {
 		
 		String evs = pl.getConfig().getString("event.queuelist." + playerName);
 		if (evs == null || evs.isEmpty()) {
-			pl.getConfig().set("event.queuelist." + playerName, "false");
+			pl.getConfig().set("event.queuelist." + playerName, false);
 			pl.saveConfig();
 		}
 
@@ -259,7 +259,7 @@ public class OnPlayerConnection implements Listener {
 			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 
-		pl.getConfig().set("event.queuelist." + playerName, "false");
+		pl.getConfig().set("event.queuelist." + playerName, false);
 		pl.getConfig().set("gamemode." + playerName, g);
 		pl.saveConfig();
 
