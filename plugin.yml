@@ -1,8 +1,9 @@
 name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.1.1
+version: 2.1.3
 description: "PondJaTH's first java bukkit plugin development."
 author: PondJaTH
+api-version: 1.14
 softdepend: [BarAPI]
 load: POSTWORLD
 website: https://github.com/p0ndja/SMD_Main
@@ -79,6 +80,9 @@ commands:
  testinvert:
     description: debug command!
     usage: /testinvert
+ serverinfo:
+    description: show server info
+    usage: /serverinfo
  god:
     description: toggle god mode
     usage: /god

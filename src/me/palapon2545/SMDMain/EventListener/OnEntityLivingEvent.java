@@ -17,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -30,9 +32,28 @@ import net.md_5.bungee.api.ChatColor;
 public class OnEntityLivingEvent implements Listener {
 
 	pluginMain pl;
+	
+	public static boolean isInverting = false;
 
 	public OnEntityLivingEvent(pluginMain pl) {
 		this.pl = pl;
+	}
+	
+	@EventHandler
+	public void blockPhysicsEvent(BlockPhysicsEvent e) {
+		if (e.getBlock().getType() == Material.SAND || e.getBlock().getType() == Material.GRAVEL) {
+			if (Bukkit.getWorld(e.getBlock().getWorld().getName()).getBlockAt(new Location(e.getBlock().getWorld(), e.getBlock().getLocation().getX(), e.getBlock().getLocation().getY() - 1, e.getBlock().getLocation().getZ())).getType() == Material.AIR);
+			if (e.getBlock().getLocation().getY() > 128)
+				e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onBlockFromTo(BlockFromToEvent event) {
+		if (event.getBlock().getType() == Material.WATER || event.getBlock().getType() == Material.LAVA) {
+			if (isInverting)
+				event.setCancelled(true);
+		}
 	}
 
 	@EventHandler

@@ -8,7 +8,7 @@ import org.bukkit.Material;
 public class StockInt {
 	public static long CountdownLength = -2;
 	public static long CountdownStartLength = -2;
-	public static String CountdownMessage = "null";
+	public static String CountdownMessage = null;
 	public static boolean BarAPIHook = false;
 	public static boolean BossBarAPIHook = false;
 	public static boolean LoginFeature = false;

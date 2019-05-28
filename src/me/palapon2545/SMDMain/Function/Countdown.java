@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
-import me.palapon2545.SMDMain.Function.BossBar;
+import me.palapon2545.SMDMain.Function.BarAPI_api;
 import me.palapon2545.SMDMain.Function.API.ActionBarAPI.ActionBarAPI;
 
 public class Countdown {
@@ -15,9 +15,7 @@ public class Countdown {
 		long c = StockInt.CountdownLength;
 		long n = c - 1;
 		long s = (c % 3600) % 60;
-		if (StockInt.CountdownMessage.equalsIgnoreCase("null")) {
-			CalculateTimer();
-		} else {
+		if (StockInt.CountdownMessage != null) {
 			if (s % 4 == 0) {
 				if (c < 11) {
 					CountdownDisplayMessageBoolean = false;
@@ -32,13 +30,15 @@ public class Countdown {
 				if (StockInt.BarAPIHook == true) {
 					// long p = cn / an;
 					// Bukkit.broadcastMessage("debug_percent");
-					BossBar.sendBarAll(Prefix.cd + StockInt.CountdownMessage);
+					BarAPI_api.sendBarAll(Prefix.cd + StockInt.CountdownMessage);
 				} else {
 					ActionBarAPI.sendToAll(Prefix.cd + StockInt.CountdownMessage);
 				}
 			} else {
 				CalculateTimer();
 			}
+		} else {
+			CalculateTimer();
 		}
 		if (c == -2) StockInt.CountdownLength = -2;
 		else StockInt.CountdownLength = n;
@@ -89,7 +89,7 @@ public class Countdown {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				BossBar.removeBarAll();
+				BarAPI_api.removeBarAll();
 			}
 		}
 
@@ -98,7 +98,7 @@ public class Countdown {
 			if (c % 30 == 0 || c < 10)
 				System.out.println(ChatColor.stripColor(("[COUNTDOWN] " + week + day + hour + minute + second)));
 			if (StockInt.BarAPIHook == true)
-				BossBar.sendBarAll(Prefix.cd + week + day + hour + minute + second, (float) percent);
+				BarAPI_api.sendBarAll(Prefix.cd + week + day + hour + minute + second, (float) percent);
 			else
 				ActionBarAPI.sendToAll(Prefix.cd + week + day + hour + minute + second);
 		}

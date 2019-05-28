@@ -5,8 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileDeleteStrategy;
-import org.apache.commons.io.FileUtils;
+import org.apache.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -15,8 +14,10 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -26,6 +27,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileDeleteStrategy;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +57,7 @@ import me.palapon2545.SMDMain.EventListener.OnPlayerConnection;
 import me.palapon2545.SMDMain.EventListener.OnPlayerMovement;
 import me.palapon2545.SMDMain.Function.AutoSaveWorld;
 import me.palapon2545.SMDMain.Function.Blockto113;
-import me.palapon2545.SMDMain.Function.BossBar;
+import me.palapon2545.SMDMain.Function.BarAPI_api;
 import me.palapon2545.SMDMain.Function.Countdown;
 import me.palapon2545.SMDMain.Function.FreeItem;
 import me.palapon2545.SMDMain.Function.Function;
@@ -109,10 +112,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 	@EventHandler
 	public void InventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
-		if (e.getInventory().getTitle().contains("'s data"))
+		if (e.getView().getTitle().contains("'s data"))
 			e.setCancelled(true);
 
-		if (e.getInventory().getTitle().contains("Free")) {
+		if (e.getView().getTitle().contains("Free")) {
 			if (e.getCurrentItem().getType() == Material.EMERALD_BLOCK) {
 
 				p.getInventory().addItem(new ItemStack(Blockto113.WOOD_SWORD.bukkitblock(), 1));
@@ -315,8 +318,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 						sender.sendMessage(Prefix.server + "Stopped Countdown");
 
 						if (StockInt.BarAPIHook == true) {
-							BossBar.sendBarAll(Prefix.cd + "Countdown has been cancelled");
-							BossBar.removeBarAll();
+							BarAPI_api.sendBarAll(Prefix.cd + "Countdown has been cancelled");
+							BarAPI_api.removeBarAll();
 						} else {
 							ActionBarAPI.sendToAll(Prefix.cd + "Countdown has been cancelled");
 						}
@@ -2301,12 +2304,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 
 			if (CommandLabel.equalsIgnoreCase("testinvert")) {
+				OnEntityLivingEvent.isInverting = true;
 				final long start = System.nanoTime();
 				double x = player.getLocation().getChunk().getX() * 16;
 				double z = player.getLocation().getChunk().getZ() * 16;
-				for (double o = x; o < x + 16; o++) {
-					for (double p = z; p < z + 16; p++) {
-						for (int i = 0; i < 128; i++) {
+				for (int i = 0; i < 128; i++) {
+					for (double o = x; o < x + 16; o++) {
+						for (double p = z; p < z + 16; p++) {
+
 							Material bottom = Bukkit.getWorld(player.getWorld().getName())
 									.getBlockAt(new Location(player.getWorld(), o, i, p)).getType();
 							Material top = Bukkit.getWorld(player.getWorld().getName())
@@ -2317,74 +2322,114 @@ public class pluginMain extends JavaPlugin implements Listener {
 							Block topN = Bukkit.getWorld(player.getWorld().getName())
 									.getBlockAt(new Location(player.getWorld(), o, 255 - i, p));
 
-							topN.setType(bottom);
-							bottomN.setType(top);
+							if (!(bottom == Material.AIR && top == Material.AIR)) {
+								topN.setType(bottom);
+								bottomN.setType(top);
+							}
 
 							// ActionBarAPI.sendToAll(bottom.toString() + " " + o + "," + i + "," + p + " ||
 							// " + o + "," + (255-i) + "," + p + " " + top.toString());
 						}
 					}
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				final long end = System.nanoTime();
 				Bukkit.broadcastMessage("Took: " + (end - start) / 1000000000 + " seconds" + " ("
 						+ ((end - start) / 1000000) + "ms" + ")");
-				Bukkit.dispatchCommand(getServer().getConsoleSender(), "title @a title {\"text\":\"Task Completed\",\"color\":\"green\"}");
-				Bukkit.dispatchCommand(getServer().getConsoleSender(), "title @a subtitle {\"text\":\"Took " + (end - start) / 1000000000 + " seconds" + " ("
-						+ ((end - start) / 1000000) + "ms" + ")" + "\"};");
+				Bukkit.dispatchCommand(getServer().getConsoleSender(),
+						"title @a title {\"text\":\"Task Completed\",\"color\":\"green\"}");
+				Bukkit.dispatchCommand(getServer().getConsoleSender(),
+						"title @a subtitle {\"text\":\"Took " + (end - start) / 1000000000 + " seconds" + " ("
+								+ ((end - start) / 1000000) + "ms" + ")" + "\"};");
+				OnEntityLivingEvent.isInverting = false;
+			}
+
+			if (CommandLabel.equalsIgnoreCase("serverinfo")) {
+
+				/* Total number of processors or cores available to the JVM */
+				Bukkit.broadcastMessage("Available processors (cores): " + Runtime.getRuntime().availableProcessors());
+
+				/* Total amount of free memory available to the JVM */
+				Bukkit.broadcastMessage("Free memory (bytes): " + Runtime.getRuntime().freeMemory());
+
+				/* This will return Long.MAX_VALUE if there is no preset limit */
+				long maxMemory = Runtime.getRuntime().maxMemory();
+				/* Maximum amount of memory the JVM will attempt to use */
+				Bukkit.broadcastMessage(
+						"Maximum memory (bytes): " + (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory));
+
+				/* Total memory currently available to the JVM */
+				Bukkit.broadcastMessage("Total memory available to JVM (bytes): " + Runtime.getRuntime().totalMemory());
+
+				/* Get a list of all filesystem roots on this system */
+				File[] roots = File.listRoots();
+
+				/* For each filesystem root, print some info */
+				for (File root : roots) {
+					Bukkit.broadcastMessage("File system root: " + root.getAbsolutePath());
+					Bukkit.broadcastMessage("Total space (bytes): " + root.getTotalSpace());
+					Bukkit.broadcastMessage("Free space (bytes): " + root.getFreeSpace());
+					Bukkit.broadcastMessage("Usable space (bytes): " + root.getUsableSpace());
+				}
+
+			}
+
+			if (CommandLabel.equalsIgnoreCase("findbiome")) {
+				if (args.length == 1) {
+
+				} else {
+					for (Biome b : Biome.values())
+						player.sendMessage("- " + b.name());
+					player.sendMessage("/findbiome [name]");
+
+				}
 			}
 
 			if (CommandLabel.equalsIgnoreCase("test")) {
+				ArrayList<Material> a = new ArrayList<Material>();
+				a.add(Material.COAL_ORE);
+				a.add(Material.DIAMOND_ORE);
+				a.add(Material.EMERALD_ORE);
+				a.add(Material.GOLD_ORE);
+				a.add(Material.IRON_ORE);
+				a.add(Material.LAPIS_ORE);
+				a.add(Material.REDSTONE_ORE);
+				a.add(Material.SPAWNER);
+				a.add(Material.MOSSY_COBBLESTONE);
+				a.add(Material.AIR);
+
 				if (args[0].isEmpty())
 					args[0] = "3";
 				int count = Integer.parseInt(args[0]);
+				if (count == -1)
+					count = 1;
 
 				final long start = System.nanoTime();
+				final World w = player.getWorld();
 				double x = player.getLocation().getChunk().getX() * 16;
 				double z = player.getLocation().getChunk().getZ() * 16;
-				double zzz = 0;
 				for (double o = x; o < x + (16); o++) {
 					for (double p = z; p < z + (16); p++) {
 						for (int i = 0; i < 128; i++) {
-							zzz++;
-							ArrayList<Material> a = new ArrayList<Material>();
-							a.add(Material.COAL_ORE);
-							a.add(Material.DIAMOND_ORE);
-							a.add(Material.EMERALD_ORE);
-							a.add(Material.GOLD_ORE);
-							a.add(Material.IRON_ORE);
-							a.add(Material.LAPIS_ORE);
-							a.add(Material.QUARTZ_ORE);
-							a.add(Material.REDSTONE_ORE);
-							a.add(Material.MOB_SPAWNER);
-
 							for (int r = 0; r < count; r++) {
 								for (int l = 0; l < count; l++) {
-									Block bottomN = Bukkit.getWorld(player.getWorld().getName())
-											.getBlockAt(new Location(player.getWorld(), o + (16 * r), i, p + (16 * l)));
-									if (!a.contains(bottomN.getType()))
-										bottomN.setType(Material.AIR);
+									Block bottomN = w.getBlockAt(new Location(w, o + (16 * r), i, p + (16 * l)));
+									Block topN = w.getBlockAt(new Location(w, o + (16 * r), 255 - i, p + (16 * l)));
+									if (Integer.parseInt(args[0]) == -1) {
+										bottomN.setType(Material.GLASS);
+									} else {
+										if (!a.contains(bottomN.getType()))
+											bottomN.setType(Material.AIR);
+										if (!a.contains(topN.getType()))
+											topN.setType(Material.AIR);
+									}
 								}
 							}
-
-							/*
-							 * Material bottom = Bukkit.getWorld(player.getWorld().getName())
-							 * .getBlockAt(new Location(player.getWorld(), o, i, p)).getType(); BlockState
-							 * bottomB = Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
-							 * Location(player.getWorld(), o, i, p)).getState(); Material top =
-							 * Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
-							 * Location(player.getWorld(), o, 255 - i, p)).getType(); BlockState topB =
-							 * Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
-							 * Location(player.getWorld(), o, 255 - i, p)).getState();
-							 * 
-							 * 
-							 * Block topN = Bukkit.getWorld(player.getWorld().getName()) .getBlockAt(new
-							 * Location(player.getWorld(), o, 255 - i, p));
-							 * 
-							 * topN.setType(bottom); for (Metadata a : bottomB.getMetadata(playerName));
-							 * topN.setMetadata(arg0, arg1); bottomB. bottomN.setType(top);
-							 */
-							int percent = (int) (zzz * 100 / (16 * 16 * 128));
-							// ActionBarAPI.sendToAll(percent + "%");
 						}
 					}
 				}
@@ -2453,7 +2498,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-				player.performCommand("inst load https://th.pondja.com/SMD_Main.jar");
+			     //NamespacedKey key = new NamespacedKey(plugin, plugin.getDescription().getName());
+
+				player.performCommand("inst load https://th.pondja.com/SMDMain.jar");
 			}
 
 			if (CommandLabel.equalsIgnoreCase("afk")) {
@@ -2728,7 +2775,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Function.pling(player1);
 
 		if (StockInt.BarAPIHook == true)
-			BossBar.removeBarAll();
+			BarAPI_api.removeBarAll();
 
 		getConfig().set("countdown", StockInt.CountdownLength);
 		getConfig().set("countdown_startLength", StockInt.CountdownStartLength);
@@ -2833,7 +2880,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 			c = -2;
 		StockInt.CountdownLength = c;
 
-		StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
+		if (getConfig().getString("countdown_message") != null) 
+			StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
 		regEvents();
 		saveConfig();
 
@@ -2841,11 +2889,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
+				s.cancelTask(0);
 				Countdown.run();
 				isStandOnPlate();
 
 				if (StockInt.privateServerPondJa) {
-
 					for (Player p : Bukkit.getOnlinePlayers()) {
 						Block block = p.getLocation().getBlock();
 						if (block.getType().equals(Material.CAULDRON))
@@ -2876,19 +2924,18 @@ public class pluginMain extends JavaPlugin implements Listener {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					int ping = Ping.get(p);
 					ChatColor color = ChatColor.WHITE;
-					if (ping < 31) {
+					if (ping < 31)
 						color = ChatColor.AQUA;
-					} else if (ping > 30 && ping < 81) {
+					else if (ping > 30 && ping < 81)
 						color = ChatColor.GREEN;
-					} else if (ping > 80 && ping < 151) {
+					else if (ping > 80 && ping < 151)
 						color = ChatColor.GOLD;
-					} else if (ping > 150 && ping < 501) {
+					else if (ping > 150 && ping < 501)
 						color = ChatColor.RED;
-					} else if (ping > 500) {
+					else if (ping > 500)
 						color = ChatColor.DARK_RED;
-					} else {
+					else
 						color = ChatColor.WHITE;
-					}
 					p.setPlayerListName(
 							p.getDisplayName() + ChatColor.WHITE + " [" + color + ping + ChatColor.WHITE + "]");
 				}
@@ -2913,7 +2960,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		VersionJa.main();
 		if (StockInt.ServerVersion == 0) {
 			System.out.println(
-					"\n\n\n\n================[SMDMain]=======================\nThis server isn't match with minimum requirement\nRequire: Minecraft Server 1.8 and newer.\n================================================\n\n\n\n");
+					"\n\n================[SMDMain]=======================\nThis server isn't match with minimum requirement\nRequire: Minecraft Server 1.8 and newer.\n================================================\n\n");
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
 		}
 
@@ -3036,7 +3083,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		long money = playerData.getLong("money");
-		if (block.getType() == Material.WALL_SIGN || block.getType() == Blockto113.SIGN_POST.bukkitblock()) {
+		if (block.getType() == Blockto113.WALL_SIGN.bukkitblock()
+				|| block.getType() == Blockto113.SIGN_POST.bukkitblock()) {
 			Sign s = (Sign) block.getState();
 			if ((s.getLine(0).contains("[sell]") || s.getLine(0).equalsIgnoreCase("[buy]")) && isNumeric(s.getLine(3))
 					&& isNumeric(s.getLine(1)) && !isNumeric(s.getLine(2))) {
@@ -3436,7 +3484,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			f3.setItemMeta(f3m);
 			inv.setItem(4, f3);
 		} else {
-			ItemStack f3 = new ItemStack(Material.SIGN, 1);
+			ItemStack f3 = new ItemStack(Material.LEGACY_SIGN, 1);
 			ItemMeta f3m = f3.getItemMeta();
 			f3m.setDisplayName(ChatColor.WHITE + "Mute: " + ChatColor.GREEN + "No");
 			f3.setItemMeta(f3m);
@@ -3572,7 +3620,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if ((block.getType() == Blockto113.GOLD_PLATE.bukkitblock()
 					|| block.getType() == Blockto113.IRON_PLATE.bukkitblock())
 					&& (block2.getType() == Blockto113.SIGN_POST.bukkitblock()
-							|| block2.getType() == Material.WALL_SIGN)) {
+							|| block2.getType() == Blockto113.WALL_SIGN.bukkitblock())) {
 				Sign s1 = (Sign) block2.getState();
 				if (s1.getLine(0).equalsIgnoreCase("[tp]")) {
 					if (w == 0) {
@@ -3597,7 +3645,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 									+ l3.replaceAll("$", playerName));
 						}
 						if (block3.getType() == Blockto113.SIGN_POST.bukkitblock()
-								|| block3.getType() == Material.WALL_SIGN) {
+								|| block3.getType() == Blockto113.WALL_SIGN.bukkitblock()) {
 							Sign s2 = (Sign) block3.getState();
 							if (s2 != null) {
 								if (s2.getLine(0).equalsIgnoreCase("[pay]")) {
@@ -3649,7 +3697,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if ((block.getType() == Blockto113.GOLD_PLATE.bukkitblock()
 					|| block.getType() == Blockto113.IRON_PLATE.bukkitblock())
 					&& ((block2.getType() == Blockto113.SIGN_POST.bukkitblock())
-							|| (block2.getType() == Material.WALL_SIGN))) {
+							|| (block2.getType() == Blockto113.WALL_SIGN.bukkitblock()))) {
 				Sign sign = (Sign) block2.getState();
 				if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 					if (w == 0) {
@@ -3700,7 +3748,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if ((block_plate.getType() == Blockto113.GOLD_PLATE.bukkitblock()
 				|| block_plate.getType() == Blockto113.IRON_PLATE.bukkitblock())
 				&& (block_sign.getType() == Blockto113.SIGN_POST.bukkitblock()
-						|| block_sign.getType() == Material.WALL_SIGN)) {
+						|| block_sign.getType() == Blockto113.WALL_SIGN.bukkitblock())) {
 			Sign sign = (Sign) block_sign.getState();
 			if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 				plateParticle(p);
@@ -3727,7 +3775,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					World world = p.getWorld();
 					Location pl = p.getLocation();
 					if (block_sign2.getType() == Blockto113.SIGN_POST.bukkitblock()
-							|| block_sign2.getType() == Material.WALL_SIGN) {
+							|| block_sign2.getType() == Blockto113.WALL_SIGN.bukkitblock()) {
 						Sign world_sign = (Sign) block_sign2.getState();
 						if (world_sign.getLine(0).equalsIgnoreCase("[world]")) {
 							World world_check = Bukkit

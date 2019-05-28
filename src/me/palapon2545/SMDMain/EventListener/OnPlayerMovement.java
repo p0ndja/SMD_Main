@@ -61,6 +61,13 @@ public class OnPlayerMovement implements Listener {
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
+		
+		if(event.getPlayer().isGliding()) {
+            event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(0.7f));
+        }
+		
+		
+		
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
