@@ -80,7 +80,7 @@ public class OnEntityLivingEvent implements Listener {
 		}
 		
 		Block b = l.getBlock();
-		b.setType(Material.CHEST);
+		//b.setType(Material.CHEST);
 		
 		Chest c = (Chest) b.getState();
 		

@@ -15,12 +15,16 @@ public class StockInt {
 	public static boolean spawnOnJoin = false;
 	public static boolean privateServerPondJa = false;
 	public static int ServerVersion = 0;
+	
+	public static long moneyDonated = 0;
+	public static long moneyTargeted = 1;
+	
 	public static List<String> blockLogin = new ArrayList<String>();
 	public static List<String> afkListName = new ArrayList<String>();
 	
 	public static List<String> pleaseDropItemBeforeChat = new ArrayList<String>();
 	
-	public static String pluginDir = "plugins/SMDMain/";
+	public static String pluginDir = "plugins/PondJa-Core/";
 	
 	public static Material[] luckyClick_Simple = {Material.DIRT};
 	public static Material[] luckyClick_High = {Material.DIAMOND, Material.COBBLESTONE};

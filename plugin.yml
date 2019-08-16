@@ -1,4 +1,4 @@
-name: SMDMain
+name: PondJa-Core
 main: me.palapon2545.SMDMain.Main.pluginMain
 version: 2.1.3
 description: "PondJaTH's first java bukkit plugin development."
@@ -53,6 +53,13 @@ commands:
     description: quick reply to your last private message
     usage: /reply [message]
     aliases: [r]
+ donate:
+    description: donate me xD
+    usage: /donate
+ donateadmin:
+    description: donate me xD
+    usage: /donateadmin [add|set|settarget] [args]
+    permission: main.admin
  changeplayerdatabase:
     description: Change playername in database folder
     usage: /changeplayerdatabase [oldName] [newName]

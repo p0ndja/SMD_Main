@@ -150,25 +150,9 @@ public class OnPlayerMovement implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-
-		Date date = new Date();
-		String Time = new SimpleDateFormat("HH:mm:ss").format(date);
-		String month = new SimpleDateFormat("dd/MM/YYYY").format(date);
-
 		Player player = event.getEntity();
 		Location loc = player.getLocation();
-		Block b = loc.getBlock();
-		if (b.getType() == Material.AIR) {
-			b.setType(Blockto113.SIGN_POST.bukkitblock());
-			Sign a = (Sign) b.getState();
-			a.setLine(0, ChatColor.BOLD + "--[RIP]--");
-			a.setLine(1, player.getName());
-			a.setLine(2, month);
-			a.setLine(3, Time);
-			a.update();
-		}
-
-		player.chat("Oh NO! I'm dead at " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ());
+		player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "God whispering you: Your last location before death is " + (int) loc.getX() + ", " + (int) loc.getY() + ", " + (int) loc.getZ());
 	}
 
 	@EventHandler

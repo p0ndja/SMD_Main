@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.palapon2545.SMDMain.Library.Prefix;
+import me.palapon2545.SMDMain.Library.StockInt;
 
 public class Log extends JavaPlugin {
 
@@ -21,7 +22,7 @@ public class Log extends JavaPlugin {
 		checkLogExist(logTopic, player);
 
 		String playerName = player.getName();
-		File logDir = new File("plugins/SMDMain/", File.separator + "PlayerDatabase/" + playerName);
+		File logDir = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File logFile = new File(logDir, File.separator + logTopic + ".log");
 
 		try {

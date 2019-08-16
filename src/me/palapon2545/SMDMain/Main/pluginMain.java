@@ -59,6 +59,7 @@ import me.palapon2545.SMDMain.Function.AutoSaveWorld;
 import me.palapon2545.SMDMain.Function.Blockto113;
 import me.palapon2545.SMDMain.Function.BarAPI_api;
 import me.palapon2545.SMDMain.Function.Countdown;
+import me.palapon2545.SMDMain.Function.Donate;
 import me.palapon2545.SMDMain.Function.FreeItem;
 import me.palapon2545.SMDMain.Function.Function;
 import me.palapon2545.SMDMain.Function.Money;
@@ -178,7 +179,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String CommandLabel, String[] args) {
 		String message = "";
-		if (CommandLabel.equalsIgnoreCase("force") || CommandLabel.equalsIgnoreCase("SMDMain:force")) {
+		if (CommandLabel.equalsIgnoreCase("force") || CommandLabel.equalsIgnoreCase("PondJa-Core:force")) {
 			if (sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender
 					|| sender instanceof Player) {
 				if (args.length != 0) {
@@ -210,7 +211,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							for (Player p1 : Bukkit.getOnlinePlayers()) {
 								p1.chat(message);
 							}
-							logger.info("[SMDMain] '/force' : You forced all online player: " + message);
+							logger.info("[PondJa-Core] '/force' : You forced all online player: " + message);
 						}
 					} else if (args[0].equalsIgnoreCase("console")) {
 						if (sender instanceof Player) {
@@ -233,7 +234,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 								message += args[i] + " ";
 							message = message.replaceAll("&", Prefix.Ampersand);
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), message);
-							logger.info("[SMDMain] '/force' : You ran command: " + message);
+							logger.info("[PondJa-Core] '/force' : You ran command: " + message);
 						}
 					} else if (Bukkit.getServer().getPlayer(args[0]) != null) {
 						Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
@@ -259,8 +260,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 								message += args[i] + " ";
 							message = message.replaceAll("&", Prefix.Ampersand);
 							targetPlayer.chat(message);
-							logger.info("[SMDMain] '/force' : You forced " + targetPlayerName + ": " + ChatColor.AQUA
-									+ message);
+							logger.info("[PondJa-Core] '/force' : You forced " + targetPlayerName + ": "
+									+ ChatColor.AQUA + message);
 						}
 					} else {
 						if (sender instanceof Player) {
@@ -269,7 +270,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 									+ " not found.");
 							Function.no(p);
 						} else {
-							logger.info("[SMDMain] '/force' : Player " + args[0] + " not found");
+							logger.info("[PondJa-Core] '/force' : Player " + args[0] + " not found");
 						}
 					}
 				} else {
@@ -278,16 +279,16 @@ public class pluginMain extends JavaPlugin implements Listener {
 						p.sendMessage(Prefix.server + Prefix.type + "/force [player|console|all] [message]");
 						Function.no(p);
 					} else {
-						logger.info("[SMDMain] '/force' : Type: /force [player|console|all] [message]");
+						logger.info("[PondJa-Core] '/force' : Type: /force [player|console|all] [message]");
 					}
 				}
 			}
 		}
-		if (CommandLabel.equalsIgnoreCase("countdown") || CommandLabel.equalsIgnoreCase("SMDMain:countdown")
-				|| CommandLabel.equalsIgnoreCase("SMDMain:cd") || CommandLabel.equalsIgnoreCase("cd")) {
+		if (CommandLabel.equalsIgnoreCase("countdown") || CommandLabel.equalsIgnoreCase("PondJa-Core:countdown")
+				|| CommandLabel.equalsIgnoreCase("PondJa-Core:cd") || CommandLabel.equalsIgnoreCase("cd")) {
 			if (!(sender instanceof Player) || (sender instanceof Player
 					&& (sender.isOp() || sender.hasPermission("main.*") || sender.hasPermission("main.countdown")
-							|| getRankPriority(getRank(((Player) sender).getPlayer())) >= 3))) {
+							|| Rank.getPriority(Rank.getRank(((Player) sender).getPlayer())) >= 3))) {
 				if (args.length != 0) {
 					if (args[0].equalsIgnoreCase("start")) {
 						String countdownMessage = "null";
@@ -344,7 +345,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no((Player) sender);
 			}
 		}
-		if (CommandLabel.equalsIgnoreCase("clearchat") || CommandLabel.equalsIgnoreCase("SMDMain:clearchat")) {
+		if (CommandLabel.equalsIgnoreCase("clearchat") || CommandLabel.equalsIgnoreCase("PondJa-Core:clearchat")) {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
 				if (p.hasPermission("main.clearchat") || p.hasPermission("main.*") || p.isOp()) {
@@ -372,8 +373,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				Bukkit.broadcastMessage(Prefix.server + "Chat has been cleaned by " + ChatColor.GREEN + "CONSOLE");
 			}
 		}
-		if (CommandLabel.equalsIgnoreCase("bc") || CommandLabel.equalsIgnoreCase("SMDMain:bc")
-				|| CommandLabel.equalsIgnoreCase("broadcast") || CommandLabel.equalsIgnoreCase("SMDMain:broadcast")) {
+		if (CommandLabel.equalsIgnoreCase("bc") || CommandLabel.equalsIgnoreCase("PondJa-Core:bc")
+				|| CommandLabel.equalsIgnoreCase("broadcast")
+				|| CommandLabel.equalsIgnoreCase("PondJa-Core:broadcast")) {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.broadcast")) {
@@ -410,7 +412,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Broadcast> " + ChatColor.WHITE + message);
 					Bukkit.broadcastMessage("");
 				} else {
-					logger.info("[SMDMain] '/broadcast' : Type : '/broadcast [message]");
+					logger.info("[PondJa-Core] '/broadcast' : Type : '/broadcast [message]");
 				}
 			}
 		}
@@ -420,9 +422,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 			File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
 			File f = new File(userdata, File.separator + "config.yml");
 			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-			if (CommandLabel.equalsIgnoreCase("setspawn") || CommandLabel.equalsIgnoreCase("SMDMain:setspawn")) {
+			if (CommandLabel.equalsIgnoreCase("setspawn") || CommandLabel.equalsIgnoreCase("PondJa-Core:setspawn")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.warp")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					Location pl = player.getLocation();
 					double plx = pl.getX();
 					double ply = pl.getY();
@@ -445,7 +447,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("spawn") || CommandLabel.equalsIgnoreCase("ts")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:spawn") || CommandLabel.equalsIgnoreCase("SMDMain:ts")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:spawn")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:ts")) {
 				String spawn = getConfig().getString("spawn");
 				if (spawn != null) {
 					Double x = getConfig().getDouble("spawn" + "." + "spawn" + ".x");
@@ -469,8 +472,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("sethome") || CommandLabel.equalsIgnoreCase("sh")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:sh")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:sethome")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:sh")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:sethome")) {
 				String name = "";
 				if (args.length == 0) {
 					name = player.getWorld().getName();
@@ -533,7 +536,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("home") || CommandLabel.equalsIgnoreCase("h")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:home") || CommandLabel.equalsIgnoreCase("SMDMain:h")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:home")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:h")) {
 				String name = "";
 				if (args.length == 0) {
 					name = player.getWorld().getName();
@@ -567,8 +571,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("listhome") || CommandLabel.equalsIgnoreCase("lh")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:listhome")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:lh")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:listhome")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:lh")) {
 				File path = new File(getDataFolder(),
 						File.separator + "PlayerDatabase/" + playerName + "/HomeDatabase");
 				File[] files = path.listFiles();
@@ -582,8 +586,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("removehome") || CommandLabel.equalsIgnoreCase("rh")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:rh")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:removehome")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:rh")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:removehome")) {
 				String name = "";
 				if (args.length == 0) {
 					name = player.getWorld().getName();
@@ -605,7 +609,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("warp") || CommandLabel.equalsIgnoreCase("SMDMain:warp")) {
+			if (CommandLabel.equalsIgnoreCase("warp") || CommandLabel.equalsIgnoreCase("PondJa-Core:warp")) {
 				if (args.length == 0) {
 					player.sendMessage(
 							Prefix.server + "List warp: " + ChatColor.GREEN + getConfig().getStringList("listwarp"));
@@ -636,7 +640,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("setwarp")) {
 				if (player.isOp() || player.hasPermission("main.setwarp") || player.hasPermission("main.*")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 1) {
 						File warpdata = new File(getDataFolder(), File.separator + "WarpDatabase/");
 						File f1 = new File(warpdata, File.separator + args[0] + ".yml");
@@ -680,7 +684,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("removewarp")) {
 				if (player.isOp() || player.hasPermission("main.warp") || player.hasPermission("main.*")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 1) {
 						File warpdata = new File(getDataFolder(), File.separator + "WarpDatabase/");
 						File f1 = new File(warpdata, File.separator + args[0] + ".yml");
@@ -704,10 +708,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("gamemode") || CommandLabel.equalsIgnoreCase("SMDMain:gamemode")
-					|| CommandLabel.equalsIgnoreCase("gm") || CommandLabel.equalsIgnoreCase("SMDMain:gm")) {
+			if (CommandLabel.equalsIgnoreCase("gamemode") || CommandLabel.equalsIgnoreCase("PondJa-Core:gamemode")
+					|| CommandLabel.equalsIgnoreCase("gm") || CommandLabel.equalsIgnoreCase("PondJa-Core:gm")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.gamemode")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 0) {
 						player.sendMessage(Prefix.server + Prefix.type + "/gamemode [mode] [player] (/gm)");
 						player.sendMessage(ChatColor.GREEN + "Available Mode: ");
@@ -766,9 +770,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("heal") || CommandLabel.equalsIgnoreCase("SMDMain:heal")) {
+			if (CommandLabel.equalsIgnoreCase("heal") || CommandLabel.equalsIgnoreCase("PondJa-Core:heal")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.heal")
-						|| getRankPriority(getRank(player)) >= 1) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 1) {
 					String target = playerName;
 
 					if (args.length == 1) {
@@ -816,9 +820,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("flyspeed") || CommandLabel.equalsIgnoreCase("SMDMain:flyspeed")) {
+			if (CommandLabel.equalsIgnoreCase("flyspeed") || CommandLabel.equalsIgnoreCase("PondJa-Core:flyspeed")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.fly")
-						|| getRankPriority(getRank(player)) >= 1) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 1) {
 					try {
 						float speed = Float.parseFloat(args[0]);
 						player.setFlySpeed(speed);
@@ -835,9 +839,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("fly") || CommandLabel.equalsIgnoreCase("SMDMain:fly")) {
+			if (CommandLabel.equalsIgnoreCase("fly") || CommandLabel.equalsIgnoreCase("PondJa-Core:fly")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.fly")
-						|| getRankPriority(getRank(player)) >= 1) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 1) {
 					String target = playerName;
 					if (args.length == 1) {
 						target = args[0];
@@ -874,7 +878,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("stuck") || CommandLabel.equalsIgnoreCase("SMDMain:stuck")) {
+			if (CommandLabel.equalsIgnoreCase("stuck") || CommandLabel.equalsIgnoreCase("PondJa-Core:stuck")) {
 				Location pl = player.getLocation();
 				double x = pl.getX();
 				double y = (pl.getY() + 0.1);
@@ -889,9 +893,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				player.sendMessage(Prefix.server + ChatColor.YELLOW + "You have been resend your location.");
 				Function.anvil(player);
 			}
-			if (CommandLabel.equalsIgnoreCase("day") || CommandLabel.equalsIgnoreCase("SMDMain:day")) {
+			if (CommandLabel.equalsIgnoreCase("day") || CommandLabel.equalsIgnoreCase("PondJa-Core:day")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.time")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					World w = ((Player) sender).getWorld();
 					player.sendMessage(Prefix.server + "Set time to " + ChatColor.GOLD + "Day " + ChatColor.GRAY
 							+ ChatColor.ITALIC + "(1000 ticks)");
@@ -902,9 +906,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("midday") || CommandLabel.equalsIgnoreCase("SMDMain:midday")) {
+			if (CommandLabel.equalsIgnoreCase("midday") || CommandLabel.equalsIgnoreCase("PondJa-Core:midday")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.time")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					player.sendMessage(Prefix.server + "Set time to " + ChatColor.GOLD + "Midday " + ChatColor.GRAY
 							+ ChatColor.ITALIC + "(6000 ticks)");
 					World w = ((Player) sender).getWorld();
@@ -915,9 +919,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("night") || CommandLabel.equalsIgnoreCase("SMDMain:night")) {
+			if (CommandLabel.equalsIgnoreCase("night") || CommandLabel.equalsIgnoreCase("PondJa-Core:night")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.time")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					World w = ((Player) sender).getWorld();
 					player.sendMessage(Prefix.server + "Set time to " + ChatColor.GOLD + "Night " + ChatColor.GRAY
 							+ ChatColor.ITALIC + "(13000 ticks)");
@@ -928,9 +932,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("midnight") || CommandLabel.equalsIgnoreCase("SMDMain:midnight")) {
+			if (CommandLabel.equalsIgnoreCase("midnight") || CommandLabel.equalsIgnoreCase("PondJa-Core:midnight")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.time")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					World w = ((Player) sender).getWorld();
 					player.sendMessage(Prefix.server + "Set time to " + ChatColor.GOLD + "Midnight " + ChatColor.GRAY
 							+ ChatColor.ITALIC + "(18000 ticks)");
@@ -941,7 +945,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("ping") || CommandLabel.equalsIgnoreCase("SMDMain:ping")) {
+			if (CommandLabel.equalsIgnoreCase("ping") || CommandLabel.equalsIgnoreCase("PondJa-Core:ping")) {
 				String target = playerName;
 				if (args.length == 1) {
 					target = args[0];
@@ -976,9 +980,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("world") || CommandLabel.equalsIgnoreCase("SMDMain:world")) {
+			if (CommandLabel.equalsIgnoreCase("world") || CommandLabel.equalsIgnoreCase("PondJa-Core:world")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.world")
-						|| (getRankPriority(getRank(player)) >= 2)) {
+						|| (Rank.getPriority(Rank.getRank(player)) >= 2)) {
 					double x = player.getLocation().getX();
 					double y = player.getLocation().getY();
 					double z = player.getLocation().getZ();
@@ -1034,7 +1038,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("sun")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.climate")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					World w = ((Player) sender).getWorld();
 					if (args.length == 1) {
 						if (Bukkit.getServer().getWorld(args[0]) != null) {
@@ -1055,7 +1059,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("rain")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.climate")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					World w = ((Player) sender).getWorld();
 					if (args.length == 1) {
 						if (Bukkit.getServer().getWorld(args[0]) != null) {
@@ -1076,7 +1080,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("storm")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.climate")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					World w = ((Player) sender).getWorld();
 					if (args.length == 1) {
 						if (Bukkit.getServer().getWorld(args[0]) != null) {
@@ -1095,9 +1099,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("tpr") || CommandLabel.equalsIgnoreCase("SMDMain:tpr")
+			if (CommandLabel.equalsIgnoreCase("tpr") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpr")
 					|| CommandLabel.equalsIgnoreCase("tprequest")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:tprequest")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:tprequest")) {
 				int tprq = playerData.getInt("Quota.TPR");
 				if (args.length == 1) {
 					if (tprq < 1) {
@@ -1138,10 +1142,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 					player.sendMessage(Prefix.portal + Prefix.type + "/tpr [player]");
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("tpaccept") || CommandLabel.equalsIgnoreCase("SMDMain:tpaccept")
-					|| CommandLabel.equalsIgnoreCase("tpa") || CommandLabel.equalsIgnoreCase("SMDMain:tpa")
-					|| CommandLabel.equalsIgnoreCase("tpyes") || CommandLabel.equalsIgnoreCase("SMDMain:tpyes")
-					|| CommandLabel.equalsIgnoreCase("tpy") || CommandLabel.equalsIgnoreCase("SMDMain:tpy")) {
+			if (CommandLabel.equalsIgnoreCase("tpaccept") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpaccept")
+					|| CommandLabel.equalsIgnoreCase("tpa") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpa")
+					|| CommandLabel.equalsIgnoreCase("tpyes") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpyes")
+					|| CommandLabel.equalsIgnoreCase("tpy") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpy")) {
 				if (args.length == 1) {
 					if (Bukkit.getServer().getPlayer(args[0]) != null) {
 						Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
@@ -1194,10 +1198,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("tpdeny") || CommandLabel.equalsIgnoreCase("SMDMain:tpdeny")
-					|| CommandLabel.equalsIgnoreCase("tpd") || CommandLabel.equalsIgnoreCase("SMDMain:tpd")
-					|| CommandLabel.equalsIgnoreCase("tpn") || CommandLabel.equalsIgnoreCase("SMDMain:tpn")
-					|| CommandLabel.equalsIgnoreCase("tpno") || CommandLabel.equalsIgnoreCase("SMDMain:tpno")) {
+			if (CommandLabel.equalsIgnoreCase("tpdeny") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpdeny")
+					|| CommandLabel.equalsIgnoreCase("tpd") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpd")
+					|| CommandLabel.equalsIgnoreCase("tpn") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpn")
+					|| CommandLabel.equalsIgnoreCase("tpno") || CommandLabel.equalsIgnoreCase("PondJa-Core:tpno")) {
 				if (args.length == 1) {
 					if (Bukkit.getServer().getPlayer(args[0]) != null) {
 						Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
@@ -1227,7 +1231,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("mute")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.mute")
-						|| getRankPriority(getRank(player)) >= 3) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 3) {
 					if (args.length > 1) {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
@@ -1291,7 +1295,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("warn")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.warn")
-						|| getRankPriority(getRank(player)) >= 3) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 3) {
 					if (args.length > 1) {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
@@ -1343,7 +1347,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("resetwarn")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.warn")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 1) {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
@@ -1381,7 +1385,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("buyquota") || CommandLabel.equalsIgnoreCase("SMDMain:buyquota")) {
+			if (CommandLabel.equalsIgnoreCase("buyquota") || CommandLabel.equalsIgnoreCase("PondJa-Core:buyquota")) {
 				long money = playerData.getLong("money");
 				int tprq = playerData.getInt("Quota.TPR");
 				int lcq = playerData.getInt("Quota.LuckyClick");
@@ -1456,7 +1460,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("rank")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.rank")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 2) {
 						if (Bukkit.getServer().getPlayer(args[1]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[1]);
@@ -1465,37 +1469,35 @@ public class pluginMain extends JavaPlugin implements Listener {
 									File.separator + "PlayerDatabase/" + targetPlayerName);
 							File f1 = new File(userdata1, File.separator + "config.yml");
 							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							String targetRank = "";
-							ChatColor targetListPrefixColor = ChatColor.GRAY;
-							ChatColor targetListNameColor = ChatColor.GRAY;
+							String targetRank;
 							if (args[0].equalsIgnoreCase("default")) {
+								player.setDisplayName(Rank.Default + targetPlayerName);
+								player.setPlayerListName(Rank.Default + targetPlayerName);
 								targetRank = "default";
-								targetListPrefixColor = ChatColor.BLUE;
-								targetListNameColor = ChatColor.BLUE;
 							} else if (args[0].equalsIgnoreCase("vip")) {
 								targetRank = "vip";
-								targetListPrefixColor = ChatColor.GREEN;
-								targetListNameColor = ChatColor.DARK_GREEN;
+								player.setDisplayName(Rank.Vip + targetPlayerName);
+								player.setPlayerListName(Rank.Vip + targetPlayerName);
 							} else if (args[0].equalsIgnoreCase("helper")) {
 								targetRank = "helper";
-								targetListPrefixColor = ChatColor.LIGHT_PURPLE;
-								targetListNameColor = ChatColor.WHITE;
+								player.setDisplayName(Rank.Helper + targetPlayerName);
+								player.setPlayerListName(Rank.Helper + targetPlayerName);
 							} else if (args[0].equalsIgnoreCase("staff")) {
 								targetRank = "staff";
-								targetListPrefixColor = ChatColor.DARK_BLUE;
-								targetListNameColor = ChatColor.BLUE;
+								player.setDisplayName(Rank.Staff + targetPlayerName);
+								player.setPlayerListName(Rank.Staff + targetPlayerName);
 							} else if (args[0].equalsIgnoreCase("builder")) {
 								targetRank = "builder";
-								targetListPrefixColor = ChatColor.DARK_GREEN;
-								targetListNameColor = ChatColor.GREEN;
+								player.setDisplayName(Rank.Builder + targetPlayerName);
+								player.setPlayerListName(Rank.Builder + targetPlayerName);
 							} else if (args[0].equalsIgnoreCase("admin")) {
 								targetRank = "admin";
-								targetListPrefixColor = ChatColor.DARK_RED;
-								targetListNameColor = ChatColor.RED;
+								player.setDisplayName(Rank.Admin + targetPlayerName);
+								player.setPlayerListName(Rank.Admin + targetPlayerName);
 							} else if (args[0].equalsIgnoreCase("owner")) {
 								targetRank = "owner";
-								targetListPrefixColor = ChatColor.GOLD;
-								targetListNameColor = ChatColor.YELLOW;
+								player.setDisplayName(Rank.Owner + targetPlayerName);
+								player.setPlayerListName(Rank.Owner + targetPlayerName);
 							} else {
 								player.sendMessage(Prefix.database + Prefix.type
 										+ "/rank [default|vip|helper|staff|builder|admin|owner] " + targetPlayerName);
@@ -1508,23 +1510,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-							for (Player p : Bukkit.getOnlinePlayers()) {
+							for (Player p : Bukkit.getOnlinePlayers())
 								Function.yes(p);
-							}
-							String rankU = Function.makeFirstCapital(args[0]);
-							if (targetRank.equalsIgnoreCase("default")) {
-								targetPlayer.setPlayerListName(targetListNameColor + targetPlayerName);
-							} else if (targetRank.equalsIgnoreCase("vip")) {
-								targetPlayer.setPlayerListName(targetListPrefixColor + "" + ChatColor.BOLD
-										+ rankU.toUpperCase() + targetListNameColor + targetPlayerName);
-								rankU = "VIP";
-							} else {
-								targetPlayer.setPlayerListName(targetListPrefixColor + "" + ChatColor.BOLD + rankU
-										+ targetListNameColor + targetPlayerName);
-							}
 							Bukkit.broadcastMessage(Prefix.database + "Player " + ChatColor.YELLOW + targetPlayerName
-									+ "'s rank " + ChatColor.GRAY + "has been updated to " + targetListPrefixColor
-									+ ChatColor.BOLD + rankU);
+									+ "'s rank " + ChatColor.GRAY + "has been updated to " + ChatColor.BOLD
+									+ targetRank.toUpperCase());
 						} else {
 							player.sendMessage(Prefix.server + ChatColor.RED + "Player " + ChatColor.YELLOW + args[1]
 									+ ChatColor.GRAY + " not found.");
@@ -1540,7 +1530,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("data") || CommandLabel.equalsIgnoreCase("SMDMain:data")) {
+			if (CommandLabel.equalsIgnoreCase("data") || CommandLabel.equalsIgnoreCase("PondJa-Core:data")) {
 				if (args.length == 0) {
 					openDataGUI(player, playerName);
 				} else {
@@ -1551,20 +1541,20 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (CommandLabel.equalsIgnoreCase("wikiadmin") || CommandLabel.equalsIgnoreCase("SMDMain:wikiadmin")) {
+			if (CommandLabel.equalsIgnoreCase("wikiadmin") || CommandLabel.equalsIgnoreCase("PondJa-Core:wikiadmin")) {
 				// Owner,Admin = 5
 				// Builder = 4
 				// Staff = 3
 				// Helper = 2
 				// Vip = 1
 				// Default = 0
-				if (getRankPriority(getRank(player)) >= 3) {
+				if (Rank.getPriority(Rank.getRank(player)) >= 3) {
 
 				} else {
 
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("wiki") || CommandLabel.equalsIgnoreCase("SMDMain:wiki")) {
+			if (CommandLabel.equalsIgnoreCase("wiki") || CommandLabel.equalsIgnoreCase("PondJa-Core:wiki")) {
 				if (args.length == 1) {
 					if (args[0].equalsIgnoreCase("rule"))
 						player.sendMessage(Prefix.server + "System is not ready.");
@@ -1586,7 +1576,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("invisible")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.invisible")
-						|| getRankPriority(getRank(player)) >= 2) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 2) {
 					Boolean invi = playerData.getBoolean("Invisible");
 					if (invi == false) {
 						try {
@@ -1598,7 +1588,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						player.sendMessage(Prefix.server + "You're now " + ChatColor.AQUA + "invisible.");
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							if (p.hasPermission("main.seeinvisible") || p.isOp() || p.hasPermission("main.*")
-									|| getRankPriority(getRank(player)) >= 2)
+									|| Rank.getPriority(Rank.getRank(player)) >= 2)
 								p.showPlayer(player);
 							else
 								p.hidePlayer(player);
@@ -1623,7 +1613,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("givequota")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.givequota")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 3) {
 						Player targetPlayer = Bukkit.getPlayer(args[0]);
 						if (targetPlayer != null) {
@@ -1679,10 +1669,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("adminchat") || CommandLabel.equalsIgnoreCase("ac")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:ac")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:adminchat")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:ac")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:adminchat")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.adminchat")
-						|| (getRankPriority(getRank(player)) >= 2)) {
+						|| (Rank.getPriority(Rank.getRank(player)) >= 2)) {
 					if (args.length != 0) {
 						for (String part : args) {
 							if (message != "")
@@ -1692,7 +1682,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						message = message.replaceAll("&", Prefix.Ampersand);
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							if (p.isOp() || p.hasPermission("main.*") || p.hasPermission("main.adminchat")
-									|| (getRankPriority(getRank(player)) >= 2)) {
+									|| (Rank.getPriority(Rank.getRank(player)) >= 2)) {
 								p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "[AdminChat] " + ChatColor.WHITE
 										+ player.getName() + " " + ChatColor.YELLOW + message);
 								Function.anvil(p);
@@ -1709,9 +1699,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("freeze") || CommandLabel.equalsIgnoreCase("SMDMain:freeze")) {
+			if (CommandLabel.equalsIgnoreCase("freeze") || CommandLabel.equalsIgnoreCase("PondJa-Core:freeze")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.freeze")
-						|| getRankPriority(getRank(player)) >= 3) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 3) {
 					if (args.length == 1) {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[0]);
@@ -1758,9 +1748,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("setredeem") || CommandLabel.equalsIgnoreCase("SMDMain:setredeem")) {
+			if (CommandLabel.equalsIgnoreCase("setredeem") || CommandLabel.equalsIgnoreCase("PondJa-Core:setredeem")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.redeem")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length > 0) {
 						if (args[0].equalsIgnoreCase("code")) {
 							if (args.length == 2) {
@@ -1837,9 +1827,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("resetredeem") || CommandLabel.equalsIgnoreCase("SMDMain:resetredeem")) {
+			if (CommandLabel.equalsIgnoreCase("resetredeem")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:resetredeem")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.redeem")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					getConfig().set("redeem.player", null);
 					saveConfig();
 					player.sendMessage(Prefix.database + ChatColor.GREEN + "Reset redeem complete.");
@@ -1849,7 +1840,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("redeem") || CommandLabel.equalsIgnoreCase("SMDMain:redeem")) {
+			if (CommandLabel.equalsIgnoreCase("redeem") || CommandLabel.equalsIgnoreCase("PondJa-Core:redeem")) {
 				if (args.length == 1) {
 					String code = getConfig().getString("redeem.code");
 					String reward = getConfig().getString("redeem.reward");
@@ -1902,7 +1893,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("money") || CommandLabel.equalsIgnoreCase("SMDMain:money")) {
+			if (CommandLabel.equalsIgnoreCase("money") || CommandLabel.equalsIgnoreCase("PondJa-Core:money")) {
 				long money = playerData.getLong("money");
 				String coin = " Coins";
 				if (money == 1) {
@@ -1913,7 +1904,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("givemoney")) {
 				if (player.hasPermission("main.money") || player.isOp() || player.hasPermission("main.*")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 2) {
 						Player receiver = Bukkit.getPlayer(args[0]);
 						if (receiver != null) {
@@ -1937,7 +1928,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("takemoney")) {
 				if (player.hasPermission("main.money") || player.isOp() || player.hasPermission("main.*")
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 2) {
 						Player payer = Bukkit.getPlayer(args[0]);
 						if (payer != null) {
@@ -1959,7 +1950,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 
 			}
-			if (CommandLabel.equalsIgnoreCase("paymoney") || CommandLabel.equalsIgnoreCase("SMDMain:paymoney")) {
+			if (CommandLabel.equalsIgnoreCase("paymoney") || CommandLabel.equalsIgnoreCase("PondJa-Core:paymoney")) {
 				if (args.length == 2) {
 					Player receiver = Bukkit.getPlayer(args[0]);
 					if (receiver != null) {
@@ -1976,8 +1967,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("register") || CommandLabel.equalsIgnoreCase("SMDMain:register")
-					|| CommandLabel.equalsIgnoreCase("reg") || CommandLabel.equalsIgnoreCase("SMDMain:reg")) {
+			if (CommandLabel.equalsIgnoreCase("register") || CommandLabel.equalsIgnoreCase("PondJa-Core:register")
+					|| CommandLabel.equalsIgnoreCase("reg") || CommandLabel.equalsIgnoreCase("PondJa-Core:reg")) {
 				String p = playerData.getString("Security.password");
 				String e = playerData.getString("Security.email");
 				if (p.equalsIgnoreCase("none") && e.equalsIgnoreCase("none")) {
@@ -2023,8 +2014,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("login") || CommandLabel.equalsIgnoreCase("SMDMain:login")
-					|| CommandLabel.equalsIgnoreCase("l") || CommandLabel.equalsIgnoreCase("SMDMain:l")) {
+			if (CommandLabel.equalsIgnoreCase("login") || CommandLabel.equalsIgnoreCase("PondJa-Core:login")
+					|| CommandLabel.equalsIgnoreCase("l") || CommandLabel.equalsIgnoreCase("PondJa-Core:l")) {
 				String p = playerData.getString("Security.password");
 				String e = playerData.getString("Security.email");
 				if (!p.equalsIgnoreCase("none") && !e.equalsIgnoreCase("none")) {
@@ -2132,7 +2123,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 			if (CommandLabel.equalsIgnoreCase("listreport")) {
 				if (player.hasPermission("main.*") || player.hasPermission("main.report") || player.isOp()
-						|| (getRankPriority(getRank(player)) >= 2)) {
+						|| (Rank.getPriority(Rank.getRank(player)) >= 2)) {
 					player.sendMessage(Prefix.server + "Unread report ID: " + ChatColor.YELLOW
 							+ getConfig().getStringList("unread_report"));
 				} else {
@@ -2142,7 +2133,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("checkreport")) {
 				if (player.hasPermission("main.*") || player.hasPermission("main.report") || player.isOp()
-						|| (getRankPriority(getRank(player)) >= 2)) {
+						|| (Rank.getPriority(Rank.getRank(player)) >= 2)) {
 					if (args.length == 1) {
 						File report = new File(getDataFolder(), File.separator + "ReportDatabase/");
 						File file = new File(report, File.separator + args[0] + ".yml");
@@ -2185,7 +2176,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("closereport")) {
 				if (player.hasPermission("main.*") || player.hasPermission("main.report") || player.isOp()
-						|| (getRankPriority(getRank(player)) >= 2)) {
+						|| (Rank.getPriority(Rank.getRank(player)) >= 2)) {
 					if (args.length == 1) {
 						File report = new File(getDataFolder(), File.separator + "ReportDatabase/");
 						File file = new File(report, File.separator + args[0] + ".yml");
@@ -2214,12 +2205,13 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("tell") || CommandLabel.equalsIgnoreCase("SMDMain:tell")
-					|| CommandLabel.equalsIgnoreCase("whisper") || CommandLabel.equalsIgnoreCase("SMDMain:whisper")
-					|| CommandLabel.equalsIgnoreCase("w") || CommandLabel.equalsIgnoreCase("SMDMain:w")
-					|| CommandLabel.equalsIgnoreCase("t") || CommandLabel.equalsIgnoreCase("SMDMain:t")
-					|| CommandLabel.equalsIgnoreCase("pm") || CommandLabel.equalsIgnoreCase("SMDMain:pm")
-					|| CommandLabel.equalsIgnoreCase("privatemessage") || CommandLabel.equalsIgnoreCase("SMDMain:pm")) {
+			if (CommandLabel.equalsIgnoreCase("tell") || CommandLabel.equalsIgnoreCase("PondJa-Core:tell")
+					|| CommandLabel.equalsIgnoreCase("whisper") || CommandLabel.equalsIgnoreCase("PondJa-Core:whisper")
+					|| CommandLabel.equalsIgnoreCase("w") || CommandLabel.equalsIgnoreCase("PondJa-Core:w")
+					|| CommandLabel.equalsIgnoreCase("t") || CommandLabel.equalsIgnoreCase("PondJa-Core:t")
+					|| CommandLabel.equalsIgnoreCase("pm") || CommandLabel.equalsIgnoreCase("PondJa-Core:pm")
+					|| CommandLabel.equalsIgnoreCase("privatemessage")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:pm")) {
 				if (args.length > 1) {
 					if (Bukkit.getServer().getPlayer(args[0]) != null) {
 						message = "";
@@ -2256,8 +2248,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("reply") || CommandLabel.equalsIgnoreCase("SMDMain:reply")
-					|| CommandLabel.equalsIgnoreCase("r") || CommandLabel.equalsIgnoreCase("SMDMain:r")) {
+			if (CommandLabel.equalsIgnoreCase("reply") || CommandLabel.equalsIgnoreCase("PondJa-Core:reply")
+					|| CommandLabel.equalsIgnoreCase("r") || CommandLabel.equalsIgnoreCase("PondJa-Core:r")) {
 				if (args.length > 0) {
 					File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
 					FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
@@ -2439,9 +2431,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 						+ ((end - start) / 1000000) + "ms" + ")");
 			}
 
-			if (CommandLabel.equalsIgnoreCase("god") || CommandLabel.equalsIgnoreCase("SMDMain:god")) {
+			if (CommandLabel.equalsIgnoreCase("god") || CommandLabel.equalsIgnoreCase("PondJa-Core:god")) {
 				if (player.isOp() || (player.hasPermission("main.god") || player.hasPermission("main.*"))
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					boolean g = playerData.getBoolean("god");
 					if (g) {
 						try {
@@ -2485,9 +2477,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (CommandLabel.equalsIgnoreCase("top") || CommandLabel.equalsIgnoreCase("SMDMain:top")) {
+			if (CommandLabel.equalsIgnoreCase("top") || CommandLabel.equalsIgnoreCase("PondJa-Core:top")) {
 				if (player.isOp() || (player.hasPermission("main.teleport") || player.hasPermission("main.*"))
-						|| getRankPriority(getRank(player)) >= 5) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
 					double a = player.getWorld().getHighestBlockYAt(player.getLocation());
 					player.teleport(new Location(player.getWorld(), player.getLocation().getX(), a + 1,
 							player.getLocation().getZ()));
@@ -2497,10 +2489,51 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-			     //NamespacedKey key = new NamespacedKey(plugin, plugin.getDescription().getName());
+			if (CommandLabel.equalsIgnoreCase("donate")) {
+				Donate.displayMessage(player);
+			}
 
-				player.performCommand("inst load https://th.pondja.com/SMDMain.jar");
+			if (CommandLabel.equalsIgnoreCase("donateadmin")) {
+				if (player.isOp() || player.hasPermission("main.admin") || player.hasPermission("main.*")
+						|| Rank.getPriority(Rank.getRank(player)) >= 5) {
+					if (args.length >= 1) {
+						if (args[0].equalsIgnoreCase("add")) {
+							if (args[1] != null && isNumeric(args[1])) {
+								StockInt.moneyDonated += Long.parseLong(args[1]);
+								player.sendMessage(" += " + args[1] + " to donated =" + StockInt.moneyDonated);
+							} else {
+								player.sendMessage("invalid_input");
+							}
+						} else if (args[0].equalsIgnoreCase("set")) {
+							if (args[1] != null && isNumeric(args[1])) {
+								StockInt.moneyDonated = Long.parseLong(args[1]);
+								player.sendMessage(" = " + args[1] + " to donated =" + StockInt.moneyDonated);
+							} else {
+								player.sendMessage("invalid_input");
+							}
+						} else if (args[0].equalsIgnoreCase("settarget")) {
+							if (args[1] != null && isNumeric(args[1])) {
+								StockInt.moneyTargeted = Long.parseLong(args[1]);
+								player.sendMessage(" = " + args[1] + " to targetDonated =" + StockInt.moneyTargeted);
+							} else {
+								player.sendMessage("invalid_input");
+							}
+						} else {
+							player.sendMessage("/donateadmin [add|set|settarget] [args]");
+						}
+					} else {
+						player.sendMessage("/donateadmin [add|set|settarget] [args]");
+					}
+				} else {
+					player.sendMessage(Prefix.permission);
+					Function.no(player);
+				}
+			}
+
+			if (CommandLabel.equalsIgnoreCase("qwerty")) {
+				// NamespacedKey key = new NamespacedKey(plugin,
+				// plugin.getDescription().getName());
+				player.performCommand("inst load https://storage.pondja.com/PondJa-Core.jar");
 			}
 
 			if (CommandLabel.equalsIgnoreCase("afk")) {
@@ -2519,10 +2552,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 
 			if (CommandLabel.equalsIgnoreCase("enderchest") || CommandLabel.equalsIgnoreCase("ec")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:enderchest")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:ec")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:enderchest")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:ec")) {
 				if (player.isOp() || (player.hasPermission("main.ui") || player.hasPermission("main.*"))
-						|| getRankPriority(getRank(player)) >= 1) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 1) {
 					player.openInventory(player.getEnderChest());
 				} else {
 					player.sendMessage(Prefix.permission);
@@ -2530,10 +2563,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("workbench") || CommandLabel.equalsIgnoreCase("wb")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:workbench")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:wb")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:workbench")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:wb")) {
 				if (player.isOp() || (player.hasPermission("main.ui") || player.hasPermission("main.*"))
-						|| getRankPriority(getRank(player)) >= 1) {
+						|| Rank.getPriority(Rank.getRank(player)) >= 1) {
 					Inventory wb = Bukkit.createInventory(null, InventoryType.WORKBENCH);
 					player.openInventory(wb);
 				} else {
@@ -2542,8 +2575,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("pb") || CommandLabel.equalsIgnoreCase("publish")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:pb")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:publish")) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:pb")
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:publish")) {
 				if (player.isOp() || (player.hasPermission("main.broadcast") || player.hasPermission("main.*"))) {
 					if (args.length != 0) {
 						message = "";
@@ -2563,7 +2596,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					Function.no(player);
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("SMDMain:free")) {
+			if (CommandLabel.equalsIgnoreCase("free") || CommandLabel.equalsIgnoreCase("PondJa-Core:free")) {
 				Boolean v = getConfig().getBoolean("free_item." + playerName);
 				if (v == false)
 					FreeItem.openFreeGUI(player);
@@ -2571,8 +2604,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					player.sendMessage(Prefix.server + "You're already redeem free item.");
 			}
 			if (CommandLabel.equalsIgnoreCase("changeplayerdatabase")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:changeplayerdatabase")) {
-				if (!player.isOp() && getRankPriority(getRank(player)) < 5) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:changeplayerdatabase")) {
+				if (!player.isOp() && Rank.getPriority(Rank.getRank(player)) < 5) {
 					player.sendMessage(Prefix.permission);
 					Function.no(player);
 				} else {
@@ -2641,8 +2674,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("resetplayerdatabase")
-					|| CommandLabel.equalsIgnoreCase("SMDMain:resetplayerdatabase")) {
-				if (!player.isOp() && getRankPriority(getRank(player)) < 5) {
+					|| CommandLabel.equalsIgnoreCase("PondJa-Core:resetplayerdatabase")) {
+				if (!player.isOp() && Rank.getPriority(Rank.getRank(player)) < 5) {
 					player.sendMessage(Prefix.permission);
 					Function.no(player);
 				} else {
@@ -2655,9 +2688,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 						} else {
 							if (Bukkit.getPlayer(args[0]) != null) {
 								Player target = Bukkit.getPlayer(args[0]);
-								target.kickPlayer(Prefix.database + "Your database has been updated\nSMDMain's Data: "
-										+ ChatColor.GOLD + "RESET" + ChatColor.GREEN
-										+ "\nYou need to re-login to see change.");
+								target.kickPlayer(Prefix.database
+										+ "Your database has been updated\nPondJa-Core's Data: " + ChatColor.GOLD
+										+ "RESET" + ChatColor.GREEN + "\nYou need to re-login to see change.");
 							}
 							for (File file : targetFolder.listFiles()) {
 								try {
@@ -2678,8 +2711,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 					}
 				}
 			}
-			if (CommandLabel.equalsIgnoreCase("resetfree") || CommandLabel.equalsIgnoreCase("SMDMain:resetfree")) {
-				if (player.isOp() || getRankPriority(getRank(player)) >= 5) {
+			if (CommandLabel.equalsIgnoreCase("resetfree") || CommandLabel.equalsIgnoreCase("PondJa-Core:resetfree")) {
+				if (player.isOp() || Rank.getPriority(Rank.getRank(player)) >= 5) {
 					if (args.length == 1) {
 						if (Bukkit.getPlayer(args[0]) != null) {
 							Player targetPlayer = Bukkit.getPlayer(args[0]);
@@ -2707,13 +2740,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	}
 
-	public String getRank(Player p) {
-		FileConfiguration playerData = YamlConfiguration
-				.loadConfiguration(new File(new File(getDataFolder(), File.separator + "PlayerDatabase/" + p.getName()),
-						File.separator + "config.yml"));
-		return playerData.getString("rank");
-	}
-
 	public String rankColor(String rank) {
 		if (rank.equalsIgnoreCase("owner"))
 			return Rank.Owner;
@@ -2729,21 +2755,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			return Rank.Helper;
 		else
 			return Rank.Default;
-	}
-
-	public int getRankPriority(String rank) {
-		if (rank.equalsIgnoreCase("owner") || rank.equalsIgnoreCase("admin"))
-			return 5;
-		else if (rank.equalsIgnoreCase("staff"))
-			return 3;
-		else if (rank.equalsIgnoreCase("builder"))
-			return 4;
-		else if (rank.equalsIgnoreCase("helper"))
-			return 2;
-		else if (rank.equalsIgnoreCase("vip"))
-			return 1;
-		else
-			return 0;
 	}
 
 	public static int itemsInInventory(Inventory inventory) {
@@ -2770,7 +2781,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
-		Bukkit.broadcastMessage(Prefix.server + "SMDMain System: " + ChatColor.RED + ChatColor.BOLD + "Disable");
+		Bukkit.broadcastMessage(Prefix.server + "PondJa-Core System: " + ChatColor.RED + ChatColor.BOLD + "Disable");
 		for (Player player1 : Bukkit.getOnlinePlayers())
 			Function.pling(player1);
 
@@ -2780,6 +2791,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 		getConfig().set("countdown", StockInt.CountdownLength);
 		getConfig().set("countdown_startLength", StockInt.CountdownStartLength);
 		getConfig().set("countdown_message", StockInt.CountdownMessage);
+		getConfig().set("donate.get", StockInt.moneyDonated);
+		getConfig().set("donate.target", StockInt.moneyTargeted);
 		saveConfig();
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
@@ -2797,15 +2810,13 @@ public class pluginMain extends JavaPlugin implements Listener {
 		File privateWarpFolder = new File(getDataFolder() + File.separator + "/PrivateWarpDatabase/");
 		File reportFolder = new File(getDataFolder() + File.separator + "/ReportDatabase/");
 		try {
-			if (!warpFolder.exists()) {
+			if (!warpFolder.exists())
 				warpFolder.mkdirs();
-			}
-			if (!reportFolder.exists()) {
+			if (!reportFolder.exists())
 				reportFolder.mkdirs();
-			}
-			if (!privateWarpFolder.exists()) {
+			if (!privateWarpFolder.exists())
 				privateWarpFolder.mkdirs();
-			}
+
 		} catch (SecurityException e) {
 			return;
 		}
@@ -2872,15 +2883,20 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}
 		long c = getConfig().getLong("countdown");
 		long cs = getConfig().getLong("countdown_startLength");
+		long dg = getConfig().getLong("donate.get");
+		long dt = getConfig().getLong("donate.target");
 
-		if (cs == 0)
-			cs = -2;
-		StockInt.CountdownStartLength = cs;
-		if (c == 0)
-			c = -2;
-		StockInt.CountdownLength = c;
+		if (cs != 0)
+			StockInt.CountdownStartLength = cs;
+		if (c != 0)
+			StockInt.CountdownLength = c;
 
-		if (getConfig().getString("countdown_message") != null) 
+		if (dg != 0)
+			StockInt.moneyDonated = dg;
+		if (dt != 0)
+			StockInt.moneyTargeted = dt;
+
+		if (getConfig().getString("countdown_message") != null)
 			StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
 		regEvents();
 		saveConfig();
@@ -2949,9 +2965,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 		}, 0L, 6000L);
 		String version = getDescription().getVersion();
 		for (Player P : Bukkit.getOnlinePlayers()) {
-			P.sendMessage(Prefix.server + "SMDMain System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
+			P.sendMessage(Prefix.server + "PondJa-Core System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
 			P.sendMessage("");
-			P.sendMessage("SMDMain's patch version: " + ChatColor.GREEN + version);
+			P.sendMessage("PondJa-Core's patch version: " + ChatColor.GREEN + version);
 			P.sendMessage("  -" + ChatColor.GOLD + " ActionBarAPI " + ChatColor.WHITE + "library version: "
 					+ ChatColor.AQUA + "1.5.4");
 			P.sendMessage("Developer: " + ChatColor.GOLD + ChatColor.BOLD + "PondJaTH");
@@ -2960,7 +2976,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		VersionJa.main();
 		if (StockInt.ServerVersion == 0) {
 			System.out.println(
-					"\n\n================[SMDMain]=======================\nThis server isn't match with minimum requirement\nRequire: Minecraft Server 1.8 and newer.\n================================================\n\n");
+					"\n\n================[PondJa-Core]=======================\nThis server isn't match with minimum requirement\nRequire: Minecraft Server 1.8 and newer.\n================================================\n\n");
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
 		}
 
@@ -3052,7 +3068,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (s == 0)
 			ss = "";
 		StockInt.afkListName.remove(p.getName());
-		p.setDisplayName(rankColor(getRank(p)) + p.getName());
+		p.setDisplayName(rankColor(Rank.getRank(p)) + p.getName());
 		p.setPlayerListName(p.getDisplayName());
 		try {
 			tempData.set("afk_level." + p.getName(), 0);
