@@ -25,8 +25,8 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
+import me.palapon2545.SMDMain.Function.ActionBarAPI;
 import me.palapon2545.SMDMain.Function.Blockto113;
-import me.palapon2545.SMDMain.Function.API.ActionBarAPI.ActionBarAPI;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;
@@ -65,8 +65,6 @@ public class OnPlayerMovement implements Listener {
 		if(event.getPlayer().isGliding()) {
             event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(0.7f));
         }
-		
-		
 		
 		Player player = event.getPlayer();
 		String playerName = player.getName();
@@ -107,7 +105,7 @@ public class OnPlayerMovement implements Listener {
 	}
 
 	@EventHandler
-	public void onPortalCreate(PortalCreateEvent event) {
+	public void onPlayerCreatePortal(PortalCreateEvent event) {
 		// if(StockInt.privateServerPondJa)event.setCancelled(false);
 	}
 
@@ -146,13 +144,6 @@ public class OnPlayerMovement implements Listener {
 			e.printStackTrace();
 			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
-	}
-
-	@EventHandler
-	public void onPlayerDeath(PlayerDeathEvent event) {
-		Player player = event.getEntity();
-		Location loc = player.getLocation();
-		player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "God whispering you: Your last location before death is " + (int) loc.getX() + ", " + (int) loc.getY() + ", " + (int) loc.getZ());
 	}
 
 	@EventHandler

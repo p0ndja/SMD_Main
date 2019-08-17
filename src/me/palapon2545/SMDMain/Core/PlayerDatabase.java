@@ -1,4 +1,4 @@
-package me.palapon2545.SMDMain.Function;
+package me.palapon2545.SMDMain.Core;
 
 import java.io.File;
 import java.io.IOException;

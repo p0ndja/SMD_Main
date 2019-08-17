@@ -72,23 +72,9 @@ public class OnEntityLivingEvent implements Listener {
 	
 	@EventHandler
 	public void playerDeathEvent(PlayerDeathEvent e) {
-		Player p = e.getEntity();
-		Location l = p.getLocation();
-		
-		if (l.getBlock().getType() != Material.AIR) {
-			l = new Location(p.getWorld(), l.getX(), (double) p.getWorld().getHighestBlockYAt(l), l.getZ());
-		}
-		
-		Block b = l.getBlock();
-		//b.setType(Material.CHEST);
-		
-		Chest c = (Chest) b.getState();
-		
-		List<ItemStack> a = e.getDrops();
-		for (ItemStack x : a) {
-			c.getBlockInventory().addItem(x);
-			c.update(true);
-		}
+		Player player = e.getEntity();
+		Location loc = player.getLocation();
+		player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "God whispering you: Your last location before death is " + (int) loc.getX() + ", " + (int) loc.getY() + ", " + (int) loc.getZ());
 	}
 	
 	@EventHandler
