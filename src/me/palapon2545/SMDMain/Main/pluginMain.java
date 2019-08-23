@@ -29,6 +29,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileDeleteStrategy;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,6 +51,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import me.palapon2545.SMDMain.Core.AFK;
+import me.palapon2545.SMDMain.Core.Login;
+import me.palapon2545.SMDMain.Core.PlayerDatabase;
 import me.palapon2545.SMDMain.Core.Rank;
 import me.palapon2545.SMDMain.EventListener.OnEntityLivingEvent;
 import me.palapon2545.SMDMain.EventListener.OnInventoryEvent;
@@ -73,13 +77,17 @@ import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Function.VersionJa;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 public class pluginMain extends JavaPlugin implements Listener {
 
 	File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
 	FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-
-	public static int AFKTimerLevel = 600;
 
 	public void regEvents() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -167,13 +175,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 		}
 
-		if (e.getInventory() instanceof EnchantingInventory) {
-			Dye d = new Dye();
-			d.setColor(DyeColor.BLUE);
-			ItemStack i = d.toItemStack();
-			if (e.getCurrentItem().getType() == i.getType())
-				e.setCancelled(true);
-		}
+		/*
+		 * if (e.getInventory() instanceof EnchantingInventory) { Dye d = new Dye();
+		 * d.setColor(DyeColor.BLUE); ItemStack i = d.toItemStack(); if
+		 * (e.getCurrentItem().getType() == i.getType()) e.setCancelled(true); }
+		 */
 	}
 
 	@SuppressWarnings("deprecation")
@@ -521,12 +527,11 @@ public class pluginMain extends JavaPlugin implements Listener {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						player.sendMessage(Prefix.portal + ChatColor.GRAY + "Set " + ChatColor.YELLOW + name + "'" + "'"
-								+ ChatColor.DARK_GRAY + "(X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + plw + ")"
+						player.sendMessage(Prefix.portal + ChatColor.GRAY + "Add " + ChatColor.YELLOW + name
+								+ ChatColor.GOLD + " [X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + plw + "]"
 								+ ChatColor.GRAY + " as your new home location.");
 						player.sendMessage(Prefix.portal + Prefix.type + "'/home " + name + "'" + ChatColor.GRAY
 								+ " to get back here.");
-						player.sendMessage(Prefix.portal + "");
 						Function.yes(player);
 					} else {
 						player.sendMessage(Prefix.portal + "Home " + ChatColor.YELLOW + name + ChatColor.GRAY
@@ -581,7 +586,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 				for (int i = 0; i < files.length; i++) {
 					if (files[i].isFile()) {
 						String l = files[i].getName().replaceAll(".yml", "");
-						player.sendMessage("- " + ChatColor.YELLOW + l);
+						FileConfiguration playerData2 = YamlConfiguration.loadConfiguration(files[i]);
+
+						int x = playerData2.getInt("home.x");
+						int y = playerData2.getInt("home.y");
+						int z = playerData2.getInt("home.z");
+						String world = playerData2.getString("home.world");
+
+						player.sendMessage("- " + ChatColor.YELLOW + l + ChatColor.GOLD + " [X: " + x + ", Y: " + y
+								+ ", Z: " + z + ", World: " + world + "]");
 					}
 				}
 			}
@@ -1547,7 +1560,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("wiki") || CommandLabel.equalsIgnoreCase("PondJa-Core:wiki")) {
 				player.sendMessage("Temporary disable.");
 			}
-			
+
 			if (CommandLabel.equalsIgnoreCase("invisible")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.invisible")
 						|| Rank.getPriority(player) >= 2) {
@@ -1563,9 +1576,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							if (p.hasPermission("main.seeinvisible") || p.isOp() || p.hasPermission("main.*")
 									|| Rank.getPriority(player) >= 2)
-								p.showPlayer(player);
+								p.showPlayer(this, player);
 							else
-								p.hidePlayer(player);
+								p.hidePlayer(this, player);
 
 						}
 					} else {
@@ -1577,7 +1590,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						}
 						player.sendMessage(Prefix.server + "You're now " + ChatColor.GREEN + "visible.");
 						for (Player p : Bukkit.getOnlinePlayers()) {
-							p.showPlayer(player);
+							p.showPlayer(this, player);
 						}
 					}
 				} else {
@@ -2504,22 +2517,51 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 
+			if (CommandLabel.equalsIgnoreCase("votetorestart")) {
+				if (!StockInt.voteToRestart.contains(playerName)) {
+					StockInt.voteToRestart.add(playerName);
+					Bukkit.broadcastMessage(Prefix.server + ChatColor.AQUA + playerName + ChatColor.GRAY
+							+ " has voted to restart server." + ChatColor.YELLOW + " (" + StockInt.voteToRestart.size()
+							+ "/" + Bukkit.getOnlinePlayers().size() + ")");
+					if (StockInt.voteToRestart.size() < Bukkit.getOnlinePlayers().size()) {
+						Bukkit.broadcastMessage(Prefix.server + "We need more " + ChatColor.GREEN
+								+ ((Bukkit.getOnlinePlayers().size() / 2) - StockInt.voteToRestart.size())
+								+ ChatColor.GRAY + " for restarting server.");
+					} else {
+						Bukkit.broadcastMessage(Prefix.server
+								+ "More than 50% of Online Player vote to restart server, so " + ChatColor.GOLD
+								+ "60 seconds " + ChatColor.GRAY + "before server restarting.");
+					}
+					Function.yes(player);
+				} else {
+					StockInt.voteToRestart.remove(playerName);
+					Function.yes(player);
+					player.sendMessage(Prefix.server + "Unvote success.");
+				}
+
+				if (StockInt.voteToRestart.size() >= (Bukkit.getOnlinePlayers().size() / 2)) {
+					StockInt.CountdownLength = 30;
+					StockInt.CountdownStartLength = 30;
+					StockInt.CountdownMessage = "Restart Server (From player voting)";
+					getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+						@Override
+						public void run() {
+							getServer().dispatchCommand(getServer().getConsoleSender(), "restart");
+						}
+					}, 600L);
+				}
+			}
+
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-				
+
 			}
 
 			if (CommandLabel.equalsIgnoreCase("afk")) {
-				if (StockInt.afkListName.contains(playerName)) {
-					noLongerAFKLevel(player);
+				if (AFK.AFKListName.contains(playerName)) {
+					AFK.noLongerAFK(player);
 				} else {
-					setAFK(player);
-					try {
-						tempData.set("afk_level." + playerName, 120);
-						tempData.save(tempFile);
-					} catch (IOException e) {
-						e.printStackTrace();
-						Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-					}
+					AFK.setAFK(player);
+					AFK.AFKCount.put(playerName, (long) 601);
 				}
 			}
 
@@ -2712,23 +2754,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	}
 
-	public String rankColor(String rank) {
-		if (rank.equalsIgnoreCase("owner"))
-			return Rank.Owner;
-		else if (rank.equalsIgnoreCase("admin"))
-			return Rank.Admin;
-		else if (rank.equalsIgnoreCase("staff"))
-			return Rank.Staff;
-		else if (rank.equalsIgnoreCase("builder"))
-			return Rank.Builder;
-		else if (rank.equalsIgnoreCase("vip"))
-			return Rank.Vip;
-		else if (rank.equalsIgnoreCase("helper"))
-			return Rank.Helper;
-		else
-			return Rank.Default;
-	}
-
 	public static int itemsInInventory(Inventory inventory) {
 		int i = 0;
 		for (ItemStack is : inventory.getContents()) {
@@ -2768,8 +2793,8 @@ public class pluginMain extends JavaPlugin implements Listener {
 		saveConfig();
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (StockInt.afkListName.contains(p.getName()))
-				noLongerAFKLevel(p);
+			if (AFK.AFKListName.contains(p.getName()))
+				AFK.noLongerAFK(p);
 		}
 
 	}
@@ -2857,19 +2882,17 @@ public class pluginMain extends JavaPlugin implements Listener {
 		long cs = getConfig().getLong("countdown_startLength");
 		long dg = getConfig().getLong("donate.get");
 		long dt = getConfig().getLong("donate.target");
-
-		if (cs != 0)
-			StockInt.CountdownStartLength = cs;
-		if (c != 0)
-			StockInt.CountdownLength = c;
-
 		if (dg != 0)
 			StockInt.moneyDonated = dg;
 		if (dt != 0)
 			StockInt.moneyTargeted = dt;
-
+		if (cs != 0)
+			StockInt.CountdownStartLength = cs;
+		if (c != 0)
+			StockInt.CountdownLength = c;
 		if (getConfig().getString("countdown_message") != null)
 			StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
+
 		regEvents();
 		saveConfig();
 
@@ -2877,20 +2900,10 @@ public class pluginMain extends JavaPlugin implements Listener {
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
-				s.cancelTask(0);
 				Countdown.run();
 				isStandOnPlate();
 
 				if (StockInt.privateServerPondJa) {
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						Block block = p.getLocation().getBlock();
-						if (block.getType().equals(Material.CAULDRON))
-							if (p.getHealth() < 20)
-								p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20, 3));
-							else
-								p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 0));
-
-					}
 					if (Bukkit.getWorld("world").getTime() - 20 < 0) {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 1200, 1));
@@ -2902,16 +2915,17 @@ public class pluginMain extends JavaPlugin implements Listener {
 						}
 					}
 				}
-				// afkLoop();
+				AFK.afkLoop();
 			}
 		}, 0L, 20L);
+
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
-				onPlayerLogin();
+				ChatColor color;
+				Login.loginTask();
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					int ping = Ping.get(p);
-					ChatColor color = ChatColor.WHITE;
 					if (ping < 31)
 						color = ChatColor.AQUA;
 					else if (ping > 30 && ping < 81)
@@ -2927,24 +2941,26 @@ public class pluginMain extends JavaPlugin implements Listener {
 					p.setPlayerListName(
 							p.getDisplayName() + ChatColor.WHITE + " [" + color + ping + ChatColor.WHITE + "]");
 				}
+
 			}
-		}, 0L, 60L);
-		s.scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override
-			public void run() {
-				AutoSaveWorld.save();
-			}
-		}, 0L, 6000L);
+		}, 0L, 100L);
+		/*
+		 * s.scheduleSyncRepeatingTask(this, new Runnable() {
+		 * 
+		 * @Override public void run() { AutoSaveWorld.save(); } }, 0L, 6000L);
+		 */
 		String version = getDescription().getVersion();
-		for (Player P : Bukkit.getOnlinePlayers()) {
-			P.sendMessage(Prefix.server + "PondJa-Core System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
-			P.sendMessage("");
-			P.sendMessage("PondJa-Core's patch version: " + ChatColor.GREEN + version);
-			P.sendMessage("  -" + ChatColor.GOLD + " ActionBarAPI " + ChatColor.WHITE + "library version: "
-					+ ChatColor.AQUA + "1.5.4");
-			P.sendMessage("Developer: " + ChatColor.GOLD + ChatColor.BOLD + "PondJaTH");
-			P.sendMessage("");
-		}
+		Bukkit.broadcastMessage(Prefix.server + "PondJa-Core System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
+		Bukkit.broadcastMessage("");
+		Bukkit.broadcastMessage("PondJa-Core's patch version: " + ChatColor.GREEN + version);
+		Bukkit.broadcastMessage("  -" + ChatColor.GOLD + " ActionBarAPI " + ChatColor.WHITE + "library version: "
+				+ ChatColor.AQUA + "1.5.4 " + ChatColor.WHITE + "by " + ChatColor.YELLOW + "ConnorLinfoot");
+		Bukkit.broadcastMessage("Developer: " + ChatColor.GOLD + ChatColor.BOLD + "PondJaTH");
+		Bukkit.broadcastMessage("");
+
+		for (Player P : Bukkit.getOnlinePlayers())
+			AFK.AFKCount.put(P.getName(), (long) 0);
+
 		VersionJa.main();
 		if (StockInt.ServerVersion == 0) {
 			System.out.println(
@@ -2952,106 +2968,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
 		}
 
-	}
-
-	public void onPlayerLogin() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			String playerName = p.getName();
-			File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
-			File f = new File(userdata, File.separator + "config.yml");
-			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-			int o = playerData.getInt("login.count");
-			if (StockInt.blockLogin.contains(playerName)) {
-				if (o == 20) {
-					p.kickPlayer(
-							"Login Timeout (60 Seconds), Please re-join and try again.\nIf you forget password please contact at Fanpage\nhttps://www.facebook.com/mineskymc");
-				} else {
-					p.sendMessage("");
-					p.sendMessage(Prefix.server + "Please login or register!");
-					p.sendMessage(Prefix.type + " - /register [password] [email]");
-					p.sendMessage(Prefix.type + " - /login [password]");
-					p.sendMessage("");
-					o += 1;
-					try {
-						playerData.set("login.count", o);
-						playerData.save(f);
-					} catch (IOException e) {
-						Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-					}
-				}
-			} else {
-
-			}
-		}
-	}
-
-	public void afkLoop() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			int level = tempData.getInt("afk_level." + p.getName());
-			Bukkit.broadcastMessage(p.getName() + " = " + level);
-			if (level == AFKTimerLevel + 1) {
-				long time = tempData.getLong("afk_time." + p.getName());
-				try {
-					tempData.set("afk_time." + p.getName(), time + 1);
-					tempData.save(tempFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-				}
-			} else {
-				level++;
-				try {
-					tempData.set("afk_level." + p.getName(), level);
-					tempData.save(tempFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-					Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-				}
-			}
-
-			if (level >= AFKTimerLevel && !StockInt.afkListName.contains(p.getName()))
-				setAFK(p);
-			if (level == -1)
-				noLongerAFKLevel(p);
-		}
-		Bukkit.broadcastMessage("---------");
-	}
-
-	public void setAFK(Player p) {
-		Bukkit.broadcastMessage(
-				p.getDisplayName() + ChatColor.WHITE + " is now " + ChatColor.BOLD + "AFK" + ChatColor.RESET + ".");
-		p.setDisplayName("[AFK]" + ChatColor.RESET + p.getDisplayName());
-		p.setPlayerListName(p.getDisplayName());
-		StockInt.afkListName.add(p.getName());
-	}
-
-	public void noLongerAFKLevel(Player p) {
-		long afktime = tempData.getLong("afk_time." + p.getName());
-		long h = afktime / 3600;
-		long m = (afktime % 3600) / 60;
-		long s = (afktime % 3600) % 60;
-		String sh = h + "h";
-		String sm = m + "m";
-		String ss = s + "s";
-		if (h == 0)
-			sh = "";
-		if (m == 0)
-			sm = "";
-		if (s == 0)
-			ss = "";
-		StockInt.afkListName.remove(p.getName());
-		p.setDisplayName(rankColor(Rank.getRank(p)) + p.getName());
-		p.setPlayerListName(p.getDisplayName());
-		try {
-			tempData.set("afk_level." + p.getName(), 0);
-			tempData.set("afk_time." + p.getName(), 0);
-			tempData.save(tempFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-		}
-		Bukkit.broadcastMessage(p.getDisplayName() + ChatColor.WHITE + " is no longer " + ChatColor.BOLD + "AFK"
-				+ ChatColor.RESET + ". " + ChatColor.YELLOW + ChatColor.ITALIC + "(" + sh + sm + ss + ")");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -3364,26 +3280,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 		} else {
 			return;
-		}
-		if (StockInt.afkListName.contains(playerName)) {
-			File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
-			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-			try {
-				tempData.set("afk_level." + playerName, -1);
-				tempData.save(tempFile);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-			}
-		}
-		File tempFile = new File(getDataFolder() + File.separator + "temp.yml");
-		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-		try {
-			tempData.set("afk_level." + playerName, 0);
-			tempData.save(tempFile);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
 		}
 	}
 

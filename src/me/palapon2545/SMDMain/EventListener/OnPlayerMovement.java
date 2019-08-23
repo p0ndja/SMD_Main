@@ -24,7 +24,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.inventory.ItemStack;
 
+import me.palapon2545.SMDMain.Core.AFK;
 import me.palapon2545.SMDMain.Function.ActionBarAPI;
 import me.palapon2545.SMDMain.Function.Blockto113;
 import me.palapon2545.SMDMain.Library.Prefix;
@@ -42,13 +44,8 @@ public class OnPlayerMovement implements Listener {
 
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (StockInt.pleaseDropItemBeforeChat.contains(event.getPlayer().getName())) {
-			event.getPlayer().sendMessage("You're now able to play server!");
-			StockInt.pleaseDropItemBeforeChat.remove(event.getPlayer().getName());
-		}
 		if (StockInt.blockLogin.contains(event.getPlayer().getName()))
 			event.setCancelled(true);
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -61,11 +58,11 @@ public class OnPlayerMovement implements Listener {
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
+
+		if (event.getPlayer().isGliding())
+			event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(0.66f));
 		
-		if(event.getPlayer().isGliding()) {
-            event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(0.7f));
-        }
-		
+
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
@@ -81,27 +78,8 @@ public class OnPlayerMovement implements Listener {
 			event.setCancelled(true);
 		}
 
-		if (StockInt.afkListName.contains(playerName)) {
-			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
-			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-			try {
-				tempData.set("afk_level." + playerName, -1);
-				tempData.save(tempFile);
-				pl.noLongerAFKLevel(player);
-			} catch (IOException e) {
-				e.printStackTrace();
-				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-			}
-		}
-		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
-		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-		try {
-			tempData.set("afk_level." + playerName, 0);
-			tempData.save(tempFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-		}
+		AFK.noLongerAFK(player);
+
 	}
 
 	@EventHandler
@@ -124,26 +102,9 @@ public class OnPlayerMovement implements Listener {
 		if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
 		}
-		if (StockInt.afkListName.contains(playerName)) {
-			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
-			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-			try {
-				tempData.set("afk_level." + playerName, -1);
-				tempData.save(tempFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-			}
-		}
-		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
-		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-		try {
-			tempData.set("afk_level." + playerName, 0);
-			tempData.save(tempFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-		}
+
+		AFK.noLongerAFK(player);
+
 	}
 
 	@EventHandler
@@ -161,26 +122,9 @@ public class OnPlayerMovement implements Listener {
 			event.setCancelled(true);
 			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 		}
-		if (StockInt.afkListName.contains(playerName)) {
-			File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
-			FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-			try {
-				tempData.set("afk_level." + playerName, -1);
-				tempData.save(tempFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-			}
-		}
-		File tempFile = new File(pl.getDataFolder() + File.separator + "temp.yml");
-		FileConfiguration tempData = YamlConfiguration.loadConfiguration(tempFile);
-		try {
-			tempData.set("afk_level." + playerName, 0);
-			tempData.save(tempFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-		}
+
+		AFK.noLongerAFK(player);
+
 	}
 
 }

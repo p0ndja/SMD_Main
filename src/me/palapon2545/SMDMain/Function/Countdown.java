@@ -89,19 +89,25 @@ public class Countdown {
 		else if (s == 1)
 			second = s + " second";
 
-		if (c == 5)
+		if (c == 5) {
 			second = ChatColor.AQUA + "" + s + " seconds";
-		else if (c == 4)
+			Function.pling(2);
+		} else if (c == 4) {
 			second = ChatColor.GREEN + "" + s + " seconds";
-		else if (c == 3)
+			Function.pling((float) 1.6);
+		} else if (c == 3) {
 			second = ChatColor.YELLOW + "" + s + " seconds";
-		else if (c == 2)
+			Function.pling((float) 1.2);
+		} else if (c == 2) {
 			second = ChatColor.GOLD + "" + s + " seconds";
-		else if (c == 1)
+			Function.pling((float) 1);
+		} else if (c == 1) {
 			second = ChatColor.RED + "" + s + " second";
-		else if (c == 0)
+			Function.pling((float) 0.5);
+		} else if (c == 0) {
 			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
-		else if (c == -1) {
+			Function.pling((float) 0);
+		} else if (c == -1) {
 			if (StockInt.BarAPIHook == true) {
 				try {
 					Thread.sleep(3000);

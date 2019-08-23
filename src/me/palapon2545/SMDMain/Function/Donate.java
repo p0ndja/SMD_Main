@@ -29,7 +29,6 @@ public class Donate {
 			player.sendMessage("We need more " + ChatColor.LIGHT_PURPLE + (b-a) + ChatColor.RESET + " to reach the target!"); 
 		}
 		
-		player.sendMessage("⬛⬛⬛⬛⬛⬛⬛⬛");
 		
 		player.sendMessage("*If you have donated, please send a transcript to Facebook: ");
 		player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Palapon Soontornpas" + ChatColor.ITALIC + "( https://m.me/p0ndja )"); 

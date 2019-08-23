@@ -18,7 +18,7 @@ public class OnInventoryEvent implements Listener {
 	public OnInventoryEvent(pluginMain pl) {
 		this.pl = pl;
 	}
-	
+	/*
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e) {
 		if (e.getInventory() instanceof EnchantingInventory) {
@@ -42,5 +42,6 @@ public class OnInventoryEvent implements Listener {
 			inv.setItem(1, i);
 		}
 	}
+	*/
 
 }

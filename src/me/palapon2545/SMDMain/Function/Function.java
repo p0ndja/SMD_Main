@@ -31,7 +31,7 @@ public class Function {
 		p.playSound(p.getLocation(), a, 1, 1);
 	}
 
-	public static void orb(Player p, int pitch) {
+	public static void orb(Player p, float pitch) {
 		Sound a;
 		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
 			a = Sound18to19.ORB_PICKUP.bukkitSound();
@@ -49,7 +49,7 @@ public class Function {
 		p.playSound(p.getLocation(), a, 1, 1);
 	}
 
-	public static void anvil(Player p, int pitch) {
+	public static void anvil(Player p, float pitch) {
 		Sound a;
 		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
 			a = Sound18to19.ANVIL_LAND.bukkitSound();
@@ -67,12 +67,22 @@ public class Function {
 		p.playSound(p.getLocation(), a, 1, 0);
 	}
 
-	public static void pling(Player p, int pitch) {
+	public static void pling(Player p, float pitch) {
 		Sound a;
 		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
 			a = Sound18to19.NOTE_PLING.bukkitSound();
 		else
 			a = Sound18to113.NOTE_PLING.bukkitSound();
+		p.playSound(p.getLocation(), a, 1, pitch);
+	}
+	
+	public static void pling(float pitch) {
+		Sound a;
+		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
+			a = Sound18to19.NOTE_PLING.bukkitSound();
+		else
+			a = Sound18to113.NOTE_PLING.bukkitSound();
+		for (Player p : Bukkit.getOnlinePlayers())
 		p.playSound(p.getLocation(), a, 1, pitch);
 	}
 

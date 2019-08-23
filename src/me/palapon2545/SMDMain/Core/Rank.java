@@ -26,6 +26,23 @@ public class Rank {
 	public static String Helper = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Helper" + ChatColor.WHITE;
 	public static String Default = ChatColor.BLUE + "";
 
+	public static String rankColor(String rank) {
+		if (rank.equalsIgnoreCase("owner"))
+			return Rank.Owner;
+		else if (rank.equalsIgnoreCase("admin"))
+			return Rank.Admin;
+		else if (rank.equalsIgnoreCase("staff"))
+			return Rank.Staff;
+		else if (rank.equalsIgnoreCase("builder"))
+			return Rank.Builder;
+		else if (rank.equalsIgnoreCase("vip"))
+			return Rank.Vip;
+		else if (rank.equalsIgnoreCase("helper"))
+			return Rank.Helper;
+		else
+			return Rank.Default;
+	}
+
 	public static int getPriority(String rank) {
 		rank.toLowerCase();
 		if (rank.equalsIgnoreCase("owner") || rank.equalsIgnoreCase("admin"))

@@ -1,6 +1,7 @@
 package me.palapon2545.SMDMain.Library;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -16,14 +17,15 @@ public class StockInt {
 	public static boolean privateServerPondJa = false;
 	public static int ServerVersion = 0;
 	
+	public static int timeToSetAFK = 600;
+	
 	public static long moneyDonated = 0;
 	public static long moneyTargeted = 1;
 	
 	public static List<String> blockLogin = new ArrayList<String>();
-	public static List<String> afkListName = new ArrayList<String>();
 	
-	public static List<String> pleaseDropItemBeforeChat = new ArrayList<String>();
-	
+	public static List<String> voteToRestart = new ArrayList<String>();
+			
 	public static String pluginDir = "plugins/PondJa-Core/";
 	
 	public static Material[] luckyClick_Simple = {Material.DIRT};

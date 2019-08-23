@@ -15,11 +15,10 @@ public class Mute {
 		if (list.contains(p.getName())) {
 			sendMessage(p);
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
-	
+
 	public static void setMute(Player p, boolean b) {
 		if (b) {
 			list.add(p.getName());
@@ -27,7 +26,7 @@ public class Mute {
 			list.remove(p.getName());
 		}
 	}
-	
+
 	public static void sendMessage(Player p) {
 		p.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.GRAY + "You have been muted.");
 		p.sendMessage(ChatColor.BLUE + "Chat> " + ChatColor.YELLOW + "Reason: " + ChatColor.GRAY + "*undefined*");

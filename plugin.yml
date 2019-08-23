@@ -1,6 +1,6 @@
 name: PondJa-Core
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.1.3
+version: 2.2.1_01_ElytraPatch
 description: "PondJaTH's first java bukkit plugin development."
 author: PondJaTH
 api-version: 1.14
@@ -15,6 +15,9 @@ commands:
  unloadchunk:
     description: Unload all no-player-inside chunk.
     usage: /unloadchunk
+ votetorestart:
+    description: Unload all no-player-inside chunk.
+    usage: /votetorestart
  top:
     description: Teleport you to top surface
     usage: /top

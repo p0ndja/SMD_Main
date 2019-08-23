@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import me.palapon2545.SMDMain.Core.AFK;
 import me.palapon2545.SMDMain.Core.Rank;
 import me.palapon2545.SMDMain.Function.Function;
 import me.palapon2545.SMDMain.Function.Sound18to113;
@@ -44,7 +45,8 @@ public class OnPlayerConnection implements Listener {
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		if (!f.exists() || !player.hasPlayedBefore()) {
 			try {
-				File userfiles = new File(StockInt.pluginDir + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
+				File userfiles = new File(
+						StockInt.pluginDir + File.separator + "/PlayerDatabase/" + playerName + "/HomeDatabase");
 				if (!userfiles.exists()) {
 					userfiles.mkdirs();
 				}
@@ -88,15 +90,13 @@ public class OnPlayerConnection implements Listener {
 			}
 		}
 		if (f.exists()) {
-			Boolean invi = playerData.getBoolean("Invisible");
-			if (invi) {
+			if (playerData.getBoolean("Invisible")) {
 				player.sendMessage(Prefix.server + "You're now " + ChatColor.AQUA + "invisible.");
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (p.hasPermission("main.seeinvisible") || p.isOp() || p.hasPermission("main.*")) {
-						p.showPlayer(player);
-					} else {
-						p.hidePlayer(player);
-					}
+					if (p.hasPermission("main.seeinvisible") || p.isOp() || p.hasPermission("main.*"))
+						p.showPlayer(this.pl, player);
+					else
+						p.hidePlayer(this.pl, player);
 				}
 			}
 			try {
@@ -139,7 +139,7 @@ public class OnPlayerConnection implements Listener {
 			event.setJoinMessage(Prefix.j + RankDisplay + playerName);
 
 		}
-		
+
 		String evs = pl.getConfig().getString("event.queuelist." + playerName);
 		if (evs == null || evs.isEmpty()) {
 			pl.getConfig().set("event.queuelist." + playerName, false);
@@ -176,14 +176,8 @@ public class OnPlayerConnection implements Listener {
 		player.sendMessage(ChatColor.BOLD + "SMDMain's Patch Version: " + version);
 		player.sendMessage("");
 
-		try {
-			tempData.createSection("afk_level");
-			tempData.set("afk_level." + playerName, 0);
-			tempData.save(tempFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-		}
+		AFK.AFKCount.put(playerName, (long) 0);
+
 
 		String spawn = pl.getConfig().getString("spawn");
 		if (spawn != null && StockInt.spawnOnJoin == true) {
@@ -207,13 +201,24 @@ public class OnPlayerConnection implements Listener {
 			Function.egg(player, 0);
 		}
 
-		//StockInt.pleaseDropItemBeforeChat.add(playerName);
-
+		if (Bukkit.getServer().getOnlinePlayers().size() == 1) {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill pause");
+			player.sendMessage("");
+			player.sendMessage("Because you're the first player since last player offline.");
+			player.sendMessage("The server need to load all chunks data to make your gameplay smooth.");
+			player.sendMessage(
+					"This will cause " + ChatColor.GOLD + ChatColor.BOLD + "A LAG" + ChatColor.RESET + " for a while");
+			player.sendMessage("");
+		}
 	}
 
 	@EventHandler
 	public void onPlayerLeft(PlayerQuitEvent event) {
+		
 		Player player = event.getPlayer();
+		
+		if (StockInt.voteToRestart.contains(player.getName())) StockInt.voteToRestart.remove(player.getName());
+		
 		String playerName = player.getName();
 		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
@@ -267,33 +272,15 @@ public class OnPlayerConnection implements Listener {
 			StockInt.blockLogin.remove(playerName);
 			player.setGameMode(GameMode.SPECTATOR);
 		}
-
-		if (StockInt.afkListName.contains(playerName)) {
-			try {
-				tempData.set("afk_level." + playerName, -1);
-				tempData.save(tempFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-			}
-		} else {
-			try {
-				tempData.set("afk_level." + playerName, 0);
-				tempData.save(tempFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-				Bukkit.broadcastMessage(Prefix.database + Prefix.database_error);
-			}
+		
+		if (AFK.AFKListName.contains(playerName)) {
+			AFK.noLongerAFK(player);	
 		}
-
-		int n = Bukkit.getServer().getOnlinePlayers().size();
-		if (n == 0 || n < 0)
+		
+		if (Bukkit.getServer().getOnlinePlayers().size() <= 1) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
-		else
-			return;
-
-		if (StockInt.pleaseDropItemBeforeChat.contains(playerName))
-			StockInt.pleaseDropItemBeforeChat.remove(playerName);
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill pause");
+		}
 	}
 
 }

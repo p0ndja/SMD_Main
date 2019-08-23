@@ -9,6 +9,8 @@ import me.palapon2545.SMDMain.Library.Prefix;
 
 public class AutoSaveWorld {
 	public static boolean save() {
+		return false;
+		/*
 		int player = Bukkit.getServer().getOnlinePlayers().size();
 		if (player > 0) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
@@ -20,6 +22,7 @@ public class AutoSaveWorld {
 			}
 		}
 		return false;
+		*/
 	}
 	
 }
