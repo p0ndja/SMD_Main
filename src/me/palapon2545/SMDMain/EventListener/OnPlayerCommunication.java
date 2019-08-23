@@ -64,7 +64,6 @@ public class OnPlayerCommunication implements Listener {
 				p.playSound(p.getLocation(), a, (float) 0.5, 1);
 			}
 			String RankDisplay;
-			ChatColor MessageColor = ChatColor.WHITE;
 
 			if (rank.equalsIgnoreCase("default"))
 				RankDisplay = Rank.Default;
@@ -83,7 +82,7 @@ public class OnPlayerCommunication implements Listener {
 			else
 				RankDisplay = Rank.Default;
 
-			event.setFormat(RankDisplay + playerName + MessageColor + message1);
+			//event.setFormat(RankDisplay + playerName + ChatColor.WHITE + message1);
 		}
 
 		AFK.noLongerAFK(player);

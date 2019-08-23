@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Library.StockInt;
 
 public class AFK {
@@ -25,7 +26,9 @@ public class AFK {
 			if (AFKListName.contains(p.getName()) && level == -1)
 				noLongerAFK(p);
 			AFKCount.put(p.getName(), level + 1);
-			if (level >= StockInt.timeToSetAFK + 1 && !AFKListName.contains(p.getName()))
+			if (level >= StockInt.timeToSetAFK + 1 && AFKListName.contains(p.getName()))
+				p.setPlayerListName("[AFK - " + calculateAFK(p) + "]" + p.getDisplayName() + ChatColor.WHITE + " [" + Ping.pingWithColor(p) + ChatColor.WHITE + "]");
+			else if (level >= StockInt.timeToSetAFK + 1 && !AFKListName.contains(p.getName()))
 				setAFK(p);
 		}
 	}
@@ -33,32 +36,34 @@ public class AFK {
 	public static void setAFK(Player p) {
 		Bukkit.broadcastMessage(
 				p.getDisplayName() + ChatColor.WHITE + " is now " + ChatColor.BOLD + "AFK" + ChatColor.RESET + ".");
-		p.setDisplayName("[AFK]" + ChatColor.RESET + p.getDisplayName());
-		p.setPlayerListName(p.getDisplayName());
 		AFKListName.add(p.getName());
+	}
+	
+	public static String calculateAFK(Player p) {
+		long afktime = AFKCount.get(p.getName()) - StockInt.timeToSetAFK;
+		long h = afktime / 3600;
+		long m = (afktime % 3600) / 60;
+		long s = (afktime % 3600) % 60;
+		String sh = h + "h";
+		String sm = m + "m";
+		String ss = s + "s";
+		if (h == 0)
+			sh = "";
+		if (m == 0)
+			sm = "";
+		if (s == 0)
+			ss = "";
+		return sh + sm + ss ;
 	}
 
 	public static void noLongerAFK(Player p) {
 		if (AFKListName.contains(p.getName())) {
-			long afktime = AFKCount.get(p.getName()) - StockInt.timeToSetAFK;
-			long h = afktime / 3600;
-			long m = (afktime % 3600) / 60;
-			long s = (afktime % 3600) % 60;
-			String sh = h + "h";
-			String sm = m + "m";
-			String ss = s + "s";
-			if (h == 0)
-				sh = "";
-			if (m == 0)
-				sm = "";
-			if (s == 0)
-				ss = "";
 			AFKListName.remove(p.getName());
-			p.setDisplayName(Rank.rankColor(Rank.getRank(p)) + p.getName());
-			p.setPlayerListName(p.getDisplayName());
-			AFKCount.put(p.getName(), (long) 0);
+			Rank.setDisplay(p);
 			Bukkit.broadcastMessage(p.getDisplayName() + ChatColor.WHITE + " is no longer " + ChatColor.BOLD + "AFK"
-					+ ChatColor.RESET + ". " + ChatColor.YELLOW + ChatColor.ITALIC + "(" + sh + sm + ss + ")");
+					+ ChatColor.RESET + ". " + ChatColor.YELLOW + ChatColor.ITALIC + "(" + calculateAFK(p) + ")");
+			AFKCount.put(p.getName(), (long) 0);
+
 		} else {
 			AFKCount.put(p.getName(), (long) 0);
 		}

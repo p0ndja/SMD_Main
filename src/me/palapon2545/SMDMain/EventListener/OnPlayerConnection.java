@@ -107,7 +107,6 @@ public class OnPlayerConnection implements Listener {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String rank = playerData.getString("rank");
 			int countwarn = playerData.getInt("warn");
 			if (countwarn > 0) {
 				player.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "ALERT!" + ChatColor.RED
@@ -116,27 +115,8 @@ public class OnPlayerConnection implements Listener {
 						+ ChatColor.BOLD + "BANNED.");
 			}
 
-			String RankDisplay;
-			if (rank.equalsIgnoreCase("default")) {
-				RankDisplay = Rank.Default;
-			} else if (rank.equalsIgnoreCase("staff")) {
-				RankDisplay = Rank.Staff;
-			} else if (rank.equalsIgnoreCase("vip")) {
-				RankDisplay = Rank.Vip;
-			} else if (rank.equalsIgnoreCase("helper")) {
-				RankDisplay = Rank.Helper;
-			} else if (rank.equalsIgnoreCase("admin")) {
-				RankDisplay = Rank.Admin;
-			} else if (rank.equalsIgnoreCase("owner")) {
-				RankDisplay = Rank.Owner;
-			} else if (rank.equalsIgnoreCase("builder")) {
-				RankDisplay = Rank.Builder;
-			} else {
-				RankDisplay = Rank.Default;
-			}
-			player.setDisplayName(RankDisplay + playerName);
-			player.setPlayerListName(RankDisplay + playerName);
-			event.setJoinMessage(Prefix.j + RankDisplay + playerName);
+			Rank.setDisplay(player);
+			event.setJoinMessage(Prefix.j + player.getDisplayName());
 
 		}
 
@@ -223,26 +203,8 @@ public class OnPlayerConnection implements Listener {
 		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-		String rank = playerData.getString("rank");
-		String RankDisplay;
-		if (rank.equalsIgnoreCase("default")) {
-			RankDisplay = Rank.Default;
-		} else if (rank.equalsIgnoreCase("staff")) {
-			RankDisplay = Rank.Staff;
-		} else if (rank.equalsIgnoreCase("vip")) {
-			RankDisplay = Rank.Vip;
-		} else if (rank.equalsIgnoreCase("helper")) {
-			RankDisplay = Rank.Helper;
-		} else if (rank.equalsIgnoreCase("admin")) {
-			RankDisplay = Rank.Admin;
-		} else if (rank.equalsIgnoreCase("owner")) {
-			RankDisplay = Rank.Owner;
-		} else if (rank.equalsIgnoreCase("builder")) {
-			RankDisplay = Rank.Builder;
-		} else {
-			RankDisplay = Rank.Default;
-		}
-		event.setQuitMessage(Prefix.l + RankDisplay + playerName);
+		
+		event.setQuitMessage(Prefix.l + player.getDisplayName());
 
 		int g = 0;
 		GameMode gm = player.getGameMode();

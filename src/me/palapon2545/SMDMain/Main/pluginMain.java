@@ -1477,57 +1477,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 					if (args.length == 2) {
 						if (Bukkit.getServer().getPlayer(args[1]) != null) {
 							Player targetPlayer = player.getServer().getPlayer(args[1]);
-							String targetPlayerName = targetPlayer.getName();
-							File userdata1 = new File(getDataFolder(),
-									File.separator + "PlayerDatabase/" + targetPlayerName);
-							File f1 = new File(userdata1, File.separator + "config.yml");
-							FileConfiguration playerData1 = YamlConfiguration.loadConfiguration(f1);
-							String targetRank;
-							if (args[0].equalsIgnoreCase("default")) {
-								player.setDisplayName(Rank.Default + targetPlayerName);
-								player.setPlayerListName(Rank.Default + targetPlayerName);
-								targetRank = "default";
-							} else if (args[0].equalsIgnoreCase("vip")) {
-								targetRank = "vip";
-								player.setDisplayName(Rank.Vip + targetPlayerName);
-								player.setPlayerListName(Rank.Vip + targetPlayerName);
-							} else if (args[0].equalsIgnoreCase("helper")) {
-								targetRank = "helper";
-								player.setDisplayName(Rank.Helper + targetPlayerName);
-								player.setPlayerListName(Rank.Helper + targetPlayerName);
-							} else if (args[0].equalsIgnoreCase("staff")) {
-								targetRank = "staff";
-								player.setDisplayName(Rank.Staff + targetPlayerName);
-								player.setPlayerListName(Rank.Staff + targetPlayerName);
-							} else if (args[0].equalsIgnoreCase("builder")) {
-								targetRank = "builder";
-								player.setDisplayName(Rank.Builder + targetPlayerName);
-								player.setPlayerListName(Rank.Builder + targetPlayerName);
-							} else if (args[0].equalsIgnoreCase("admin")) {
-								targetRank = "admin";
-								player.setDisplayName(Rank.Admin + targetPlayerName);
-								player.setPlayerListName(Rank.Admin + targetPlayerName);
-							} else if (args[0].equalsIgnoreCase("owner")) {
-								targetRank = "owner";
-								player.setDisplayName(Rank.Owner + targetPlayerName);
-								player.setPlayerListName(Rank.Owner + targetPlayerName);
-							} else {
+
+							if (!Rank.setRank(targetPlayer, args[0])) { // Task unsuccess
 								player.sendMessage(Prefix.database + Prefix.type
-										+ "/rank [default|vip|helper|staff|builder|admin|owner] " + targetPlayerName);
+										+ "/rank [default|vip|helper|staff|builder|admin|owner] "
+										+ targetPlayer.getName());
 								Function.no(player);
-								return true;
 							}
-							try {
-								playerData1.set("rank", targetRank);
-								playerData1.save(f1);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							for (Player p : Bukkit.getOnlinePlayers())
-								Function.yes(p);
-							Bukkit.broadcastMessage(Prefix.database + "Player " + ChatColor.YELLOW + targetPlayerName
-									+ "'s rank " + ChatColor.GRAY + "has been updated to " + ChatColor.BOLD
-									+ targetRank.toUpperCase());
+
 						} else {
 							player.sendMessage(Prefix.server + ChatColor.RED + "Player " + ChatColor.YELLOW + args[1]
 									+ ChatColor.GRAY + " not found.");
@@ -2561,7 +2518,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					AFK.noLongerAFK(player);
 				} else {
 					AFK.setAFK(player);
-					AFK.AFKCount.put(playerName, (long) 601);
+					AFK.AFKCount.put(playerName, (long) 600);
 				}
 			}
 
@@ -2835,63 +2792,20 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (getConfig().getString("redeem.code") == null)
 			getConfig().set("redeem.code", "none");
 
-		if (getConfig().getBoolean("enable_private_server_model_for_developer_server_only") == true)
-			StockInt.privateServerPondJa = true;
-		else
-			getConfig().set("enable_private_server_model_for_developer_server_only", false);
-		if (getConfig().getBoolean("spawn_on_join"))
-			StockInt.spawnOnJoin = true;
-		else
-			getConfig().set("spawn_on_join", false);
-
-		if (getConfig().getBoolean("login_feature"))
-			StockInt.LoginFeature = true;
-		else
-			getConfig().set("login_feature", false);
+		StockInt.privateServerPondJa = getConfig().getBoolean("enable_private_server_model_for_developer_server_only");
+		StockInt.spawnOnJoin = getConfig().getBoolean("spawn_on_join");
+		StockInt.LoginFeature = getConfig().getBoolean("login_feature");
+		StockInt.moneyDonated = getConfig().getLong("donate.get");
+		StockInt.moneyTargeted = getConfig().getLong("donate.target");
+		StockInt.CountdownStartLength = getConfig().getLong("countdown_startLength");
+		StockInt.CountdownLength = getConfig().getLong("countdown");
+		if (getConfig().getString("countdown_message") != null)
+			StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
 
 		for (Player player1 : Bukkit.getOnlinePlayers()) {
 			Function.orb(player1);
-			String playerName = player1.getName();
-			File userdata = new File(getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
-			File f = new File(userdata, File.separator + "config.yml");
-			FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
-			String rank = playerData.getString("rank");
-			String RankDisplay;
-
-			if (rank.equalsIgnoreCase("default"))
-				RankDisplay = Rank.Default;
-			else if (rank.equalsIgnoreCase("staff"))
-				RankDisplay = Rank.Staff;
-			else if (rank.equalsIgnoreCase("vip"))
-				RankDisplay = Rank.Vip;
-			else if (rank.equalsIgnoreCase("helper"))
-				RankDisplay = Rank.Helper;
-			else if (rank.equalsIgnoreCase("admin"))
-				RankDisplay = Rank.Admin;
-			else if (rank.equalsIgnoreCase("owner"))
-				RankDisplay = Rank.Owner;
-			else if (rank.equalsIgnoreCase("builder"))
-				RankDisplay = Rank.Builder;
-			else
-				RankDisplay = Rank.Default;
-
-			player1.setDisplayName(RankDisplay + playerName);
-			player1.setPlayerListName(RankDisplay + playerName);
+			Rank.setDisplay(player1);
 		}
-		long c = getConfig().getLong("countdown");
-		long cs = getConfig().getLong("countdown_startLength");
-		long dg = getConfig().getLong("donate.get");
-		long dt = getConfig().getLong("donate.target");
-		if (dg != 0)
-			StockInt.moneyDonated = dg;
-		if (dt != 0)
-			StockInt.moneyTargeted = dt;
-		if (cs != 0)
-			StockInt.CountdownStartLength = cs;
-		if (c != 0)
-			StockInt.CountdownLength = c;
-		if (getConfig().getString("countdown_message") != null)
-			StockInt.CountdownMessage = getConfig().getString("countdown_message").replaceAll("&", Prefix.Ampersand);
 
 		regEvents();
 		saveConfig();
@@ -2904,7 +2818,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				isStandOnPlate();
 
 				if (StockInt.privateServerPondJa) {
-					if (Bukkit.getWorld("world").getTime() - 20 < 0) {
+					if (Bukkit.getWorld("world").getTime() < 20) { //First second of the day
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 1200, 1));
 							p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 600, 0));
@@ -2922,26 +2836,15 @@ public class pluginMain extends JavaPlugin implements Listener {
 		s.scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
-				ChatColor color;
 				Login.loginTask();
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					int ping = Ping.get(p);
-					if (ping < 31)
-						color = ChatColor.AQUA;
-					else if (ping > 30 && ping < 81)
-						color = ChatColor.GREEN;
-					else if (ping > 80 && ping < 151)
-						color = ChatColor.GOLD;
-					else if (ping > 150 && ping < 501)
-						color = ChatColor.RED;
-					else if (ping > 500)
-						color = ChatColor.DARK_RED;
-					else
-						color = ChatColor.WHITE;
-					p.setPlayerListName(
-							p.getDisplayName() + ChatColor.WHITE + " [" + color + ping + ChatColor.WHITE + "]");
-				}
 
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					String afk = "";
+					if (AFK.AFKListName.contains(p.getName()))
+						afk = "[AFK - " + AFK.calculateAFK(p) + "]";
+					p.setPlayerListName(afk + p.getDisplayName() + ChatColor.WHITE + " [" + Ping.pingWithColor(p)
+							+ ChatColor.WHITE + "]");
+				}
 			}
 		}, 0L, 100L);
 		/*
@@ -2965,7 +2868,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 		if (StockInt.ServerVersion == 0) {
 			System.out.println(
 					"\n\n================[PondJa-Core]=======================\nThis server isn't match with minimum requirement\nRequire: Minecraft Server 1.8 and newer.\n================================================\n\n");
-			Bukkit.getServer().getPluginManager().disablePlugin(this);
+			pm.disablePlugin(this);
 		}
 
 	}
