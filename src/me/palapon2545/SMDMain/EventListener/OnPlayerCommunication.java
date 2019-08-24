@@ -41,7 +41,7 @@ public class OnPlayerCommunication implements Listener {
 		String message1 = " " + messagem;
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String rank = playerData.getString("rank");
@@ -94,7 +94,7 @@ public class OnPlayerCommunication implements Listener {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		//Bukkit.broadcastMessage(" " + playerName + " run_command " + event.getMessage());
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");

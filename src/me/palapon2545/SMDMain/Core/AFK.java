@@ -12,8 +12,8 @@ import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Library.StockInt;
 
 public class AFK {
-	
-	public static HashMap<String,Long> AFKCount = new HashMap<String,Long>();
+
+	public static HashMap<String, Long> AFKCount = new HashMap<String, Long>();
 	public static List<String> AFKListName = new ArrayList<String>();
 
 	public static void createAFKData(Player p) {
@@ -27,7 +27,8 @@ public class AFK {
 				noLongerAFK(p);
 			AFKCount.put(p.getName(), level + 1);
 			if (level >= StockInt.timeToSetAFK + 1 && AFKListName.contains(p.getName()))
-				p.setPlayerListName("[AFK - " + calculateAFK(p) + "]" + p.getDisplayName() + ChatColor.WHITE + " [" + Ping.pingWithColor(p) + ChatColor.WHITE + "]");
+				p.setPlayerListName("[AFK - " + calculateAFK(p) + "]" + p.getDisplayName() + ChatColor.WHITE + " ["
+						+ Ping.pingWithColor(p) + ChatColor.WHITE + "]");
 			else if (level >= StockInt.timeToSetAFK + 1 && !AFKListName.contains(p.getName()))
 				setAFK(p);
 		}
@@ -38,22 +39,25 @@ public class AFK {
 				p.getDisplayName() + ChatColor.WHITE + " is now " + ChatColor.BOLD + "AFK" + ChatColor.RESET + ".");
 		AFKListName.add(p.getName());
 	}
-	
+
 	public static String calculateAFK(Player p) {
 		long afktime = AFKCount.get(p.getName()) - StockInt.timeToSetAFK;
-		long h = afktime / 3600;
-		long m = (afktime % 3600) / 60;
-		long s = (afktime % 3600) % 60;
-		String sh = h + "h";
-		String sm = m + "m";
-		String ss = s + "s";
-		if (h == 0)
-			sh = "";
-		if (m == 0)
-			sm = "";
-		if (s == 0)
-			ss = "";
-		return sh + sm + ss ;
+		if (afktime > 0) {
+			long h = afktime / 3600;
+			long m = (afktime % 3600) / 60;
+			long s = (afktime % 3600) % 60;
+			String sh = h + "h";
+			String sm = m + "m";
+			String ss = s + "s";
+			if (h == 0)
+				sh = "";
+			if (m == 0)
+				sm = "";
+			if (s == 0)
+				ss = "";
+			return sh + sm + ss;
+		}
+		return "";
 	}
 
 	public static void noLongerAFK(Player p) {

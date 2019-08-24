@@ -10,13 +10,13 @@ public class Donate {
 	public static long money;
 	
 	public static void displayMessage(Player player) {
-		player.sendMessage("Thank you for " + ChatColor.GOLD + ChatColor.BOLD + "participating" + ChatColor.RESET + "on " + ChatColor.GREEN + "donating :)");
+		player.sendMessage("Thank you for " + ChatColor.GOLD + ChatColor.BOLD + "participating" + ChatColor.RESET + " on " + ChatColor.GREEN + "donating :)");
 		player.sendMessage("I'm feel glad on your kindness " + ChatColor.LIGHT_PURPLE + "<3");
 		player.sendMessage("");
 		player.sendMessage("You can donate to support this server by:");
-		player.sendMessage(ChatColor.GOLD + "-" + ChatColor.WHITE + ChatColor.BOLD + " True" + ChatColor.GOLD + ChatColor.BOLD + "Wallet" + ChatColor.RESET + ": " + ChatColor.AQUA + "090-8508007");
-		player.sendMessage(ChatColor.GOLD + "-" + ChatColor.WHITE + ChatColor.BOLD + " Prompt" + ChatColor.BLUE + ChatColor.BOLD + "Pay" + ChatColor.RESET + ": " + ChatColor.AQUA + "090-8508007");
-		player.sendMessage(ChatColor.GOLD + "-" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + " SCB Bank" + ChatColor.RESET + ": " + ChatColor.AQUA + "551-442288-3 " + ChatColor.WHITE + "(นายพลภณ สุนทรภาส)");
+		player.sendMessage(ChatColor.GOLD + "-" + ChatColor.WHITE + ChatColor.BOLD + " True" + ChatColor.GOLD + ChatColor.BOLD + "Wallet" + ChatColor.RESET + ": " + ChatColor.GREEN + "090-8508007");
+		player.sendMessage(ChatColor.GOLD + "-" + ChatColor.WHITE + ChatColor.BOLD + " Prompt" + ChatColor.BLUE + ChatColor.BOLD + "Pay" + ChatColor.RESET + ": " + ChatColor.GREEN + "090-8508007");
+		player.sendMessage(ChatColor.GOLD + "-" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + " SCB Bank" + ChatColor.RESET + ": " + ChatColor.AQUA + "551-442288-3 " + ChatColor.GREEN + "(นายพลภณ สุนทรภาส)");
 		player.sendMessage("");
 		
 		long a = StockInt.moneyDonated;

@@ -169,11 +169,11 @@ commands:
  broadcast:
     description: Broadcast message
     usage: /broadcast [text]
-    aliases: [bc]
+    aliases: [b]
  publish:
     description: Publish message
     usage: /publish [text]
-    aliases: [pb]
+    aliases: [p]
  rank:
     description: Rank
     usage: /rank [member|vip|helper|staff|builder|admin|owner] [player]

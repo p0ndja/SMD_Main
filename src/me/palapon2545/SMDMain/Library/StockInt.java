@@ -25,8 +25,10 @@ public class StockInt {
 	public static List<String> blockLogin = new ArrayList<String>();
 	
 	public static List<String> voteToRestart = new ArrayList<String>();
+	
+	public static String pluginName;
 			
-	public static String pluginDir = "plugins/PondJa-Core/";
+	public static String pluginDir = "plugins/" + pluginName + "/";
 	
 	public static Material[] luckyClick_Simple = {Material.DIRT};
 	public static Material[] luckyClick_High = {Material.DIAMOND, Material.COBBLESTONE};

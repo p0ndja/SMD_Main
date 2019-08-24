@@ -25,6 +25,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
+import me.palapon2545.SMDMain.Core.PlayerDatabase;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;
 import net.md_5.bungee.api.ChatColor;
@@ -61,10 +62,7 @@ public class OnEntityLivingEvent implements Listener {
 		//Bukkit.broadcastMessage("entityDamage, Type:" + e.getEntity().getName() + " ,Cause:" + e.getCause() + " ,Damage:" + e.getDamage());
 		if (e.getEntity() instanceof Player) {
 			Player p = (Player) e.getEntity();
-			FileConfiguration playerData = YamlConfiguration.loadConfiguration(
-					new File(new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + p.getName()),
-							File.separator + "config.yml"));
-			if (playerData.getBoolean("god"))
+			if ((boolean) PlayerDatabase.get(p, "god"))
 				e.setCancelled(true);
 
 		}

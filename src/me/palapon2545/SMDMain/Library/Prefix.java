@@ -19,7 +19,7 @@ public class Prefix {
 	public static String nom = ChatColor.RED + "You don't have enough money.";
 	public static String non = ChatColor.GRAY + " is not number." + ChatColor.DARK_GRAY + ChatColor.ITALIC +" [Not support decimal]";
 	public static String database_error = ChatColor.RED + "There are some errors that interrupt database.";
-	public static String database = ChatColor.GOLD + "Database> " + ChatColor.WHITE;
+	public static String database = ChatColor.GOLD + "Database> " + ChatColor.GRAY;
 	public static String cd = ChatColor.AQUA + "" + ChatColor.BOLD + "[Countdown]: " + ChatColor.WHITE;
 	public static String tc = ChatColor.AQUA + "" + ChatColor.BOLD + " ..Teleporting.. ";
 	public static String tcc = ChatColor.DARK_RED + "" + ChatColor.BOLD + " Teleportation cancelled! ";
@@ -27,6 +27,6 @@ public class Prefix {
 	public static String Ampersand = Character.toString((char) 0x00A7);
 	
 	public static void sendErrorMessage(String java, String function, String player, String reason) {
-		Bukkit.broadcastMessage(database + "[" + java + ".java] Unable to " + ChatColor.UNDERLINE + function + ChatColor.RESET + " for " + ChatColor.YELLOW + ChatColor.BOLD + player + ChatColor.RESET + ", " + reason);
+		Bukkit.broadcastMessage(database + ChatColor.RESET + "[" + java + ".java] Unable to " + ChatColor.UNDERLINE + function + ChatColor.RESET + " for " + ChatColor.YELLOW + ChatColor.BOLD + player + ChatColor.RESET + ", " + reason);
 	}
 }

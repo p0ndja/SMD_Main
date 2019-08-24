@@ -60,8 +60,13 @@ public class Rank {
 		PlayerDatabase.set(p, "rank", rank);
 		for (Player po : Bukkit.getOnlinePlayers())
 			Function.yes(po);
+		
+		String prefix = prefix(rank);
+		if (rank == "default")
+			prefix = "DEFAULT";
 		Bukkit.broadcastMessage(Prefix.database + "Player " + ChatColor.YELLOW + p.getName() + "'s rank "
-				+ ChatColor.GRAY + "has been updated to " + prefix(rank));
+				+ ChatColor.GRAY + "has been updated to " + prefix);
+		
 		setDisplay(p);
 
 		return true;

@@ -65,7 +65,7 @@ public class OnPlayerMovement implements Listener {
 
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
@@ -91,7 +91,7 @@ public class OnPlayerMovement implements Listener {
 	public void onPlayerBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
@@ -111,7 +111,7 @@ public class OnPlayerMovement implements Listener {
 	public void onPlayerPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		File userdata = new File(pl.getDataFolder(), File.separator + "PlayerDatabase/" + playerName);
+		File userdata = new File(StockInt.pluginDir, File.separator + "PlayerDatabase/" + playerName);
 		File f = new File(userdata, File.separator + "config.yml");
 		FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
 		String freeze = playerData.getString("freeze");
