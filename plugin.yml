@@ -1,6 +1,6 @@
 name: PondJa-Core
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.2.2
+version: 2.2.3
 description: "PondJaTH's first java bukkit plugin development."
 author: PondJaTH
 api-version: 1.14

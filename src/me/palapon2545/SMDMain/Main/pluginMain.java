@@ -54,6 +54,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import me.palapon2545.SMDMain.Core.AFK;
 import me.palapon2545.SMDMain.Core.Login;
+import me.palapon2545.SMDMain.Core.Money;
 import me.palapon2545.SMDMain.Core.PlayerDatabase;
 import me.palapon2545.SMDMain.Core.Rank;
 import me.palapon2545.SMDMain.EventListener.OnEntityLivingEvent;
@@ -69,7 +70,6 @@ import me.palapon2545.SMDMain.Function.Countdown;
 import me.palapon2545.SMDMain.Function.Donate;
 import me.palapon2545.SMDMain.Function.FreeItem;
 import me.palapon2545.SMDMain.Function.Function;
-import me.palapon2545.SMDMain.Function.Money;
 import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Function.Shop;
 import me.palapon2545.SMDMain.Function.Effect18to113;
@@ -1866,7 +1866,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					|| CommandLabel.equalsIgnoreCase(StockInt.pluginName + ":money")) {
 				long money = playerData.getLong("money");
 				String coin = " Coins";
-				if (money == 1) {
+				if (money <= 1) {
 					coin = " Coin";
 				}
 				player.sendMessage(
@@ -1922,20 +1922,38 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 			if (CommandLabel.equalsIgnoreCase("paymoney")
 					|| CommandLabel.equalsIgnoreCase(StockInt.pluginName + ":paymoney")) {
-				if (args.length == 2) {
-					Player receiver = Bukkit.getPlayer(args[0]);
-					if (receiver != null) {
-						if (isNumeric(args[1]) == true) {
-							long amount = Long.parseLong(args[1]);
-							Money.tranfer(player, receiver, amount);
-						} else {
-							player.sendMessage(Prefix.server + ChatColor.YELLOW + args[1] + Prefix.non);
-							Function.no(player);
-						}
+				if (args.length == 2 && (Bukkit.getPlayer(args[0]) != null) && isNumeric(args[1])
+						&& Long.parseLong(args[1]) > 0) {
+					if (Money.tranfer(player, Bukkit.getPlayer(args[0]), Long.parseLong(args[1]))) {
+						String coin = " Coins ";
+						if (Long.parseLong(args[1]) <= 1)
+							coin = " Coin ";
+						Player rlayer = Bukkit.getPlayer(args[0]);
+						player.sendMessage(Prefix.server + ChatColor.GRAY + "You paid " + ChatColor.GREEN + args[1]
+								+ coin + ChatColor.GRAY + "to " + ChatColor.YELLOW + rlayer.getDisplayName());
+						rlayer.sendMessage(Prefix.server + ChatColor.GRAY + "You received " + ChatColor.GREEN + args[1]
+								+ coin + ChatColor.GRAY + "from " + ChatColor.YELLOW + player.getDisplayName());
+						Function.yes(player);
+						Function.yes(rlayer);
+					} else {
+						player.sendMessage(Prefix.server + Prefix.nom);
+						Function.no(player);
 					}
 				} else {
-					player.sendMessage(Prefix.server + Prefix.type + "/paymoney [player] [amount]");
-					Function.no(player);
+					if ((Bukkit.getPlayer(args[0]) == null)) {
+						player.sendMessage(Prefix.database + "Player " + ChatColor.YELLOW + args[0] + ChatColor.GRAY
+								+ " not found.");
+						Function.no(player);
+					} else if (!isNumeric(args[1])) {
+						player.sendMessage(Prefix.server + Prefix.non);
+						Function.no(player);
+					} else if (Long.parseLong(args[1]) <= 0) {
+						player.sendMessage(Prefix.server + Prefix.pm0);
+						Function.no(player);
+					} else {
+						player.sendMessage(Prefix.server + Prefix.type + "/paymoney [player] [amount]");
+						Function.no(player);
+					}
 				}
 			}
 			if (CommandLabel.equalsIgnoreCase("register")
@@ -2553,7 +2571,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-				
+				player.sendMessage("" + player.getLocation().getChunk().isSlimeChunk());
 			}
 
 			if (CommandLabel.equalsIgnoreCase("afk")) {
@@ -2900,8 +2918,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 		 */
 		String version = getDescription().getVersion();
 
-		StockInt.pluginName = getDescription().getName();
-
 		Bukkit.broadcastMessage(
 				Prefix.server + StockInt.pluginName + " System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
 		Bukkit.broadcastMessage("");
@@ -3171,6 +3187,9 @@ public class pluginMain extends JavaPlugin implements Listener {
 					player.sendMessage(
 							Prefix.server + "You have " + ChatColor.LIGHT_PURPLE + lcq2 + " Lucky Click Quota left!");
 				}
+			}
+			if (s.getLine(0).equalsIgnoreCase("[freequota]")) {
+
 			}
 			if (s.getLine(0).equalsIgnoreCase("[buyquota]")) {
 				int tprq = playerData.getInt("Quota.TPR");

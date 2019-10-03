@@ -26,7 +26,7 @@ public class StockInt {
 	
 	public static List<String> voteToRestart = new ArrayList<String>();
 	
-	public static String pluginName;
+	public static String pluginName = "PondJa-Core";
 			
 	public static String pluginDir = "plugins/" + pluginName + "/";
 	

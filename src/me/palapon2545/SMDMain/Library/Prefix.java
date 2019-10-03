@@ -24,6 +24,8 @@ public class Prefix {
 	public static String tc = ChatColor.AQUA + "" + ChatColor.BOLD + " ..Teleporting.. ";
 	public static String tcc = ChatColor.DARK_RED + "" + ChatColor.BOLD + " Teleportation cancelled! ";
 	
+	public static String pm0 = "Payment need to more than " + ChatColor.YELLOW + "0" + ChatColor.GRAY + ".";
+	
 	public static String Ampersand = Character.toString((char) 0x00A7);
 	
 	public static void sendErrorMessage(String java, String function, String player, String reason) {

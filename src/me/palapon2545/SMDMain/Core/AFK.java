@@ -67,7 +67,6 @@ public class AFK {
 			Bukkit.broadcastMessage(p.getDisplayName() + ChatColor.WHITE + " is no longer " + ChatColor.BOLD + "AFK"
 					+ ChatColor.RESET + ". " + ChatColor.YELLOW + ChatColor.ITALIC + "(" + calculateAFK(p) + ")");
 			AFKCount.put(p.getName(), (long) 0);
-
 		} else {
 			AFKCount.put(p.getName(), (long) 0);
 		}
