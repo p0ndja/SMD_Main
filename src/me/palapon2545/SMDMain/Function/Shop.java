@@ -26,8 +26,13 @@ public class Shop {
 			ItemStack c = new ItemStack(l);
 			c.getData().setData((byte) data);
 			if (money >= price) {
+				String coin = " Coins ";
+				if (price <= 1) {
+					coin = " Coin ";
+				}
 				inv.addItem(new ItemStack(l, amount, data));
-				Money.take(player, price, ChatColor.GRAY + "from buying " + ChatColor.AQUA + amount + "x " + item);
+				Money.take(player, price);
+				player.sendMessage(Prefix.server + "You used " + ChatColor.GOLD + price + coin + ChatColor.GRAY + "from buying " + ChatColor.AQUA + amount + "x " + item);
 				Function.egg(player);
 			} else {
 				player.sendMessage(Prefix.server + Prefix.nom);
