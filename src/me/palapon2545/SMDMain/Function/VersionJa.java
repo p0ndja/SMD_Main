@@ -12,7 +12,7 @@ public class VersionJa {
 			StockInt.ServerVersion = 1;
 		else if (ver.contains("1.9") || ver.contains("1.10") || ver.contains("1.11") || ver.contains("1.12"))
 			StockInt.ServerVersion = 2;
-		else if (ver.contains("1.13") || ver.contains("1.14"))
+		else if (ver.contains("1.13") || ver.contains("1.14") || ver.contains("1.15"))
 			StockInt.ServerVersion = 3;
 		else
 			StockInt.ServerVersion = 0;
