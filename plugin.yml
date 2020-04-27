@@ -1,4 +1,4 @@
-name: PondJa-Core
+name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
 version: 2.2.3
 description: "PondJaTH's first java bukkit plugin development."

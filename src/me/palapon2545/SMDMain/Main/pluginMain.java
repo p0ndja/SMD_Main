@@ -2571,7 +2571,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			}
 
 			if (CommandLabel.equalsIgnoreCase("qwerty")) {
-				player.sendMessage("" + player.getLocation().getChunk().isSlimeChunk());
+				player.sendMessage(player.getItemInHand().toString());
 			}
 
 			if (CommandLabel.equalsIgnoreCase("afk")) {
