@@ -1,9 +1,11 @@
 package me.palapon2545.SMDMain.Function;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import me.palapon2545.SMDMain.Function.Sound;
+import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 
 public class Function {
@@ -14,126 +16,115 @@ public class Function {
 	}
 	
 	public static void no(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.NOTE_BASS.bukkitSound();
-		else
-			a = Sound18to113.NOTE_BASS.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 0);
+		p.playSound(p.getLocation(), Sound.NOTE_BASS.bukkitSound(), 1, 0);
 	}
 
 	public static void orb(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.ORB_PICKUP.bukkitSound();
-		else
-			a = Sound18to113.ORB_PICKUP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 1);
+		p.playSound(p.getLocation(), Sound.ORB_PICKUP.bukkitSound(), 1, 1);
 	}
 
 	public static void orb(Player p, float pitch) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.ORB_PICKUP.bukkitSound();
-		else
-			a = Sound18to113.ORB_PICKUP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, pitch);
+		p.playSound(p.getLocation(), Sound.ORB_PICKUP.bukkitSound(), 1, pitch);
 	}
 
 	public static void anvil(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.ANVIL_LAND.bukkitSound();
-		else
-			a = Sound18to113.ANVIL_LAND.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 1);
+		p.playSound(p.getLocation(), Sound.ANVIL_LAND.bukkitSound(), 1, 1);
 	}
 
 	public static void anvil(Player p, float pitch) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.ANVIL_LAND.bukkitSound();
-		else
-			a = Sound18to113.ANVIL_LAND.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, pitch);
+		p.playSound(p.getLocation(), Sound.ANVIL_LAND.bukkitSound(), 1, pitch);
 	}
 
 	public static void pling(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.NOTE_PLING.bukkitSound();
-		else
-			a = Sound18to113.NOTE_PLING.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 0);
+		p.playSound(p.getLocation(), Sound.NOTE_PLING.bukkitSound(), 1, 0);
 	}
 
 	public static void pling(Player p, float pitch) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.NOTE_PLING.bukkitSound();
-		else
-			a = Sound18to113.NOTE_PLING.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, pitch);
+		p.playSound(p.getLocation(), Sound.NOTE_PLING.bukkitSound(), 1, pitch);
 	}
 	
 	public static void pling(float pitch) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.NOTE_PLING.bukkitSound();
-		else
-			a = Sound18to113.NOTE_PLING.bukkitSound();
 		for (Player p : Bukkit.getOnlinePlayers())
-		p.playSound(p.getLocation(), a, 1, pitch);
+			p.playSound(p.getLocation(), Sound.NOTE_PLING.bukkitSound(), 1, pitch);
 	}
 
 	public static void egg(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
-		else
-			a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 0);
+		p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP.bukkitSound(), 1, 0);
 	}
 
 	public static void egg(Player p, float pitch) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
-		else
-			a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, pitch);
+		p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP.bukkitSound(), 1, pitch);
 	}
 
 	public static void yes(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.LEVEL_UP.bukkitSound();
-		else
-			a = Sound18to113.LEVEL_UP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 1);
+		p.playSound(p.getLocation(), Sound.LEVEL_UP.bukkitSound(), 1, 1);
 	}
 
-	public static void yesAll() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
+	public static void yes() {
+		for (Player p : Bukkit.getOnlinePlayers())
 			yes(p);
-		}
 	}
 
 	public static void pickup(Player p) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.ITEM_PICKUP.bukkitSound();
-		else
-			a = Sound18to113.ITEM_PICKUP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, 1);
+		p.playSound(p.getLocation(), Sound.ITEM_PICKUP.bukkitSound(), 1, 1);
 	}
 
 	public static void pickup(Player p, float pitch) {
-		Sound a;
-		if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-			a = Sound18to19.ITEM_PICKUP.bukkitSound();
-		else
-			a = Sound18to113.ITEM_PICKUP.bukkitSound();
-		p.playSound(p.getLocation(), a, 1, pitch);
+		p.playSound(p.getLocation(), Sound.ITEM_PICKUP.bukkitSound(), 1, pitch);
+	}
+	
+	public static String calTime(long second) {
+		String stackMsg = "";
+		
+		long c = second;
+		long w = c / 604800;
+		long wm = c % 604800;
+		long d = wm / 86400;
+		long dm = wm % 86400;
+		long h = dm / 3600;
+		long hm = dm % 3600;
+		long m = hm / 60;
+		long s = hm % 60;
+
+		if (w > 1)
+			stackMsg += w + " weeks ";
+		else if (w == 1)
+			stackMsg += w + " week ";
+
+		if (d > 1)
+			stackMsg += d + " days ";
+		else if (d == 1)
+			stackMsg += d + " day ";
+
+		if (h > 1)
+			stackMsg += h + " hours ";
+		else if (h == 1)
+			stackMsg += h + " hour ";
+
+		if (m > 1)
+			stackMsg += m + " minutes ";
+		else if (m == 1)
+			stackMsg += m + " minute ";
+
+		if (s > 1)
+			stackMsg += s + " seconds";
+		else if (s == 1)
+			stackMsg += s + " second";
+
+		if (c == 5) {
+			stackMsg = ChatColor.AQUA + stackMsg;
+		} else if (c == 4) {
+			stackMsg = ChatColor.GREEN + stackMsg;
+		} else if (c == 3) {
+			stackMsg = ChatColor.YELLOW + stackMsg;
+		} else if (c == 2) {
+			stackMsg = ChatColor.GOLD + stackMsg;
+		} else if (c == 1) {
+			stackMsg = ChatColor.RED + stackMsg;
+		} else if (c == 0) {
+			stackMsg = ChatColor.LIGHT_PURPLE + "TIME UP!";
+		}
+
+		return stackMsg;
 	}
 }

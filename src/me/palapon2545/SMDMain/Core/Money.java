@@ -1,22 +1,7 @@
 package me.palapon2545.SMDMain.Core;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.primitives.Longs;
-
-import me.palapon2545.SMDMain.Function.Sound18to113;
-import me.palapon2545.SMDMain.Function.Sound18to19;
-import me.palapon2545.SMDMain.Library.Prefix;
-import me.palapon2545.SMDMain.Library.StockInt;
 
 public class Money extends JavaPlugin {
 

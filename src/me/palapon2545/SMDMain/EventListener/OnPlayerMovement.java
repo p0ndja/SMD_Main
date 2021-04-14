@@ -27,7 +27,7 @@ import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.palapon2545.SMDMain.Core.AFK;
-import me.palapon2545.SMDMain.Function.ActionBarAPI;
+import me.palapon2545.SMDMain.Function.ActionBarAPI_api;
 import me.palapon2545.SMDMain.Function.Blockto113;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
@@ -71,7 +71,7 @@ public class OnPlayerMovement implements Listener {
 		String freeze = playerData.getString("freeze");
 		if (freeze.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
-			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
+			ActionBarAPI_api.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 			player.setAllowFlight(true);
 		}
 		if (StockInt.blockLogin.contains(playerName)) {
@@ -97,7 +97,7 @@ public class OnPlayerMovement implements Listener {
 		String freeze = playerData.getString("freeze");
 		if (freeze.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
-			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
+			ActionBarAPI_api.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 		}
 		if (StockInt.blockLogin.contains(playerName)) {
 			event.setCancelled(true);
@@ -120,7 +120,7 @@ public class OnPlayerMovement implements Listener {
 		}
 		if (freeze.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
-			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
+			ActionBarAPI_api.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 		}
 
 		AFK.noLongerAFK(player);

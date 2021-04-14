@@ -1,5 +1,6 @@
 package me.palapon2545.SMDMain.Function;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import me.palapon2545.SMDMain.Library.Prefix;
@@ -11,27 +12,24 @@ public class Countdown {
 	private static boolean CountdownDisplayMessageBoolean = false;
 
 	public static void run() {
-		long c = StockInt.CountdownLength;
-		long n = c - 1;
+		long c = StockInt.CountdownLength - 1;
 		long s = (c % 3600) % 60;
+		float curPercent = (c*100 / StockInt.CountdownStartLength);
 		if (StockInt.CountdownMessage != null) {
 			if (s % 4 == 0) {
-				if (c < 11) {
+				if (c < 11)
 					CountdownDisplayMessageBoolean = false;
-				} else {
-					if (CountdownDisplayMessageBoolean == true)
-						CountdownDisplayMessageBoolean = false;
-					else
-						CountdownDisplayMessageBoolean = true;
-				}
+				else
+					CountdownDisplayMessageBoolean = !CountdownDisplayMessageBoolean;
+				
 			}
-			if (CountdownDisplayMessageBoolean == true) {
-				if (StockInt.BarAPIHook == true) {
+			if (CountdownDisplayMessageBoolean) {
+				if (StockInt.BarAPIHook) {
 					// long p = cn / an;
 					// Bukkit.broadcastMessage("debug_percent");
-					BarAPI_api.sendBarAll(Prefix.cd + StockInt.CountdownMessage);
+					BarAPI_api.sendBarAll(Prefix.cd + StockInt.CountdownMessage, curPercent);
 				} else {
-					ActionBarAPI.sendToAll(Prefix.cd + StockInt.CountdownMessage);
+					ActionBarAPI_api.send(Prefix.cd + StockInt.CountdownMessage);
 				}
 			} else {
 				CalculateTimer();
@@ -42,70 +40,24 @@ public class Countdown {
 		if (c == -2)
 			StockInt.CountdownLength = -2;
 		else
-			StockInt.CountdownLength = n;
+			StockInt.CountdownLength = c;
 
 	}
 
 	public static void CalculateTimer() {
 		long c = StockInt.CountdownLength;
-		long w = c / 604800;
-		long wm = c % 604800;
-		long d = wm / 86400;
-		long dm = wm % 86400;
-		long h = dm / 3600;
-		long hm = dm % 3600;
-		long m = hm / 60;
-		long s = hm % 60;
-
-		String week = "", day = "", hour = "", minute = "", second = "";
-
-		if (w > 1)
-			week = w + " weeks ";
-		else if (w == 1)
-			week = w + " week ";
-
-		if (w > 1)
-			week = w + " weeks ";
-		else if (w == 1)
-			week = w + " week ";
-
-		if (d > 1)
-			day = d + " days ";
-		else if (d == 1)
-			day = d + " day ";
-
-		if (h > 1)
-			hour = h + " hours ";
-		else if (h == 1)
-			hour = h + " hour ";
-
-		if (m > 1)
-			minute = m + " minutes ";
-		else if (m == 1)
-			minute = m + " minute ";
-
-		if (s > 1)
-			second = s + " seconds";
-		else if (s == 1)
-			second = s + " second";
-
+		String displayMsg = Function.calTime(c);
 		if (c == 5) {
-			second = ChatColor.AQUA + "" + s + " seconds";
 			Function.pling(2);
 		} else if (c == 4) {
-			second = ChatColor.GREEN + "" + s + " seconds";
-			Function.pling((float) 1.6);
+			Function.pling((float) 1.8);
 		} else if (c == 3) {
-			second = ChatColor.YELLOW + "" + s + " seconds";
-			Function.pling((float) 1.2);
+			Function.pling((float) 1.6);
 		} else if (c == 2) {
-			second = ChatColor.GOLD + "" + s + " seconds";
-			Function.pling((float) 1);
+			Function.pling((float) 1.4);
 		} else if (c == 1) {
-			second = ChatColor.RED + "" + s + " second";
-			Function.pling((float) 0.5);
+			Function.pling((float) 1.2);
 		} else if (c == 0) {
-			second = ChatColor.LIGHT_PURPLE + "TIME UP!";
 			Function.pling((float) 0);
 		} else if (c == -1) {
 			if (StockInt.BarAPIHook == true) {
@@ -118,13 +70,14 @@ public class Countdown {
 			}
 		}
 
-		long percent = ((c * 100) / StockInt.CountdownStartLength);
+		float curPercent = (c*100 / StockInt.CountdownStartLength);
 		if (c >= 0) {
 			if (StockInt.BarAPIHook == true)
-				BarAPI_api.sendBarAll(Prefix.cd + week + day + hour + minute + second, (float) percent);
+				BarAPI_api.sendBarAll(Prefix.cd + displayMsg, (float) curPercent);
 			else
-				ActionBarAPI.sendToAll(Prefix.cd + week + day + hour + minute + second);
+				ActionBarAPI_api.send(Prefix.cd + displayMsg);
 		}
+
 
 	}
 

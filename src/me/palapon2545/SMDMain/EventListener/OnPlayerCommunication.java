@@ -17,10 +17,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import me.palapon2545.SMDMain.Core.AFK;
 import me.palapon2545.SMDMain.Core.Rank;
-import me.palapon2545.SMDMain.Function.ActionBarAPI;
+import me.palapon2545.SMDMain.Function.ActionBarAPI_api;
 import me.palapon2545.SMDMain.Function.Function;
-import me.palapon2545.SMDMain.Function.Sound18to113;
-import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
 import me.palapon2545.SMDMain.Main.pluginMain;
@@ -56,15 +54,10 @@ public class OnPlayerCommunication implements Listener {
 			event.setCancelled(true);
 		} else {
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				Sound a;
-				if (StockInt.ServerVersion == 1 || StockInt.ServerVersion == 2)
-					a = Sound18to19.CHICKEN_EGG_POP.bukkitSound();
-				else
-					a = Sound18to113.CHICKEN_EGG_POP.bukkitSound();
-				p.playSound(p.getLocation(), a, (float) 0.5, 1);
+				Function.egg(p, 0.5f);
 			}
+			
 			String RankDisplay;
-
 			if (rank.equalsIgnoreCase("default"))
 				RankDisplay = Rank.Default;
 			else if (rank.equalsIgnoreCase("staff"))
@@ -82,7 +75,7 @@ public class OnPlayerCommunication implements Listener {
 			else
 				RankDisplay = Rank.Default;
 
-			//event.setFormat(RankDisplay + playerName + ChatColor.WHITE + message1);
+			event.setFormat(RankDisplay + playerName + ChatColor.WHITE + message1);
 		}
 
 		AFK.noLongerAFK(player);
@@ -100,7 +93,7 @@ public class OnPlayerCommunication implements Listener {
 		String freeze = playerData.getString("freeze");
 		if (freeze.equalsIgnoreCase("true")) {
 			event.setCancelled(true);
-			ActionBarAPI.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
+			ActionBarAPI_api.send(player, ChatColor.AQUA + "You're " + ChatColor.BOLD + "FREEZING");
 		}
 		String[] i = event.getMessage().split(" ");
 		if (StockInt.blockLogin.contains(playerName)) {

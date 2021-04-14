@@ -1,9 +1,9 @@
-name: SMDMain
 main: me.palapon2545.SMDMain.Main.pluginMain
-version: 2.2.3
+name: SMDMain
+version: '2.2.3'
 description: "PondJaTH's first java bukkit plugin development."
 author: PondJaTH
-api-version: 1.14
+api-version: '1.13'
 softdepend: [BarAPI]
 load: POSTWORLD
 website: https://github.com/p0ndja/SMD_Main

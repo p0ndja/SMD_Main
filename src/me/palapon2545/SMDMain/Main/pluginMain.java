@@ -5,22 +5,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.apache.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
@@ -30,7 +24,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileDeleteStrategy;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,12 +33,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Dye;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -55,16 +46,14 @@ import org.bukkit.scheduler.BukkitScheduler;
 import me.palapon2545.SMDMain.Core.AFK;
 import me.palapon2545.SMDMain.Core.Login;
 import me.palapon2545.SMDMain.Core.Money;
-import me.palapon2545.SMDMain.Core.PlayerDatabase;
 import me.palapon2545.SMDMain.Core.Rank;
 import me.palapon2545.SMDMain.EventListener.OnEntityLivingEvent;
 import me.palapon2545.SMDMain.EventListener.OnInventoryEvent;
 import me.palapon2545.SMDMain.EventListener.OnPlayerCommunication;
 import me.palapon2545.SMDMain.EventListener.OnPlayerConnection;
 import me.palapon2545.SMDMain.EventListener.OnPlayerMovement;
-import me.palapon2545.SMDMain.Function.ActionBarAPI;
-import me.palapon2545.SMDMain.Function.AutoSaveWorld;
 import me.palapon2545.SMDMain.Function.Blockto113;
+import me.palapon2545.SMDMain.Function.ActionBarAPI_api;
 import me.palapon2545.SMDMain.Function.BarAPI_api;
 import me.palapon2545.SMDMain.Function.Countdown;
 import me.palapon2545.SMDMain.Function.Donate;
@@ -73,17 +62,9 @@ import me.palapon2545.SMDMain.Function.Function;
 import me.palapon2545.SMDMain.Function.Ping;
 import me.palapon2545.SMDMain.Function.Shop;
 import me.palapon2545.SMDMain.Function.Effect18to113;
-import me.palapon2545.SMDMain.Function.Sound18to113;
-import me.palapon2545.SMDMain.Function.Sound18to19;
 import me.palapon2545.SMDMain.Function.VersionJa;
 import me.palapon2545.SMDMain.Library.Prefix;
 import me.palapon2545.SMDMain.Library.StockInt;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 
 public class pluginMain extends JavaPlugin implements Listener {
 
@@ -167,6 +148,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				p.sendMessage("+ 3x " + ChatColor.RED + "Sethome Limit Extention");
 				p.sendMessage("+ 15x " + ChatColor.LIGHT_PURPLE + "LuckyClick Quota");
 				p.sendMessage("+ 10x " + ChatColor.AQUA + "TPR Quota");
+				Function.yes(p);
 				e.setCancelled(true);
 			} else if (e.getCurrentItem().getType() == Material.REDSTONE_BLOCK) {
 				p.closeInventory();
@@ -301,7 +283,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							|| Rank.getPriority(((Player) sender).getPlayer()) >= 3))) {
 				if (args.length != 0) {
 					if (args[0].equalsIgnoreCase("start")) {
-						String countdownMessage = "null";
+						String countdownMessage = null;
 						String countdownMessageToPlayer = "";
 						if (args.length >= 2) {
 							if (isNumeric(args[1])) {
@@ -332,12 +314,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 							BarAPI_api.sendBarAll(Prefix.cd + "Countdown has been cancelled");
 							BarAPI_api.removeBarAll();
 						} else {
-							ActionBarAPI.sendToAll(Prefix.cd + "Countdown has been cancelled");
+							ActionBarAPI_api.send(Prefix.cd + "Countdown has been cancelled");
 						}
 
 						StockInt.CountdownLength = -2;
 						StockInt.CountdownStartLength = -2;
-						StockInt.CountdownMessage = "null";
+						StockInt.CountdownMessage = null;
 
 					} else {
 						sender.sendMessage(Prefix.server + Prefix.type + "/countdown [start/stop] [second]");
@@ -1267,7 +1249,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (CommandLabel.equalsIgnoreCase("mute")) {
 				if (player.isOp() || player.hasPermission("main.*") || player.hasPermission("main.mute")
 						|| Rank.getPriority(player) >= 3) {
-					if (args.length > 1) {
+					if (args.length >= 1) {
 						if (Bukkit.getServer().getPlayer(args[0]) != null) {
 							Player targetPlayer = Bukkit.getServer().getPlayer(args[0]);
 							String targetPlayerName = targetPlayer.getName();
@@ -2151,7 +2133,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							}
 							Bukkit.broadcastMessage(
 									Prefix.database + "Report ID " + args[0] + " has received by " + playerName);
-							Function.yesAll();
+							Function.yes();
 						} else {
 							player.sendMessage(Prefix.database + "Report " + ChatColor.YELLOW + args[0] + ChatColor.GRAY
 									+ " not found.");
@@ -2183,7 +2165,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 							removeList("unread_report", args[0]);
 							Bukkit.broadcastMessage(
 									Prefix.server + "Report ID " + args[0] + " has closed by " + playerName);
-							Function.yesAll();
+							Function.yes();
 						} else {
 							player.sendMessage(Prefix.database + "Report " + ChatColor.YELLOW + args[0] + ChatColor.GRAY
 									+ " not found.");
@@ -2314,14 +2296,13 @@ public class pluginMain extends JavaPlugin implements Listener {
 									bottomN.setType(top);
 								}
 
-								// ActionBarAPI.sendToAll(bottom.toString() + " " + o + "," + i + "," + p + " ||
+								// ActionBarAPI_api.sendToAll(bottom.toString() + " " + o + "," + i + "," + p + " ||
 								// " + o + "," + (255-i) + "," + p + " " + top.toString());
 							}
 						}
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -2821,9 +2802,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 	}
 
 	public void onEnable() {
-
-		ActionBarAPI.run();
-
 		File warpFolder = new File(getDataFolder() + File.separator + "/WarpDatabase/");
 		File privateWarpFolder = new File(getDataFolder() + File.separator + "/PrivateWarpDatabase/");
 		File reportFolder = new File(getDataFolder() + File.separator + "/ReportDatabase/");
@@ -2922,7 +2900,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				Prefix.server + StockInt.pluginName + " System: " + ChatColor.GREEN + ChatColor.BOLD + "Enable");
 		Bukkit.broadcastMessage("");
 		Bukkit.broadcastMessage(StockInt.pluginName + "'s patch version: " + ChatColor.GREEN + version);
-		Bukkit.broadcastMessage("  -" + ChatColor.GOLD + " ActionBarAPI " + ChatColor.WHITE + "library version: "
+		Bukkit.broadcastMessage("  -" + ChatColor.GOLD + " ActionBarAPI_api " + ChatColor.WHITE + "library version: "
 				+ ChatColor.AQUA + "1.5.4 " + ChatColor.WHITE + "by " + ChatColor.YELLOW + "ConnorLinfoot");
 		Bukkit.broadcastMessage("Developer: " + ChatColor.GOLD + ChatColor.BOLD + "PondJaTH");
 		Bukkit.broadcastMessage("");
@@ -2941,7 +2919,6 @@ public class pluginMain extends JavaPlugin implements Listener {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerClick(PlayerInteractEvent e) {
 		Action act;
@@ -3527,7 +3504,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 						}
 					}
 				} else {
-					ActionBarAPI.send(player, "This plate isn't " + ChatColor.RED + "ready");
+					ActionBarAPI_api.send(player, "This plate isn't " + ChatColor.RED + "ready");
 				}
 			}
 		}
@@ -3560,7 +3537,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 					if (w == 0) {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
-						ActionBarAPI.send(p,
+						ActionBarAPI_api.send(p,
 								ChatColor.RESET + ">>>>>>>>" + ChatColor.YELLOW + "" + ChatColor.BOLD + " Press "
 										+ ChatColor.GREEN + ChatColor.BOLD + ChatColor.UNDERLINE + "Shift"
 										+ ChatColor.AQUA + " to teleport " + ChatColor.RESET + "<<<<<<<<");
@@ -3568,7 +3545,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 				if (sign.getLine(0).equalsIgnoreCase("[cmd]")) {
 					p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
-					ActionBarAPI.send(p,
+					ActionBarAPI_api.send(p,
 							ChatColor.RESET + ">>>>>>>>" + ChatColor.YELLOW + "" + ChatColor.BOLD + " Press "
 									+ ChatColor.GREEN + ChatColor.BOLD + ChatColor.UNDERLINE + "Shift" + ChatColor.AQUA
 									+ " to perform command " + ChatColor.RESET + "<<<<<<<<");
@@ -3611,22 +3588,22 @@ public class pluginMain extends JavaPlugin implements Listener {
 			if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 				plateParticle(p);
 				if (w == 1) {
-					ActionBarAPI.send(p, ChatColor.YELLOW + ">>>>>>>>" + Prefix.tc + ChatColor.YELLOW + "<<<<<<<<");
+					ActionBarAPI_api.send(p, ChatColor.YELLOW + ">>>>>>>>" + Prefix.tc + ChatColor.YELLOW + "<<<<<<<<");
 					Function.egg(p, (float) 0.3);
 				} else if (w == 2) {
-					ActionBarAPI.send(p, ChatColor.YELLOW + ">>>>>>" + ChatColor.GOLD + ">>" + Prefix.tc
+					ActionBarAPI_api.send(p, ChatColor.YELLOW + ">>>>>>" + ChatColor.GOLD + ">>" + Prefix.tc
 							+ ChatColor.GOLD + "<<" + ChatColor.YELLOW + "<<<<<<");
 					Function.egg(p, (float) 0.5);
 				} else if (w == 3) {
-					ActionBarAPI.send(p, ChatColor.YELLOW + ">>>>" + ChatColor.GOLD + ">>>>" + Prefix.tc
+					ActionBarAPI_api.send(p, ChatColor.YELLOW + ">>>>" + ChatColor.GOLD + ">>>>" + Prefix.tc
 							+ ChatColor.GOLD + "<<<<" + ChatColor.YELLOW + "<<<<");
 					Function.egg(p, (float) 0.7);
 				} else if (w == 4) {
-					ActionBarAPI.send(p, ChatColor.YELLOW + ">>" + ChatColor.GOLD + ">>>>>>" + Prefix.tc
+					ActionBarAPI_api.send(p, ChatColor.YELLOW + ">>" + ChatColor.GOLD + ">>>>>>" + Prefix.tc
 							+ ChatColor.GOLD + "<<<<<<" + ChatColor.YELLOW + "<<");
 					Function.egg(p, (float) 0.9);
 				} else if (w == 5) {
-					ActionBarAPI.send(p, ChatColor.GOLD + ">>>>>>>>" + Prefix.tc + ChatColor.GOLD + "<<<<<<<<");
+					ActionBarAPI_api.send(p, ChatColor.GOLD + ">>>>>>>>" + Prefix.tc + ChatColor.GOLD + "<<<<<<<<");
 					Function.egg(p, (float) 1.2);
 				} else if (w == 7) {
 					Sign location_sign = (Sign) block_sign.getState();
@@ -3655,7 +3632,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 					loca.setPitch((float) pitch);
 					loca.setYaw((float) yaw);
 					p.teleport(loca);
-					ActionBarAPI.send(p, ChatColor.GREEN + ">>>>>>>>" + ChatColor.BOLD + " Teleport! " + ChatColor.RESET
+					ActionBarAPI_api.send(p, ChatColor.GREEN + ">>>>>>>>" + ChatColor.BOLD + " Teleport! " + ChatColor.RESET
 							+ ChatColor.GREEN + "<<<<<<<<");
 					Function.yes(p);
 				} else {
@@ -3685,7 +3662,7 @@ public class pluginMain extends JavaPlugin implements Listener {
 				}
 			}
 		} else {
-			ActionBarAPI.send(p, ChatColor.RED + ">>>>>>>>" + Prefix.tcc + ChatColor.RED + "<<<<<<<<");
+			ActionBarAPI_api.send(p, ChatColor.RED + ">>>>>>>>" + Prefix.tcc + ChatColor.RED + "<<<<<<<<");
 			Function.no(p);
 			try {
 				playerData.set("WarpState", 0);
